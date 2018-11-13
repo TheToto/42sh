@@ -6,7 +6,7 @@
 enum token_type get_token_type(char *val)
 {
     if (!strcmp(val, "if"))
-        return FI;
+        return IF;
     if (!strcmp(val, "then"))
         return THEN;
     if (!strcmp(val, "else"))
@@ -32,14 +32,13 @@ enum token_type get_token_type(char *val)
     return WORD;
 }
 
-void my_abort(struct lexer *l)
+void lexer_destroy(struct lexer *l)
 {
     if (!l)
         return;
     struct token_list *cur = l->token_list;
     while (cur)
     {
-        free(cur->str);
         struct token_list *tmp = cur->next;
         free(cur);
         cur = tmp;
@@ -47,17 +46,7 @@ void my_abort(struct lexer *l)
     free(l);
 }
 
-void print_token_list(struct token_list *tl)
-{
-#include <stdio.h>
-    while (tl)
-    {
-        printf("%d\n", tl->type);
-        tl = tl->next;
-    }
-}
-
-struct lexer *lexer(char *cmd)
+struct lexer *lexer(char *str)
 {
     struct lexer *l = NULL;
     l = calloc(1, sizeof(*l));
@@ -66,27 +55,26 @@ struct lexer *lexer(char *cmd)
     l->token_list = malloc(sizeof(*l->token_list));
     if (!l->token_list)
     {
-        my_abort(l);
+        lexer_destroy(l);
         return NULL;
     }
     struct token_list *cur = l->token_list;
-    char *val = strtok(cmd, " ");
-    while (val)
+    char *val = strtok(str, " ");
+    for (; val; cur = cur->next)
     {
         cur->str = val;
         cur->type = get_token_type(val);
         cur->next = NULL;
-        val = strtok(cmd, " ");
+        val = strtok(NULL, " ");
         if (val)
         {
-            cur->next = malloc(sizeof(*cur->next));
+            cur->next = calloc(1, sizeof(*cur->next));
             if (!cur->next)
             {
-                my_abort(l);
+                lexer_destroy(l);
                 return NULL;
             }
         }
     }
-    print_token_list(l->token_list);
     return l;
 }
