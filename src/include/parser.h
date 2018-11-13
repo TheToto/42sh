@@ -20,15 +20,10 @@ enum token_type
 // ...
 };
 
-struct token
+struct token_list
 {
     char *str; // OPTIONNEL
     enum token_type type;
-};
-
-struct token_list
-{
-    struct token *token;
     struct token_list *next;
 };
 
