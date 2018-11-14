@@ -117,7 +117,7 @@ enum token_type default_token(char *val)
 
 enum token_type get_token_type(char *val)
 {
-    if (*val == '"')
+    if (!fnmatch("*\"*", val, 0))
         return WORD_EXT;
     int res = redirection_token(val);
     if (res == WORD)
@@ -190,8 +190,14 @@ struct lexer *lexer(char *str)
         set_tl(cur, val);
         if (cur->type == WORD_EXT)
         {
-            while (val && fnmatch("*\"", val, 0))
+            if (fnmatch("*\"*\"*", val, 0))
+            {
                 val = strtok(NULL, " ");
+                size_t len = strlen(cur->str) + strlen(val) + 1;
+                cur->str = realloc(cur->str, len);
+                while (val && fnmatch("*\"*", val, 0))
+                    val = strtok(NULL, " ");
+            }
         }
         val = strtok(NULL, " ");
         cur->next = calloc(1, sizeof(*cur->next));
