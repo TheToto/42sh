@@ -6,25 +6,25 @@
 
 enum token_type redirection_token(char *val)
 {
-    if (strcmp(val, "<"))
+    if (!strcmp(val, "<"))
         return LESS;
-    if (strcmp(val, ">"))
+    if (!strcmp(val, ">"))
         return GREAT;
-    if (strcmp(val, "<<"))
+    if (!strcmp(val, "<<"))
         return DLESS;
-    if (strcmp(val, ">>"))
+    if (!strcmp(val, ">>"))
         return DGREAT;
-    if (strcmp(val, "<&"))
+    if (!strcmp(val, "<&"))
         return LESSAND;
-    if (strcmp(val, ">&"))
+    if (!strcmp(val, ">&"))
         return GREATAND;
-    if (strcmp(val, "<>"))
+    if (!strcmp(val, "<>"))
         return LESSGREAT;
-    if (strcmp(val, "<<-"))
+    if (!strcmp(val, "<<-"))
         return DLESSDASH;
-    if (strcmp(val, ">|"))
+    if (!strcmp(val, ">|"))
         return CLOBBER;
-    if (strcmp(val, "|"))
+    if (!strcmp(val, "|"))
         return PIPE;
     return WORD;
 }
@@ -41,6 +41,8 @@ enum token_type condition_token(char *val)
         return ELSE;
     if (!strcmp(val, "fi"))
         return FI;
+    if (!strcmp(val, "!"))
+        return NOT;
     return WORD;
 }
 
@@ -165,15 +167,15 @@ struct lexer *lexer(char *str)
         cur->type = get_token_type(val);
         cur->next = NULL;
         val = strtok(NULL, " ");
-        if (val)
+        cur->next = calloc(1, sizeof(*cur->next));
+        if (!cur->next)
         {
-            cur->next = calloc(1, sizeof(*cur->next));
-            if (!cur->next)
-            {
-                lexer_destroy(l);
-                return NULL;
-            }
+            lexer_destroy(l);
+            return NULL;
         }
     }
+    cur->str = NULL;
+    cur->next = NULL;
+    cur->type = END_OF_FILE;
     return l;
 }
