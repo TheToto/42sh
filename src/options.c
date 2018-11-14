@@ -10,7 +10,8 @@ static size_t get_section(char *str)
     switch (str[0])
     {
         case '-':
-            if (str[1] && str[1] == '-')
+        case '+':
+            if (str[0] == '-' && str[1] && str[1] == '-')
                 return 0;
             else
                 return 1;
@@ -60,7 +61,6 @@ static int check_options(char *argv[])
                 }
                 break;
             case SHOPT:
-                //activates shopt variables
                 break;
             case NORC:
                 break;
@@ -96,6 +96,9 @@ void options(char *argv[])
         {
             case CMD:
                 printf("-c OK\n");
+                break;
+            case SHOPT:
+                //activates shopt variables
                 break;
             case NORC:
                 //deactivates ressource reader
