@@ -5,21 +5,6 @@
 
 #include "options.h"
 
-static size_t get_section(char *str)
-{
-    switch (str[0])
-    {
-        case '-':
-        case '+':
-            if (str[0] == '-' && str[1] && str[1] == '-')
-                return 0;
-            else
-                return 1;
-        default:
-            return 2;
-    }
-}
-
 static enum option get_option(char *opt, size_t section)
 {
     if (!section)
@@ -30,9 +15,6 @@ static enum option get_option(char *opt, size_t section)
             return AST;
         if (!strcmp(opt, "--version"))
             return VERSION;
-    }
-    else if (section == 1)
-    {
         if (!strcmp(opt, "-c"))
             return CMD;
         if (!strcmp(opt, "-O") || !strcmp(opt, "+O"))
@@ -48,8 +30,7 @@ static int check_options(char *argv[])
 
     for (size_t i = 1; argv[i]; i++)
     {
-        size_t sect = get_section(argv[i]);
-        section = section > sect ? section : sect;
+        section = argv[i][0] == '-' ? 0 : 1;
         opt = get_option(argv[i], section);
         switch (opt)
         {
@@ -69,10 +50,10 @@ static int check_options(char *argv[])
             case VERSION:
                 break;
             default:
-                if (section != 2)
+                if (section != 1)
                 {
                     warnx("Unrecognized option");
-                    errx(1, "Usage: ./42sh [GNU long options] [options] [file]");
+                    errx(1, "Usage: ./42sh [options] [file]");
                 }
         }
     }
@@ -89,8 +70,7 @@ void options(char *argv[])
 
     for (size_t i = 1; argv[i]; i++)
     {
-        size_t sect = get_section(argv[i]);
-        section = section > sect ? section : sect;
+        section = argv[i][0] == '-' ? 0 : 1;
         opt = get_option(argv[i], section);
         switch (opt)
         {
