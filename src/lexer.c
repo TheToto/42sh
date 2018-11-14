@@ -108,7 +108,7 @@ enum token_type default_token(char *val)
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
         return NEWLINE;
-    if (!fnmatch("*=", val, FNM_EXTMATCH))
+    if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])=*", val, FNM_EXTMATCH))
         return ASSIGNMENT_WORD;
     if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])", val, FNM_EXTMATCH))
         return NAME;
@@ -117,6 +117,8 @@ enum token_type default_token(char *val)
 
 enum token_type get_token_type(char *val)
 {
+    if (*val == '"')
+        return WORD_EXT;
     int res = redirection_token(val);
     if (res == WORD)
         res = condition_token(val);
@@ -147,7 +149,7 @@ void lexer_destroy(struct lexer *l)
     free(l);
 }
 
-struct lexer *lexer(char *str)
+struct lexer *init_lexer()
 {
     struct lexer *l = NULL;
     l = calloc(1, sizeof(*l));
@@ -159,13 +161,38 @@ struct lexer *lexer(char *str)
         lexer_destroy(l);
         return NULL;
     }
+    return l;
+}
+
+void set_tl(struct token_list *tl, char *str)
+{
+    if (!str)
+    {
+        tl->str = NULL;
+        tl->type = END_OF_FILE;
+        tl->next = NULL;
+        return;
+    }
+    tl->str = str;
+    tl->type = get_token_type(str);
+    tl->next = NULL;
+}
+
+struct lexer *lexer(char *str)
+{
+    struct lexer *l = init_lexer();
+    if (!l)
+        return NULL;
     struct token_list *cur = l->token_list;
     char *val = strtok(str, " ");
     for (; val; cur = cur->next)
     {
-        cur->str = val;
-        cur->type = get_token_type(val);
-        cur->next = NULL;
+        set_tl(cur, val);
+        if (cur->type == WORD_EXT)
+        {
+            while (val && fnmatch("*\"", val, 0))
+                val = strtok(NULL, " ");
+        }
         val = strtok(NULL, " ");
         cur->next = calloc(1, sizeof(*cur->next));
         if (!cur->next)
@@ -174,8 +201,6 @@ struct lexer *lexer(char *str)
             return NULL;
         }
     }
-    cur->str = NULL;
-    cur->next = NULL;
-    cur->type = END_OF_FILE;
+    set_tl(cur, NULL);
     return l;
 }
