@@ -26,7 +26,7 @@ struct ast_node *create_ast_node_lor(struct ast_node *left_child,
         free(new);
         return NULL;
     }
-    new->type = LOGICAL_OR;
+    new->type = N_LOGICAL_OR;
     new->son->token_LOR = under_node;
     return new;
 }

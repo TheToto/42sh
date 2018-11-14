@@ -13,7 +13,7 @@ static struct ast_node_pipe *create_ast_node_pipe_int(struct ast_node *ls,
     return new;
 }
 
-struct ast_node *create_ast_node_while(struct ast_node *ls,
+struct ast_node *create_ast_node_pipe(struct ast_node *ls,
         struct ast_node *rs)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
@@ -25,7 +25,7 @@ struct ast_node *create_ast_node_while(struct ast_node *ls,
         free(new);
         return NULL;
     }
-    new->type = PIPE;
+    new->type = N_PIPE;
     new->son->token_PIPE = under_node;
     return new;
 }

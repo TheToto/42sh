@@ -23,7 +23,7 @@ struct ast_node *create_ast_node_not(struct ast_node *child)
         free(new);
         return NULL;
     }
-    new->type = NOT;
+    new->type = N_NOT;
     new->son->token_NOT = under_node;
     return new;
 }

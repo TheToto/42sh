@@ -27,7 +27,7 @@ struct ast_node *create_ast_node_for(char **values,
         free(new);
         return NULL;
     }
-    new->type = FOR;
+    new->type = N_FOR;
     new->son->token_FOR = under_node;
     return new;
 }
