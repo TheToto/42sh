@@ -42,12 +42,15 @@ enum token_type
     LOGICAL_AND,        //&&
     LOGICAL_OR,         //||
     ESPERLUETTE,        //&
+    NOT,                //!
     //DEFAULT
     IO_NUMBER,          //[1-9]+
     NEWLINE,            //\n
     ASSIGNMENT_WORD,    //*=$
     NAME,               //[_a-zA-Z][_1-9a-zA-Z]*
     WORD,               //le reste
+    //END OF FILE
+    END_OF_FILE,        //EOF
 };
 
 struct token_list
