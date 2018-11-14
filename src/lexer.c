@@ -98,7 +98,7 @@ enum token_type bin_op_token(char *val)
     if (!strcmp(val, "||"))
         return LOGICAL_OR;
     if (!strcmp(val, "&"))
-        return ESPERLUETTE;
+        return AMPERSAND;
     return WORD;
 }
 
