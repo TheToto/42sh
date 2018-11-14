@@ -184,7 +184,7 @@ struct lexer *lexer(char *str)
     if (!l)
         return NULL;
     struct token_list *cur = l->token_list;
-    char *val = strtok(str, " ");
+    char *val = strtok(str, " \t");
     for (; val; cur = cur->next)
     {
         set_tl(cur, val);
@@ -192,14 +192,14 @@ struct lexer *lexer(char *str)
         {
             if (fnmatch("*\"*\"*", val, 0))
             {
-                val = strtok(NULL, " ");
+                val = strtok(NULL, " \t");
                 size_t len = strlen(cur->str) + strlen(val) + 1;
                 cur->str = realloc(cur->str, len);
                 while (val && fnmatch("*\"*", val, 0))
-                    val = strtok(NULL, " ");
+                    val = strtok(NULL, " \t");
             }
         }
-        val = strtok(NULL, " ");
+        val = strtok(NULL, " \t");
         cur->next = calloc(1, sizeof(*cur->next));
         if (!cur->next)
         {
