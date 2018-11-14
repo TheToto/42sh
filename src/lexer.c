@@ -104,13 +104,13 @@ enum token_type bin_op_token(char *val)
 
 enum token_type default_token(char *val)
 {
-    if (!fnmatch(val, "[1-9]+", FNM_NOESCAPE))
+    if (!fnmatch("+(1)", val, FNM_EXTMATCH))
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
         return NEWLINE;
-    if (!fnmatch(val, "*=$", FNM_NOESCAPE))
+    if (!fnmatch("*=", val, FNM_EXTMATCH))
         return ASSIGNMENT_WORD;
-    if (!fnmatch(val, "[_a-zA-Z][_1-9a-zA-Z]*", FNM_NOESCAPE))
+    if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])", val, FNM_EXTMATCH))
         return NAME;
     return WORD;
 }
