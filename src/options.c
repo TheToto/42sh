@@ -5,6 +5,7 @@
 
 #include "options.h"
 
+// Get the option type accordig to the enum
 static enum option get_option(char *opt, size_t section)
 {
     if (!section)
@@ -23,6 +24,7 @@ static enum option get_option(char *opt, size_t section)
     return NONE;
 }
 
+// Check if all options are correct
 static int check_options(char *argv[])
 {
     enum option opt = NONE;
@@ -60,6 +62,7 @@ static int check_options(char *argv[])
     return 1;
 }
 
+// Do actions according to each options
 void options(char *argv[])
 {
     if (!check_options(argv))
@@ -75,7 +78,7 @@ void options(char *argv[])
         switch (opt)
         {
             case CMD:
-                printf("-c OK\n");
+                printf("-c args OK\n");
                 break;
             case SHOPT:
                 //activates shopt variables
@@ -90,7 +93,7 @@ void options(char *argv[])
                 printf("Version 0.3\n");
                 exit(0);
             default:
-                printf("A file\n");
+                printf("All good\n");
         }
     }
 }
