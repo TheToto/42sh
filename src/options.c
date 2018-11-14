@@ -1,3 +1,8 @@
+#include <string.h>
+#include <stdio.h>
+#include <err.h>
+#include <stdlib.h>
+
 #include "options.h"
 
 static size_t get_section(char *str)
@@ -29,11 +34,13 @@ static enum option get_option(char *opt, size_t section)
     {
         if (!strcmp(opt, "-c"))
             return CMD;
+        if (!strcmp(opt, "-O") || !strcmp(opt, "+O"))
+            return SHOPT;
     }
     return NONE;
 }
 
-void check_options(char *argv[])
+static int check_options(char *argv[])
 {
     enum option opt = NONE;
     size_t section = 0;
@@ -46,14 +53,49 @@ void check_options(char *argv[])
         switch (opt)
         {
             case CMD:
-                if (argv[++i] && argv[i][0] != '-')
-                    printf("-c OK\n");
-                    //bash behavior
-                else
+                if (!(argv[++i] && argv[i][0] != '-'))
                 {
                     warnx("Invalid arguments for -c option");
                     errx(1, "Usage: -c <command>");
                 }
+                break;
+            case SHOPT:
+                //activates shopt variables
+                break;
+            case NORC:
+                break;
+            case AST:
+                break;
+            case VERSION:
+                break;
+            default:
+                if (section != 2)
+                {
+                    warnx("Unrecognized option");
+                    errx(1, "Usage: ./42sh [GNU long options] [options] [file]");
+                }
+        }
+    }
+    return 1;
+}
+
+void options(char *argv[])
+{
+    if (!check_options(argv))
+        return;
+
+    enum option opt = NONE;
+    size_t section = 0;
+
+    for (size_t i = 1; argv[i]; i++)
+    {
+        size_t sect = get_section(argv[i]);
+        section = section > sect ? section : sect;
+        opt = get_option(argv[i], section);
+        switch (opt)
+        {
+            case CMD:
+                printf("-c OK\n");
                 break;
             case NORC:
                 //deactivates ressource reader
@@ -65,13 +107,7 @@ void check_options(char *argv[])
                 printf("Version 0.3\n");
                 exit(0);
             default:
-                if (section == 2)
-                    printf("A file\n");
-                else
-                {
-                    warnx("Unrecognized option");
-                    errx(1, "Usage: ./42sh [GNU long options] [options] [file]");
-                }
+                printf("A file\n");
         }
     }
 }
