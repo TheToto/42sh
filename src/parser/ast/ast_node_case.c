@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
 
@@ -15,20 +16,21 @@ static struct ast_node_case *create_ast_node_case_intern(char **values,
     return new;
 }
 
-struct ast_node *create_ast_node_case(struct ast_node *condition, struct
-        ast_node *exec)
+struct ast_node *create_ast_node_case(char **values,
+        struct ast_node *exec, struct ast_node_case *prev_case)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node *under_node = create_ast_node_case_intern(values,
-            struct ast_node *exec, prev_case);
+    struct ast_node_case *under_node = create_ast_node_case_intern(values,
+        exec, prev_case);
+
     if (!under_node)
     {
         free(new);
         return NULL;
     }
     new->type = CASE;
-    new->son.token_CASE = under_node;
+    new->son->token_CASE = under_node;
     return new;
 }

@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
 
@@ -19,7 +20,7 @@ struct ast_node *create_ast_node_for(char **values,
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node *under_node = create_ast_node_for_intern(values,
+    struct ast_node_for *under_node = create_ast_node_for_intern(values,
             value, exec);
     if (!under_node)
     {
@@ -27,6 +28,6 @@ struct ast_node *create_ast_node_for(char **values,
         return NULL;
     }
     new->type = FOR;
-    new->son.token_IF = under_node;
+    new->son->token_FOR = under_node;
     return new;
 }

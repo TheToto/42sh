@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
 
@@ -19,7 +20,7 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node *under_node = create_ast_node_while_int(condition,
+    struct ast_node_while *under_node = create_ast_node_while_int(condition,
             exec);
     if (!under_node)
     {
@@ -27,6 +28,6 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
         return NULL;
     }
     new->type = WHILE;
-    new->son.token_WHILE = under_node;
+    new->son->token_WHILE = under_node;
     return new;
 }

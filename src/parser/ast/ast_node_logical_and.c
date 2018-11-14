@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
 
@@ -18,7 +19,7 @@ struct ast_node *create_ast_node_land(struct ast_node *left_child,
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node *under_node = create_ast_n_land_int(left_child,
+    struct ast_node_land *under_node = create_ast_n_land_int(left_child,
             right_child);
     if (!under_node)
     {
@@ -26,6 +27,6 @@ struct ast_node *create_ast_node_land(struct ast_node *left_child,
         return NULL;
     }
     new->type = LOGICAL_AND;
-    new->son.token_LAND = under_node;
+    new->son->token_LAND = under_node;
     return new;
 }
