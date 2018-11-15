@@ -255,18 +255,46 @@ struct ast_node *rule_while(struct token_list **tok)
 {
 printf("Enter in while\n");
 debug_token(tok);
-    /// TODO WHILE
-    tok = tok;
-    return NULL;
+    if (TOK_TYPE(tok) != WHILE)
+        errx(1, "Wtf dude ?");
+    NEXT_TOK(tok);
+
+    struct ast_node *condition = rule_compound_list(tok);
+    if (TOK_TYPE(tok) != DO)
+        errx(1, "I need a do after a while cond");
+    NEXT_TOK(tok);
+    struct ast_node *do_group = rule_do_group(tok);
+
+    return create_ast_node_while(condition, do_group);
+}
+
+struct ast_node *rule_do_group(struct token_list **tok)
+{
+    struct ast_node *do_group = rule_compound_list(tok);
+    if (TOK_TYPE(tok) == DONE)
+    {
+        NEXT_TOK(tok);
+        return do_group;
+    }
+    errx(1, "I need a done after a do group");
 }
 
 struct ast_node *rule_until(struct token_list **tok)
 {
 printf("Enter in until\n");
 debug_token(tok);
-    /// TODO UNTIL
-    tok = tok;
-    return NULL;
+    if (TOK_TYPE(tok) != UNTIL)
+        errx(1, "Wtf dude ?");
+    NEXT_TOK(tok);
+
+    struct ast_node *condition = rule_compound_list(tok);
+    if (TOK_TYPE(tok) != DO)
+        errx(1, "I need a do after a while cond");
+    NEXT_TOK(tok);
+    struct ast_node *do_group = rule_do_group(tok);
+
+    struct ast_node *not_cond = create_ast_node_not(condition);
+    return create_ast_node_while(not_cond, do_group);
 }
 
 struct ast_node *rule_case(struct token_list **tok)
