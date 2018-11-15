@@ -109,4 +109,16 @@ void destroy_ast_node_scmd(struct ast_node *node)
 {
     struct ast_node_scmd *cur = node->son->token_SCMD;
     free(node->
+
+void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label= \"", *num);
+    for (size_t i = 0; i < node->pre_size; i++)
+        printf(fd, "%s", node->prefix[i]);
+
+    for (size_t i = 0; i < node->elt_size; i++)
+        printf(fd, "%s", node->elements[i]);
+
+    fprintf(fd, "\"];\n");
 }
+

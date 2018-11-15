@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 static struct ast_node_ampersand *c_a_n_amp_int(struct ast_node *left_child,
         struct ast_node *right_child)
@@ -30,3 +31,19 @@ struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
     new->son = under_node;
     return new;
 }
+
+
+void print_ast_ampersand(struct ast_node_ampersand *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label=\"&\"];\n", *num);
+    size_t save = *num;
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    print_ast_node(node->left_child, num, fd);
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    print_ast_node(node->right_child, num, fd);
+}
+
