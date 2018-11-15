@@ -153,7 +153,8 @@ enum token_type bin_op_and_default_token(char *val)
     if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])=*", val, FNM_EXTMATCH))
         return ASSIGNMENT_WORD;
     if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])", val, FNM_EXTMATCH))
-        return NAME;
+        //return NAME;
+        return WORD;
     return WORD;
 }
 

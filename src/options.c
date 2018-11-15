@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #include "options.h"
+#include "lexer.h"
 
 // Get the option type accordig to the enum
 static enum option get_option(char *opt, size_t section)
@@ -79,6 +80,9 @@ void options(char *argv[])
         {
             case CMD:
                 printf("-c args OK\n");
+                i++;
+                printf("exec: %s\n", argv[i]);
+                lexer(argv[i]);
                 break;
             case SHOPT:
                 //activates shopt variables

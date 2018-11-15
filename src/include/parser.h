@@ -74,14 +74,14 @@ struct lexer
 };
 
 struct ast_node *rule_compound_redirection(struct token_list **tok);
-struct ast_node *rule_compound_element(struct token_list **tok);
-struct ast_node *rule_compound_prefix(struct ast_node *scmd,
-        struct token_list **tok);
+void rule_element(struct ast_node *scmd, struct token_list **tok);
+void rule_prefix(struct ast_node *scmd, struct token_list **tok);
 struct ast_node *rule_compound_list(struct token_list **tok);
 struct ast_node *rule_case(struct token_list **tok);
 struct ast_node *rule_until(struct token_list **tok);
 struct ast_node *rule_while(struct token_list **tok);
 struct ast_node *rule_if(struct token_list **tok);
+struct ast_node *rule_for(struct token_list **tok);
 struct ast_node *rule_simple_command(struct token_list **tok);
 struct ast_node *rule_funcdec(struct token_list **tok);
 struct ast_node *rule_shell_command(struct token_list **tok);

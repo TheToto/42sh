@@ -39,9 +39,9 @@ struct ast_node *rule_list(struct token_list **tok)
         {
             if(save == AMPERSAND)
                 return create_ast_node_ampersand(left_andor, NULL);
-            return lhs;
+            return left_andor;
         }
-        struct ast_node *right_list = parse_list(tok);
+        struct ast_node *right_list = rule_list(tok);
         if (save == SEMICOLON)
             return create_ast_node_semicolon(left_andor, right_list);
         return create_ast_node_ampersand(left_andor, right_list);
@@ -52,7 +52,7 @@ struct ast_node *rule_list(struct token_list **tok)
 struct ast_node *rule_andor(struct token_list **tok)
 {
     struct ast_node *left_pip = rule_pipeline(tok);
-    if (!res_pip)
+    if (!left_pip)
         // ERROR
         return NULL;
     if (TOK_TYPE(tok) == LOGICAL_AND || TOK_TYPE(tok) == LOGICAL_OR)
@@ -65,7 +65,7 @@ struct ast_node *rule_andor(struct token_list **tok)
             return create_ast_node_land(left_pip, right_andor);
         return create_ast_node_lor(left_pip, right_andor);
     }
-    return res_pip;
+    return left_pip;
 }
 
 struct ast_node *rule_pipeline(struct token_list **tok)
@@ -118,7 +118,7 @@ struct ast_node *rule_command(struct token_list **tok)
     if ((TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
             || (TOK_TYPE(tok) == WORD && NEXT_TOK_TYPE(tok) == PARENTHESIS_ON))
     {
-        return rule_funcdec(tok)
+        return rule_funcdec(tok);
     }
     // HANDLE ERRORS HERE PLEASE
     return rule_simple_command(tok);
@@ -173,6 +173,13 @@ struct ast_node *rule_if(struct token_list **tok)
     return NULL;
 }
 
+struct ast_node *rule_for(struct token_list **tok)
+{
+    /// TODO IF
+    tok = tok;
+    return NULL;
+}
+
 struct ast_node *rule_while(struct token_list **tok)
 {
     /// TODO WHILE
@@ -204,7 +211,7 @@ struct ast_node *rule_compound_list(struct token_list **tok)
 struct ast_node *rule_funcdec(struct token_list **tok)
 {
     char *name_func;
-    if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok) == "function"))
+    if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
         NEXT_TOK(tok);
     if (TOK_TYPE(tok) == WORD)
         name_func = TOK_STR(tok);
@@ -219,7 +226,7 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     else
         errx(1,"Seriously, handle errors");
     remove_new_line(tok);
-    return parse_shell_command(tok);
+    return create_ast_node_fctdec(name_func, rule_shell_command(tok));
 }
 
 struct ast_node *rule_simple_command(struct token_list **tok)
@@ -231,25 +238,25 @@ struct ast_node *rule_simple_command(struct token_list **tok)
     return ast_command;
 }
 
-struct ast_node *rule_compound_prefix(struct ast_node *scmd,
+void rule_prefix(struct ast_node *scmd,
         struct token_list **tok)
 {
     /// TODO -> RULE  REDIRECTION IF ITS A REDIR
 
     while (TOK_TYPE(tok) == ASSIGNMENT_WORD)
     {
-        scmd_add_prefix(TOK_STR(tok));
+        scmd_add_prefix(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
     }
 }
 
-struct ast_node *rule_compound_element(struct token_list **tok)
+void rule_element(struct ast_node *scmd, struct token_list **tok)
 {
     /// TODO -> RULE REDIRECTION IF ITS A REDIR
 
     while (TOK_TYPE(tok) == WORD)
     {
-        scmd_add_element(TOK_STR(tok));
+        scmd_add_element(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
     }
 }

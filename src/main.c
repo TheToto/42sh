@@ -11,5 +11,4 @@ int main(int argc, char *argv[])
         errx(1, "Usage: ./42sh [options] [file]");
     }
     options(argv);
-    printf("Hello\n");
 }

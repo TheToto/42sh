@@ -42,16 +42,16 @@ struct ast_node_case
 /// @brief This enum is about all handled redirection types
 enum redirect_type
 {
-    LESS,               //<
-    GREAT,              //>
-    DLESS,              //<<
-    DGREAT,             //>>
-    LESSAND,            //<&
-    GREATAND,           //>&
-    LESSGREAT,          //<>
-    DLESSDASH,          //<<-
-    CLOBBER,            //>|
-    PIPE                //|
+    R_LESS,               //<
+    R_GREAT,              //>
+    R_DLESS,              //<<
+    R_DGREAT,             //>>
+    R_LESSAND,            //<&
+    R_GREATAND,           //>&
+    R_LESSGREAT,          //<>
+    R_DLESSDASH,          //<<-
+    R_CLOBBER,            //>|
+    R_PIPE                //|
 };
 
 /// @brief Construction of 'redirection' ast_node
