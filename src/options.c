@@ -29,14 +29,16 @@ static size_t get_section(char *arg)
             return 0;
         return 1;
     }
+    if (arg[0] == '+')
+        return 1;
     return 2;
 }
 
 /**
  *\fn get_option
- *\brief Get the option type according to the enum of the header
+ *\brief Get the option type according to the enum option of the header
  *\param char *opt  The option to check
- *\return Return an enum value acoording to the option
+ *\return Return an enum value according to the option
  */
 static enum option get_option(char *opt)
 {
@@ -51,6 +53,52 @@ static enum option get_option(char *opt)
     if (!strcmp(opt, "-O") || !strcmp(opt, "+O"))
         return SHOPT;
     return NONE;
+}
+
+/**
+ *\fn get_shopt
+ *\brief Get the shopt variable according to the enum shopt of the header
+ *\param char *arg  The shopt variable to check
+ *\return Return an enum value according to the shopt variable
+ */
+static enum shopt get_shopt(char *arg)
+{
+    if (!strcmp(arg, "ast_print"))
+        return ASTPRINT;
+    if (!strcmp(arg, "dotglob"))
+        return DOTGLOB;
+    if (!strcmp(arg, "expand_aliases"))
+        return EXP_ALIAS;
+    if (!strcmp(arg, "extglob"))
+        return EXTGLOB;
+    if (!strcmp(arg, "nocaseglob"))
+        return NOCASEGLOB;
+    if (!strcmp(arg, "nullglob"))
+        return NULLGLOB;
+    if (!strcmp(arg, "sourcepath"))
+        return SRCPATH;
+    if (!strcmp(arg, "xpg_echo"))
+        return XPGECHO;
+    return OTHER;
+}
+
+/**
+ *\fn err_shopt
+ *\brief Prints an error message on stderr for the [+]O option
+ */
+static void err_shopt(void)
+{
+    warnx("Invalid arguments for [-+]O option");
+    warnx("Usage: [-+]O shopt_variable");
+    errx(1, "Shopt variables:\n\
+    \tast_print\n\
+    \tdotglob\n\
+    \texpand_aliases\n\
+    \textglob\n\
+    \tnocaseglob\n\
+    \tnullglob\n\
+    \tsourcepath\n\
+    \txpg_echo");
 }
 
 /**
@@ -79,8 +127,12 @@ void options(char *argv[])
                 }
                 break;
             case SHOPT:
-                //if (!section)
-                //activates shopt variables
+                if (section == 1)
+                {
+                    enum shopt shopt = get_shopt(argv[++i]);
+                    if (shopt == OTHER)
+                        err_shopt();
+                }
                 break;
             case NORC:
                 //if (!section)

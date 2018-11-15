@@ -1,8 +1,7 @@
 #pragma once
 
 /**
- *\brief enum of the different options
- *\details List all the options handled by the 42sh
+ *\brief Enumeration of the different options
  */
 enum option
 {
@@ -12,6 +11,22 @@ enum option
     NORC,///<--norc        Deactivates ressource reader
     AST,///<--ast-print    Prints the AST
     VERSION,///<--version  Prints the current version on the standard output
+};
+
+/**
+ *\brief Enumeration of the shopt variables
+ */
+enum shopt
+{
+    OTHER = 0,
+    ASTPRINT,
+    DOTGLOB,
+    EXP_ALIAS,
+    EXTGLOB,
+    NOCASEGLOB,
+    NULLGLOB,
+    SRCPATH,
+    XPGECHO,
 };
 
 /**
