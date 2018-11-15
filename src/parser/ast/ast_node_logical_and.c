@@ -27,6 +27,6 @@ struct ast_node *create_ast_node_land(struct ast_node *left_child,
         return NULL;
     }
     new->type = N_LOGICAL_AND;
-    new->son->token_LAND = under_node;
+    new->son = under_node;
     return new;
 }

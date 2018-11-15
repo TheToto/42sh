@@ -29,6 +29,6 @@ struct ast_node *create_ast_node_if(struct ast_node *e_true,
         return NULL;
     }
     new->type = N_IF;
-    new->son->token_IF = under_node;
+    new->son = under_node;
     return new;
 }

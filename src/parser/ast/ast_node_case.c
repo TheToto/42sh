@@ -31,6 +31,6 @@ struct ast_node *create_ast_node_case(char **values,
         return NULL;
     }
     new->type = N_CASE;
-    new->son->token_CASE = under_node;
+    new->son = under_node;
     return new;
 }

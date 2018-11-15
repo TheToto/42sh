@@ -109,6 +109,10 @@ struct ast_node_scmd
 {
     char **prefix;   /// list of ASSIGNEMENT_WORD
     char **elements; /// list of WORDS
+    size_t elt_capacity; ///current capacity of the elements string array
+    size_t pre_capacity; ///current capacity of the prefix string array
+    size_t elt_size; ///current capacity of the elements string array
+    size_t pre_size; ///current capacity of the prefix string array
 };
 
 /// @brief Construction of 'function declaration command' ast_node
@@ -161,7 +165,7 @@ enum node_type
 struct ast_node
 {
     enum node_type type;
-    union ast_type *son;
+    void *son;
 };
 
 /**
@@ -241,11 +245,27 @@ struct ast_node *create_ast_node_not(struct ast_node *child);
 
 /**
  * @brief Create 'simple_command' ast_node
- * @param prefix    list of strings of WORD_ASSIGNMENT
- * @param elements  list of strings of WORDS
+ * @details The type node initialized contains two arrays of strings
+ * (prefix and elements) having an initial capacity of 8.
  * @return newly created ast_node and its type
  */
-struct ast_node *create_ast_node_scmd(char **prefix, char **elements);
+struct ast_node *create_ast_node_scmd(void);
+
+/**
+ * @brief Add the \a prefix string to the prefix array in node
+ * @param node pre-created ast_node(scmd) being target of adding
+ * @param prefix string to add. Must not be empty.
+ * @return void, changement being done internally
+ */
+void add_prefix_scmd(struct ast_node *node, char *prefix);
+
+/**
+ * @brief Add the \a element string to the element array in node
+ * @param node pre-created ast_node(scmd) being target of adding
+ * @param element string to add. Must not be empty.
+ * @return void, changement being done internally
+ */
+void add_element_scmd(struct ast_node *node, char *element);
 
 /**
  * @brief Create 'Function_declaration' ast_node
