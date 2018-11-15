@@ -4,6 +4,22 @@
 
 #include "parser.h"
 
+/**
+ * \file lexer.c
+ * \brief Contain all function to create a pointer to a lexer structure
+ * according to a given string.
+ * \author Arthur Busuttil
+ * \version 0.2
+ */
+
+/**
+ * \fn enum token_type redirection_token (char *val)
+ * \brief Test if val correspond to a redirection.
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val if it is a redirection, WORD else.
+ */
+static
 enum token_type redirection_token(char *val)
 {
     if (!strcmp(val, "<"))
@@ -29,7 +45,16 @@ enum token_type redirection_token(char *val)
     return WORD;
 }
 
-enum token_type condition_token(char *val)
+/**
+ * \fn enum token_type condition_and_case_token (char *val)
+ * \brief Test if val correspond to a condition or a case element.
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val if it is a condition
+ * or a case element, WORD else.
+ */
+static
+enum token_type condition_and_case_token(char *val)
 {
     if (!strcmp(val, "if"))
         return IF;
@@ -43,11 +68,6 @@ enum token_type condition_token(char *val)
         return FI;
     if (!strcmp(val, "!"))
         return NOT;
-    return WORD;
-}
-
-enum token_type case_token(char *val)
-{
     if (!strcmp(val, "case"))
         return CASE;
     if (!strcmp(val, "esac"))
@@ -57,6 +77,14 @@ enum token_type case_token(char *val)
     return WORD;
 }
 
+/**
+ * \fn enum token_type loop_token (char *val)
+ * \brief Test if val correspond to a loop element or not.
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val if it is a loop element, WORD else.
+ */
+static
 enum token_type loop_token(char *val)
 {
     if (!strcmp(val, "while"))
@@ -76,6 +104,16 @@ enum token_type loop_token(char *val)
     return WORD;
 }
 
+/**
+ * \fn enum token_type special_token (char *val)
+ * \brief Test if val correspond to a one of following words or not:
+ * "in", "{", "}", "(", ")".
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val if matching with
+ * one of previous element, WORD else.
+ */
+static
 enum token_type special_token(char *val)
 {
     if (!strcmp(val, "in"))
@@ -91,7 +129,17 @@ enum token_type special_token(char *val)
     return WORD;
 }
 
-enum token_type bin_op_token(char *val)
+/**
+ * \fn enum token_type bin_op_and_default_token (char *val)
+ * \brief Test if val correspond to a binary operator
+ * or one of following token or not:
+ * IO_NUMBER, NEWLINE, ASSIGNMENT_WORD, NAME.
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val if it matching, WORD else.
+ */
+static
+enum token_type bin_op_and_default_token(char *val)
 {
     if (!strcmp(val, "&&"))
         return LOGICAL_AND;
@@ -99,11 +147,6 @@ enum token_type bin_op_token(char *val)
         return LOGICAL_OR;
     if (!strcmp(val, "&"))
         return AMPERSAND;
-    return WORD;
-}
-
-enum token_type default_token(char *val)
-{
     if (!fnmatch("+(1)", val, FNM_EXTMATCH))
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
@@ -115,26 +158,38 @@ enum token_type default_token(char *val)
     return WORD;
 }
 
+/**
+ * \fn enum token_type get_token_type (char *val)
+ * \brief Get the token corresponding to val.
+ *
+ * \param val Pointer to the string we want to test.
+ * \return The token corresponding to val. If a '"' is inside val WORD_EXT
+ * is return. If val does not match any token, it return WORDS.
+ */
+static
 enum token_type get_token_type(char *val)
 {
     if (!fnmatch("*\"*", val, 0))
         return WORD_EXT;
     int res = redirection_token(val);
     if (res == WORD)
-        res = condition_token(val);
-    if (res == WORD)
-        res = case_token(val);
+        res = condition_and_case_token(val);
     if (res == WORD)
         res = loop_token(val);
     if (res == WORD)
         res = special_token(val);
     if (res == WORD)
-        res = bin_op_token(val);
-    if (res == WORD)
-        res = default_token(val);
+        res = bin_op_and_default_token(val);
     return res;
 }
 
+/**
+ * \fn void lexer_destroy (struct lexer *l)
+ * \brief Free the lexer and all sub-structure.
+ *
+ * \param l The lexer we want to free.
+ * \return NOTHING.
+ */
 void lexer_destroy(struct lexer *l)
 {
     if (!l)
@@ -149,7 +204,14 @@ void lexer_destroy(struct lexer *l)
     free(l);
 }
 
-struct lexer *init_lexer()
+/**
+ * \fn struct lexer *loop_token (void)
+ * \brief Initialize a lexer.
+ *
+ * \return A pointer to a lexer initialized.
+ */
+static
+struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
     l = calloc(1, sizeof(*l));
@@ -164,6 +226,15 @@ struct lexer *init_lexer()
     return l;
 }
 
+/**
+ * \fn void set_tl (struct token_list *tl, char *str)
+ * \brief Initialize a token_list with according to str.
+ *
+ * \param tl The token_list we want to initialize.
+ * \param str The string used to initialize the token_list.
+ * \return NOTHING.
+ */
+static
 void set_tl(struct token_list *tl, char *str)
 {
     if (!str)
@@ -178,6 +249,13 @@ void set_tl(struct token_list *tl, char *str)
     tl->next = NULL;
 }
 
+/**
+ * \fn struct lexer *lexer (char *str)
+ * \brief Create and initialize a lexer according to str.
+ *
+ * \param str The string used to initialize a lexer.
+ * \return A pointer to a lexer initialized.
+ */
 struct lexer *lexer(char *str)
 {
     struct lexer *l = init_lexer();
