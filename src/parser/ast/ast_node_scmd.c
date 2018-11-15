@@ -105,8 +105,3 @@ void add_element_scmd(struct ast_node *node, char *element)
     cur->elt_size += 1;
 }
 
-void destroy_ast_node_scmd(struct ast_node *node)
-{
-    struct ast_node_scmd *cur = node->son->token_SCMD;
-    free(node->
-}
