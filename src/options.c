@@ -84,6 +84,7 @@ void options(char *argv[])
                 printf("exec: %s\n", argv[i]);
                 struct lexer *l = lexer(argv[i]);
                 struct ast_node *ast = rule_input(&(l->token_list));
+                makedot(ast, "ast.dot");
                 //execute(ast);
                 break;
             case SHOPT:
