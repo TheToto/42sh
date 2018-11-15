@@ -46,7 +46,7 @@ enum token_type
     //DEFAULT
     IO_NUMBER,          //[1-9]+                    33
     NEWLINE,            //\n                        34
-    ASSIGNMENT_WORD,    //*=$                       35
+    ASSIGNMENT_WORD,    //[_a-zA-Z][_1-9a-zA-Z]*=.* 35
     NAME,               //[_a-zA-Z][_1-9a-zA-Z]*    36
     WORD_EXT,           //everithing between '"'    37
     WORD,               //le reste                  38

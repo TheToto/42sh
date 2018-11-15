@@ -147,7 +147,7 @@ enum token_type bin_op_and_default_token(char *val)
         return LOGICAL_OR;
     if (!strcmp(val, "&"))
         return AMPERSAND;
-    if (!fnmatch("+(1)", val, FNM_EXTMATCH))
+    if (!fnmatch("+([1-9])", val, FNM_EXTMATCH))
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
         return NEWLINE;
