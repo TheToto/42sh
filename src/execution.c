@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <err.h>
 #include <sys/wait.h>
+#include <stdio.h>
 
 #include "execution.h"
 
@@ -46,7 +47,8 @@ static int exec_scmd(struct ast_node_scmd *scmd)
         while (waitpid(pid, &status, 0) != pid)
             continue;
     }
-    return err;
+    printf("%s return %d\n", *scmd->elements, status);
+    return status;
 }
 
 /**
@@ -58,7 +60,7 @@ static int exec_scmd(struct ast_node_scmd *scmd)
 static void exec_if(struct ast_node_if *n_if)
 {
     int res = exec_node(n_if->condition);
-    if (res)
+    if (res == 0)
         exec_node(n_if->e_true);
     else
         exec_node(n_if->e_false);

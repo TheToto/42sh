@@ -201,9 +201,45 @@ struct ast_node *rule_if(struct token_list **tok)
 {
 printf("Enter in if\n");
 debug_token(tok);
-    /// TODO IF
-    tok = tok;
-    return NULL;
+    NEXT_TOK(tok);
+    struct ast_node *condition = rule_compound_list(tok);
+    if (TOK_TYPE(tok) != THEN)
+        errx(1, "Error no then after if : %d", TOK_TYPE(tok));
+    NEXT_TOK(tok);
+    struct ast_node *e_true = rule_compound_list(tok);
+
+    struct ast_node *e_false = NULL;
+    if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
+        e_false = rule_else_clause(tok);
+
+    if (TOK_TYPE(tok) != FI)
+        errx(2, "Error no fi at end of if statement");
+    NEXT_TOK(tok);
+    return create_ast_node_if(e_true, e_false, condition);
+}
+
+struct ast_node *rule_else_clause(struct token_list **tok)
+{
+    if (TOK_TYPE(tok) == ELSE)
+    {
+        NEXT_TOK(tok); // skip ELSE
+        return rule_compound_list(tok);
+    }
+    if (TOK_TYPE(tok) != ELIF)
+        errx(1,"Error, no else no elfi");
+
+    NEXT_TOK(tok); // skip ELFI
+    struct ast_node *condition = rule_compound_list(tok);
+    if (TOK_TYPE(tok) != THEN)
+        errx(1, "Error no then after if");
+    NEXT_TOK(tok); // skip THEN
+    struct ast_node *e_true = rule_compound_list(tok);
+
+    struct ast_node *e_false = NULL;
+    if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
+        e_false = rule_else_clause(tok);
+
+    return create_ast_node_if(e_true, e_false, condition);
 }
 
 struct ast_node *rule_for(struct token_list **tok)
@@ -242,13 +278,50 @@ debug_token(tok);
     return NULL;
 }
 
+static int check_andor(enum token_type t)
+{
+    return (t == DSEMICOLON
+            || t == PARENTHESIS_OFF
+            || t == SEMICOLON
+            || t == END_OF_FILE
+            || t == BRACKET_OFF
+            || t == DO
+            || t == FI
+            || t == DONE
+            || t == ELSE
+            || t == ELIF
+            || t == ESAC
+            || t == THEN) ? 1 : 0;
+}
+
 struct ast_node *rule_compound_list(struct token_list **tok)
 {
 printf("Enter in compound list\n");
 debug_token(tok);
-    /// TODO COMPOUND LIST
-    tok = tok;
-    return NULL;
+    remove_new_line(tok); // skip (\n)*
+    struct ast_node *left_andor = rule_andor(tok);
+    if (TOK_TYPE(tok) == SEMICOLON || TOK_TYPE(tok) == AMPERSAND
+            || TOK_TYPE(tok) == NEWLINE)
+    {
+        enum token_type save = TOK_TYPE(tok);
+        NEXT_TOK(tok); // skip & || ;
+        // REC
+        if (check_andor(TOK_TYPE(tok)))
+        {
+            if (save == AMPERSAND)
+                return create_ast_node_ampersand(left_andor, NULL);
+            return left_andor;
+        }
+        else
+        {
+            if (save == AMPERSAND)
+                return create_ast_node_ampersand(left_andor,
+                        rule_compound_list(tok));
+            return create_ast_node_semicolon(left_andor,
+                    rule_compound_list(tok));;
+        }
+    }
+    return left_andor;
 }
 
 struct ast_node *rule_funcdec(struct token_list **tok)

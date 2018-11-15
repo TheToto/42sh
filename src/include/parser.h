@@ -81,6 +81,7 @@ struct ast_node *rule_case(struct token_list **tok);
 struct ast_node *rule_until(struct token_list **tok);
 struct ast_node *rule_while(struct token_list **tok);
 struct ast_node *rule_if(struct token_list **tok);
+struct ast_node *rule_else_clause(struct token_list **tok);
 struct ast_node *rule_for(struct token_list **tok);
 struct ast_node *rule_simple_command(struct token_list **tok);
 struct ast_node *rule_funcdec(struct token_list **tok);
