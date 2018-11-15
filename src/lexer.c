@@ -11,7 +11,7 @@
  * a pointer to a lexer structure
  * according to a given string.
  * \author Arthur Busuttil
- * \version 0.3
+ * \version 0.4
  */
 
 /**
@@ -42,7 +42,7 @@ void lexer_destroy(struct lexer *l)
  *
  * \return A pointer to a lexer initialized.
  */
-static
+    static
 struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
@@ -66,7 +66,7 @@ struct lexer *init_lexer(void)
  * \param str The string used to initialize the token_list.
  * \return NOTHING.
  */
-static
+    static
 void set_tl(struct token_list *tl, char *str)
 {
     if (!str)
@@ -84,38 +84,47 @@ void set_tl(struct token_list *tl, char *str)
 /**
  * \fn char *get_next_str (char **beg)
  * \brief Find the next string to check. It also modify the string
- * at <beg> address to skip the found word.
+ * at <beg> address to skip the found word. It pass comments too.
  *
  * \param beg The address of the complete string in wich we search
  * the candidate.
  * \return A string containing a valid candidate to correspond to a token.
  */
-static
+    static
 char *get_next_str(char **beg)
 {
-    if (!**beg)
+    if (!beg || !*beg || !**beg)
         return NULL;
     size_t len = 0;
     for (; **beg && (**beg == ' ' || **beg == '\t'); (*beg)++)
         continue;
     char *cur = *beg;
-    for (; *cur && *cur != ' ' && *cur != '\t' && *cur != '\"'; cur++)
+    for (; *cur && *cur != ' ' && *cur != '\t'
+            && *cur != '\"' && *cur != '#'; cur++)
         len += 1;
     if (*cur == '\"')
     {
-        cur += 1;
-        len += 1;
-        for (; *cur && *cur != '\"'; cur++)
+        for (cur += 1, len += 1; *cur && *cur != '\"' && *cur != '#'; cur++)
             len += 1;
-        for (; *cur && *cur != ' ' && *cur != '\t'; cur++)
+        for (; *cur && *cur != ' ' && *cur != '\t' && *cur != '#'; cur++)
             len += 1;
     }
-    char *res = malloc(len + 1);
-    if (!res)
-        return NULL;
-    strncpy(res, *beg, len);
-    res[len] = 0;
-    *beg += len;
+    char *res = calloc(1, len + 1);
+    if (res)
+    {
+        strncpy(res, *beg, len);
+        if (*cur == '#')
+        {
+            for (; *cur && *cur != '\n'; cur++)
+                len += 1;
+        }
+        if (!strlen(res))
+        {
+            free(res);
+            return NULL;
+        }
+        *beg += len;
+    }
     return res;
 }
 
