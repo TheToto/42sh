@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_land *create_ast_n_land_int(struct ast_node *left_child,
         struct ast_node *right_child)
@@ -29,6 +30,15 @@ struct ast_node *create_ast_node_land(struct ast_node *left_child,
     new->type = N_LOGICAL_AND;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_land(struct ast_node *node)
+{
+    struct ast_node_land *target = node->son;
+    destroy_ast(target->left_child);
+    destroy_ast(target->right_child);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_land(struct ast_node_land *node, size_t *num, FILE *fd)

@@ -2,6 +2,7 @@
 #include <err.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_scmd *create_ast_node_scmd_intern(void)
 {
@@ -107,8 +108,12 @@ void add_element_scmd(struct ast_node *node, char *element)
 
 void destroy_ast_node_scmd(struct ast_node *node)
 {
-    struct ast_node_scmd *cur = node->son->token_SCMD;
-    free(node->
+    struct ast_node_scmd *cur = node->son;
+    free(cur->elements);
+    free(cur->prefix);
+    free(cur);
+    free(node);
+}
 
 void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
 {

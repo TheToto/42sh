@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_if *create_ast_node_if_intern(struct ast_node *e_true,
         struct ast_node *e_false,
@@ -31,6 +32,16 @@ struct ast_node *create_ast_node_if(struct ast_node *e_true,
     new->type = N_IF;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_if(struct ast_node *node)
+{
+    struct ast_node_if *target = node->son;
+    destroy_ast(target->e_true);
+    destroy_ast(target->e_false);
+    destroy_ast(target->condition);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)

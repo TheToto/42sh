@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_fctdec *create_ast_node_fctdec_intern(char *name,
         struct ast_node *function)
@@ -29,6 +30,14 @@ struct ast_node *create_ast_node_fctdec(char *name,
     new->type = N_FCTDEC;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_fctdec(struct ast_node *node)
+{
+    struct ast_node_fctdec *target = node->son;
+    destroy_ast(target->function);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_fctdec(struct ast_node_fctdec *node, size_t *num, FILE *fd)

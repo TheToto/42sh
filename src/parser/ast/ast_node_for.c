@@ -2,6 +2,7 @@
 #include <err.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_for *create_ast_node_for_intern(char **values,
         char *value, struct ast_node *exec)
@@ -72,6 +73,14 @@ void add_value_for(struct ast_node *node, char *value)
     cur->size += 1;
 }
 
+void destroy_ast_node_for(struct ast_node *node)
+{
+    struct ast_node_for *target = node->son;
+    destroy_ast(target->exec);
+    free(target->values);
+    free(node->son);
+    free(node);
+}
 
 void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
 {

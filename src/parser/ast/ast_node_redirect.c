@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
         enum redirect_type type, int io_number, char *word,
@@ -33,6 +34,14 @@ struct ast_node *create_ast_node_redirect(int fd, enum redirect_type type,
     new->type = N_REDIRECT;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_redirect(struct ast_node *node)
+{
+    struct ast_node_redirect *target = node->son;
+    destroy_ast(target->node);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)

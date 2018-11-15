@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_pipe *create_ast_node_pipe_int(struct ast_node *ls,
         struct ast_node *rs)
@@ -28,6 +29,15 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
     new->type = N_PIPE;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_pipe(struct ast_node *node)
+{
+    struct ast_node_pipe *target = node->son;
+    destroy_ast(target->ls);
+    destroy_ast(target->rs);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_pipe(struct ast_node_pipe *node, size_t *num, FILE *fd)

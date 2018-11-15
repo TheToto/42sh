@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 
 static struct ast_node_not *create_ast_n_not_int(struct ast_node *child)
@@ -26,6 +27,14 @@ struct ast_node *create_ast_node_not(struct ast_node *child)
     new->type = N_NOT;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_not(struct ast_node *node)
+{
+    struct ast_node_not *target = node->son;
+    destroy_ast(target->child);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_not(struct ast_node_not *node, size_t *num, FILE *fd)

@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
+#include "ast_destroy.h"
 
 //CODING STYLE DE MERDE
 static struct ast_node_while *create_ast_node_while_int(struct ast_node *cond,
@@ -30,6 +32,15 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
     new->type = N_WHILE;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_while(struct ast_node *node)
+{
+    struct ast_node_while *target = node->son;
+    destroy_ast(target->exec);
+    destroy_ast(target->condition);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_while(struct ast_node_while *node, size_t *num, FILE *fd)

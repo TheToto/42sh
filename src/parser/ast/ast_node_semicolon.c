@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static struct ast_node_semicolon *c_a_n_sem_int(struct ast_node *left_child,
         struct ast_node *right_child)
@@ -29,6 +30,15 @@ struct ast_node *create_ast_node_semicolon(struct ast_node *left_child,
     new->type = N_SEMICOLON;
     new->son = under_node;
     return new;
+}
+
+void destroy_ast_node_semicolon(struct ast_node *node)
+{
+    struct ast_node_semicolon *target = node->son;
+    destroy_ast(target->left_child);
+    destroy_ast(target->right_child);
+    free(node->son);
+    free(node);
 }
 
 void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num, FILE *fd)
