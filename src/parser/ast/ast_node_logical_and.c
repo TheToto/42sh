@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "print.h"
 
 static struct ast_node_land *create_ast_n_land_int(struct ast_node *left_child,
         struct ast_node *right_child)

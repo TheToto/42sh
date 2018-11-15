@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 #include "ast_destroy.h"
 
 static struct ast_node_if *create_ast_node_if_intern(struct ast_node *e_true,

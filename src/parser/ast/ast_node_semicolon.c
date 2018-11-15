@@ -2,6 +2,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "print.h"
 
 static struct ast_node_semicolon *c_a_n_sem_int(struct ast_node *left_child,
         struct ast_node *right_child)

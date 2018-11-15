@@ -2,10 +2,11 @@
 #include <err.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 #include "ast_destroy.h"
 
-static struct ast_node_case *create_ast_node_case_intern(char **values,
-        struct ast_node *exec, struct ast_node_case *prev_case)
+static struct ast_node_case *create_ast_node_case_intern(struct ast_node *exec,
+        struct ast_node_case *prev_case)
 {
     struct ast_node_case *new = malloc(sizeof(struct ast_node_case));
     if (!new)

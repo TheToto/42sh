@@ -48,16 +48,16 @@ struct ast_node_case
 /// @brief This enum is about all handled redirection types
 enum redirect_type
 {
-    LESS,               //<
-    GREAT,              //>
-    DLESS,              //<<
-    DGREAT,             //>>
-    LESSAND,            //<&
-    GREATAND,           //>&
-    LESSGREAT,          //<>
-    DLESSDASH,          //<<-
-    CLOBBER,            //>|
-    PIPE                //|
+    R_LESS,               //<
+    R_GREAT,              //>
+    R_DLESS,              //<<
+    R_DGREAT,             //>>
+    R_LESSAND,            //<&
+    R_GREATAND,           //>&
+    R_LESSGREAT,          //<>
+    R_DLESSDASH,          //<<-
+    R_CLOBBER,            //>|
+    R_PIPE                //|
 };
 
 /// @brief Construction of 'redirection' ast_node
@@ -190,15 +190,14 @@ struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
  * @param exec operation to apply to each \a value. Must be a pre-created node
  * @return newly created ast_node and its type
  */
-struct ast_node *create_ast_node_for(char **values,
-        char *value, struct ast_node *exec);
+struct ast_node *create_ast_node_for(char *value, struct ast_node *exec);
 /**
  * @brief Add the \a value string to the element array in node
  * @param node pre-created ast_node(for) being target of adding
  * @param value string to add. Must not be empty.
  * @return void, changement being done internally
  */
-void add_element_for(struct ast_node *node, char *value);
+void add_value_for(struct ast_node *node, char *value);
 
 /**
  * @brief Create '||' ast_node (logical or)
@@ -232,13 +231,12 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
 
 /**
  * @brief Create 'case' ast_node
- * @param values    list of conditions to check to enter case
  * @param exec      operation to apply is case
  * @param prev_case can be NULL. Pointer to the previous case of the switch
  * @return newly created ast_node and its type
  */
-struct ast_node *create_ast_node_case(char **values,
-        struct ast_node *exec, struct ast_node_case *prev_case);
+struct ast_node *create_ast_node_case(struct ast_node *exec,
+        struct ast_node_case *prev_case);
 
 /**
  * @brief Add the \a value string to the element array in node
@@ -246,7 +244,7 @@ struct ast_node *create_ast_node_case(char **values,
  * @param value string to add. Must not be empty.
  * @return void, changement being done internally
  */
-void add_element_case(struct ast_node *node, char *value);
+void add_value_case(struct ast_node *node, char *value);
 
 /**
  * @brief Create 'if' ast_node

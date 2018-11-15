@@ -106,7 +106,7 @@ void add_element_scmd(struct ast_node *node, char *element)
     cur->elt_size += 1;
 }
 
-void destroy_ast_node_scmd(struct ast_node *node)
+void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
 {
     struct ast_node_scmd *cur = node->son;
     free(cur->elements);

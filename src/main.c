@@ -1,6 +1,14 @@
 #include <stdio.h>
+#include <err.h>
 
-int main(void)
+#include "options.h"
+
+int main(int argc, char *argv[])
 {
-    printf("Hello\n");
+    if (argc < 2)
+    {
+        warnx("Invalid usage");
+        errx(1, "Usage: ./42sh [options] [file]");
+    }
+    options(argv);
 }
