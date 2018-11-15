@@ -2,13 +2,6 @@
 #include "parser.h"
 #include "ast.h"
 
-#define NEXT_TOK(Tok) (*Tok = (*Tok)->next)
-
-#define TOK_TYPE(Tok) ((*Tok)->type)
-#define TOK_STR(Tok) ((*Tok)->str)
-#define NEXT_TOK_TYPE(Tok) ((*Tok)->next->type)
-#define NEXT_TOK_STR(Tok) ((*Tok)->next->str)
-
 void remove_new_line(struct token_list **tok)
 {
     while (TOK_TYPE(tok) == NEWLINE)
@@ -120,7 +113,6 @@ struct ast_node *rule_command(struct token_list **tok)
             || TOK_TYPE(tok) == CASE
             || TOK_TYPE(tok) == IF)
     {
-        //NEXT_TOK(tok);
         return rule_shell_command(tok);
     }
     if ((TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
@@ -130,6 +122,11 @@ struct ast_node *rule_command(struct token_list **tok)
     }
     // HANDLE ERRORS HERE PLEASE
     return rule_simple_command(tok);
+
+    //
+    /// -> TODO : REDIRECTIONS FOR FUNCDEC AND SHELL COMMAND
+    //
+
 }
 
 struct ast_node *rule_shell_command(struct token_list **tok)
@@ -145,12 +142,21 @@ struct ast_node *rule_shell_command(struct token_list **tok)
     if (TOK_TYPE(tok) == CASE)
         return rule_case(tok);
     if (TOK_TYPE(tok) == BRACKET_ON)
+    {
+        NEXT_TOK(tok);
+        struct ast_node *res = rule_compound_list(tok);
         return rule_compound_list(tok);
+        if (TOK_TYPE(tok) != BRACKET_OFF)
+            // ERROR
+            errx(1, "Handle errors better please");
+        NEXT_TOK(tok);
+        return res;
+    }
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
     {
         NEXT_TOK(tok);
         struct ast_node *res = rule_compound_list(tok);
-        if (TOK_TYPE(tok) != BRACKET_OFF && TOK_TYPE(tok) != PARENTHESIS_OFF)
+        if (TOK_TYPE(tok) != PARENTHESIS_OFF)
             // ERROR
             errx(1, "Handle errors better please");
         NEXT_TOK(tok);
@@ -162,52 +168,95 @@ struct ast_node *rule_shell_command(struct token_list **tok)
 
 struct ast_node *rule_if(struct token_list **tok)
 {
+    /// TODO IF
+    tok = tok;
     return NULL;
 }
 
 struct ast_node *rule_while(struct token_list **tok)
 {
+    /// TODO WHILE
+    tok = tok;
     return NULL;
 }
 
 struct ast_node *rule_until(struct token_list **tok)
 {
+    /// TODO UNTIL
+    tok = tok;
     return NULL;
 }
 
 struct ast_node *rule_case(struct token_list **tok)
 {
+    /// TODO CASE
+    tok = tok;
     return NULL;
 }
 
 struct ast_node *rule_compound_list(struct token_list **tok)
 {
+    /// TODO COMPOUND LIST
+    tok = tok;
     return NULL;
 }
 
 struct ast_node *rule_funcdec(struct token_list **tok)
 {
-    errx(1,"Func dec missing");
-    return NULL;
+    char *name_func;
+    if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok) == "function"))
+        NEXT_TOK(tok);
+    if (TOK_TYPE(tok) == WORD)
+        name_func = TOK_STR(tok);
+    else
+        errx(1,"Seriously, handle errors");
+    if (TOK_TYPE(tok) == PARENTHESIS_ON)
+        NEXT_TOK(tok);
+    else
+        errx(1,"Seriously, handle errors");
+    if (TOK_TYPE(tok) == PARENTHESIS_OFF)
+        NEXT_TOK(tok);
+    else
+        errx(1,"Seriously, handle errors");
+    remove_new_line(tok);
+    return parse_shell_command(tok);
 }
 
 struct ast_node *rule_simple_command(struct token_list **tok)
 {
-    return NULL;
+    struct ast_node *ast_command = create_ast_node_scmd(NULL, NULL);
+    rule_prefix(ast_command, tok);
+    rule_element(ast_command, tok);
+    /// TODO -> VERIF SIZE prefix + element MUST BE > 0
+    return ast_command;
 }
 
-struct ast_node *rule_compound_prefix(struct token_list **tok)
+struct ast_node *rule_compound_prefix(struct ast_node *scmd,
+        struct token_list **tok)
 {
-    return NULL;
+    /// TODO -> RULE  REDIRECTION IF ITS A REDIR
+
+    while (TOK_TYPE(tok) == ASSIGNMENT_WORD)
+    {
+        scmd_add_prefix(TOK_STR(tok));
+        NEXT_TOK(tok);
+    }
 }
 
 struct ast_node *rule_compound_element(struct token_list **tok)
 {
-    return NULL;
+    /// TODO -> RULE REDIRECTION IF ITS A REDIR
+
+    while (TOK_TYPE(tok) == WORD)
+    {
+        scmd_add_element(TOK_STR(tok));
+        NEXT_TOK(tok);
+    }
 }
 
 struct ast_node *rule_compound_redirection(struct token_list **tok)
 {
+    /// TODO -> RULE REDIRECTION and call this EVERYWHERE.
+    tok = tok;
     return NULL;
 }
-
