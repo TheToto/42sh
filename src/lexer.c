@@ -121,9 +121,25 @@ char *get_next_str(char **beg)
     return res;
 }
 
+/**
+ * \fn int should_change (struct enum token_type *type,
+ * struct token_type *type_next, char **lstring, size_t *i)
+ * \brief Determine if it is valid token or not.
+ *
+ * \param type The token type of the current word.
+ * \param type_next The token type of yhe current plus the next character.
+ * \param lstring Contains the next character in string format, the string
+ * we are working on and the current word.
+ * \param i It is the index in the string of the last character of the word.
+ * \return If the current position mark a changement of token.
+ */
+static
 int should_change(enum token_type *type, enum token_type type_next,
-                  char *tmp, size_t *i, char *str, char *word)
+                  char **lstring, size_t *i)
 {
+    char *tmp = lstring[0];
+    char *str = lstring[1];
+    char *word = lstring[2];
     enum token_type type_tmp = get_token_type(tmp);
     if (*type == IO_NUMBER && type_tmp > 8)
         *type = WORD;
@@ -155,13 +171,22 @@ int should_change(enum token_type *type, enum token_type type_next,
     return 0;
 }
 
+/**
+ * \fn void get_next_word_token (char **str, struct token_list *tl)
+ * \brief Find the next word corresponding to a token in a string.
+ *
+ * \param str The string in which we are working.
+ * \param tl The token_list in which we put the founded word
+ * and it's associated token.
+ * \return NOTHING.
+ */
+static
 void get_next_word_token(char **str, struct token_list *tl)
 {
-    char *word = calloc(1, strlen(*str) + 2);
+    char *word = calloc(1, strlen(*str) + 1);
     size_t i = 0;
     int found = 0;
     enum token_type type = WORD;
-    char tmp[2];
     if (!fnmatch("*\"*", *str, 0))
     {
         strcpy(word, *str);
@@ -176,9 +201,15 @@ void get_next_word_token(char **str, struct token_list *tl)
             type = get_token_type(word);
             word[i + 1] = (*str)[i + 1];
             enum token_type type_next = get_token_type(word);
-            tmp[0] = (*str)[i + 1];
-            tmp[1] = 0;
-            if (should_change(&type, type_next, tmp, &i, *str, word))
+            char tmp[] =
+            {
+                (*str)[i + 1], 0
+            };
+            char *lstring[] =
+            {
+                tmp, *str, word
+            };
+            if (should_change(&type, type_next, lstring, &i))
                 found = 1;
         }
     }
