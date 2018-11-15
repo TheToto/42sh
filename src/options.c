@@ -6,6 +6,7 @@
 #include "options.h"
 #include "lexer.h"
 #include "print.h"
+#include "execution.h"
 
 // Get the option type accordig to the enum
 static enum option get_option(char *opt, size_t section)
@@ -86,6 +87,9 @@ void options(char *argv[])
                 struct lexer *l = lexer(argv[i]);
                 struct ast_node *ast = rule_input(&(l->token_list));
                 makedot(ast, "ast.dot");
+
+                printf("\nExecution result:\n");
+                exec_node(ast);
                 //execute(ast);
                 break;
             case SHOPT:
