@@ -246,9 +246,32 @@ struct ast_node *rule_for(struct token_list **tok)
 {
 printf("Enter in for\n");
 debug_token(tok);
-    /// TODO IF
-    tok = tok;
-    return NULL;
+    if (TOK_TYPE(tok) != FOR)
+        errx(1,"Need FOR at begin of for");
+    NEXT_TOK(tok);
+    if (TOK_TYPE(tok) != WORD)
+        errx(1,"I need a FOR name");
+    char *value = TOK_STR(tok);
+    struct ast_node *for_node = create_ast_node_for(value, NULL);
+    remove_new_line(tok);
+    if (TOK_TYPE(tok) == IN)
+    {
+        NEXT_TOK(tok);
+        while (TOK_TYPE(tok) == WORD)
+        {
+            add_value_for(for_node, TOK_STR(tok));
+            NEXT_TOK(tok);
+        }
+
+        if (TOK_TYPE(tok) != NEWLINE && TOK_TYPE(tok) != SEMICOLON)
+            errx("Need ; or \\n after 'in (WORD)*' in for statement");
+        NEXT_TOK(tok);
+    }
+    remove_new_line(tok);
+    struct ast_node *do_group = rule_do_group(tok);
+    struct ast_node_for *intern = for_node->son;
+    intern->exec = do_group;
+    return for_node;
 }
 
 struct ast_node *rule_while(struct token_list **tok)
