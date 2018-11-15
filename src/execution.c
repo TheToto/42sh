@@ -5,6 +5,7 @@
  *\date 15-11-2018
  *\brief Execution of the AST
  */
+#include <sys/types.h>
 #include <unistd.h>
 #include <err.h>
 #include <sys/wait.h>
