@@ -29,11 +29,9 @@ struct ast_node *create_ast_node_not(struct ast_node *child)
     return new;
 }
 
-void destroy_ast_node_not(struct ast_node *node)
+void destroy_ast_node_not(struct ast_node_not *node)
 {
-    struct ast_node_not *target = node->son;
-    destroy_ast(target->child);
-    free(node->son);
+    destroy_ast(node->child);
     free(node);
 }
 

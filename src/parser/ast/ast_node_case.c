@@ -54,7 +54,7 @@ void add_value_case(struct ast_node *node, char *value)
         warnx("cannot do add_value_case: node or value is null");
         return;
     }
-    if (node->type != token_CASE)
+    if (node->type != N_CASE)
     {
         warnx("cannot do add_value_case: node is not case");
         return;
@@ -75,14 +75,12 @@ void add_value_case(struct ast_node *node, char *value)
     cur->size += 1;
 }
 
-void destroy_ast_node_case(struct ast_node *node)
+void destroy_ast_node_case(struct ast_node_case *node)
 {
-    struct ast_node_case *target = node->son;
-    if (target->next)
-        destroy_ast_node_case(target->next);
-    destroy_ast(target->exec);
-    free(target->values);
-    free(node->son);
+    if (node->next)
+        destroy_ast_node_case(node->next);
+    destroy_ast(node->exec);
+    free(node->values);
     free(node);
 }
 
@@ -91,7 +89,7 @@ void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu [label= \"CASE: ", *num);
     for (size_t i = 0; i < node->size; i++)
         fprintf(fd, "%s", node->values[i]);
-    fprintf(fd, "\"];\n", *num);
+    fprintf(fd, "\"];\n");
 
     size_t save = *num;
 

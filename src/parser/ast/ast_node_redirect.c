@@ -37,11 +37,9 @@ struct ast_node *create_ast_node_redirect(int fd, enum redirect_type type,
     return new;
 }
 
-void destroy_ast_node_redirect(struct ast_node *node)
+void destroy_ast_node_redirect(struct ast_node_redirect *node)
 {
-    struct ast_node_redirect *target = node->son;
-    destroy_ast(target->node);
-    free(node->son);
+    destroy_ast(node->node);
     free(node);
 }
 

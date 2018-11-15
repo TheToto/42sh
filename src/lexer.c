@@ -46,10 +46,10 @@ static
 struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
-    l = calloc(1, sizeof(*l));
+    l = calloc(1, sizeof(struct lexer));
     if (!l)
         return NULL;
-    l->token_list = malloc(sizeof(*l->token_list));
+    l->token_list = malloc(sizeof(struct token_list));
     if (!l->token_list)
     {
         lexer_destroy(l);

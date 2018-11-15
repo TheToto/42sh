@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "print.h"
 
 static struct ast_node_scmd *create_ast_node_scmd_intern(void)
 {
@@ -106,23 +107,21 @@ void add_element_scmd(struct ast_node *node, char *element)
     cur->elt_size += 1;
 }
 
-void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
+void destroy_ast_node_scmd(struct ast_node_scmd *node)
 {
-    struct ast_node_scmd *cur = node->son;
-    free(cur->elements);
-    free(cur->prefix);
-    free(cur);
+    free(node->elements);
+    free(node->prefix);
     free(node);
 }
 
-void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
+void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
 {
     fprintf(fd, "%lu [label= \"", *num);
     for (size_t i = 0; i < node->pre_size; i++)
-        printf(fd, "%s", node->prefix[i]);
+        fprintf(fd, "%s", node->prefix[i]);
 
     for (size_t i = 0; i < node->elt_size; i++)
-        printf(fd, "%s", node->elements[i]);
+        fprintf(fd, "%s", node->elements[i]);
 
     fprintf(fd, "\"];\n");
 }

@@ -33,12 +33,10 @@ struct ast_node *create_ast_node_lor(struct ast_node *left_child,
     return new;
 }
 
-void destroy_ast_node_lor(struct ast_node *node)
+void destroy_ast_node_lor(struct ast_node_lor *node)
 {
-    struct ast_node_lor *target = node->son;
-    destroy_ast(target->left_child);
-    destroy_ast(target->right_child);
-    free(node->son);
+    destroy_ast(node->left_child);
+    destroy_ast(node->right_child);
     free(node);
 }
 

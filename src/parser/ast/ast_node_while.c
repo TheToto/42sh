@@ -34,12 +34,10 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
     return new;
 }
 
-void destroy_ast_node_while(struct ast_node *node)
+void destroy_ast_node_while(struct ast_node_while *node)
 {
-    struct ast_node_while *target = node->son;
-    destroy_ast(target->exec);
-    destroy_ast(target->condition);
-    free(node->son);
+    destroy_ast(node->exec);
+    destroy_ast(node->condition);
     free(node);
 }
 

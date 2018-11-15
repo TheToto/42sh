@@ -35,13 +35,11 @@ struct ast_node *create_ast_node_if(struct ast_node *e_true,
     return new;
 }
 
-void destroy_ast_node_if(struct ast_node *node)
+void destroy_ast_node_if(struct ast_node_if *node)
 {
-    struct ast_node_if *target = node->son;
-    destroy_ast(target->e_true);
-    destroy_ast(target->e_false);
-    destroy_ast(target->condition);
-    free(node->son);
+    destroy_ast(node->e_true);
+    destroy_ast(node->e_false);
+    destroy_ast(node->condition);
     free(node);
 }
 

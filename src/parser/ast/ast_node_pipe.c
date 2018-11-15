@@ -32,12 +32,10 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
     return new;
 }
 
-void destroy_ast_node_pipe(struct ast_node *node)
+void destroy_ast_node_pipe(struct ast_node_pipe *node)
 {
-    struct ast_node_pipe *target = node->son;
-    destroy_ast(target->ls);
-    destroy_ast(target->rs);
-    free(node->son);
+    destroy_ast(node->ls);
+    destroy_ast(node->rs);
     free(node);
 }
 

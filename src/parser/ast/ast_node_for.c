@@ -53,7 +53,7 @@ void add_value_for(struct ast_node *node, char *value)
         warnx("cannot do add_value_for: node or value is null");
         return;
     }
-    if (node->type != token_FOR)
+    if (node->type != N_FOR)
     {
         warnx("cannot do add_value_for: node is not case");
         return;
@@ -74,12 +74,10 @@ void add_value_for(struct ast_node *node, char *value)
     cur->size += 1;
 }
 
-void destroy_ast_node_for(struct ast_node *node)
+void destroy_ast_node_for(struct ast_node_for *node)
 {
-    struct ast_node_for *target = node->son;
-    destroy_ast(target->exec);
-    free(target->values);
-    free(node->son);
+    destroy_ast(node->exec);
+    free(node->values);
     free(node);
 }
 
@@ -90,7 +88,7 @@ void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
     for (size_t i = 0; i < node->size - 1; i++)
         fprintf(fd, "%s, ", node->values[i]);
     fprintf(fd, "%s", node->values[node->size - 1]);
-    fprintf(fd, "\"];\n", *num);
+    fprintf(fd, "\"];\n");
 
     *num += 1;
     fprintf(fd, "%lu -> %lu[label= \"do\"];\n", save, *num);

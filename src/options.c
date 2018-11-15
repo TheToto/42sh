@@ -7,6 +7,7 @@
 #include "lexer.h"
 #include "print.h"
 #include "execution.h"
+#include "ast_destroy.h"
 
 // Get the option type accordig to the enum
 static enum option get_option(char *opt, size_t section)
@@ -91,6 +92,8 @@ void options(char *argv[])
                 printf("\nExecution result:\n");
                 exec_node(ast);
                 //execute(ast);
+                destroy_ast(ast);
+                lexer_destroy(l);
                 break;
             case SHOPT:
                 //activates shopt variables
