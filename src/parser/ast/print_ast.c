@@ -56,4 +56,5 @@ void makedot(struct ast_node *ast, char *path)
     size_t i = 0;
     print_ast_node(ast, &i, f);
     fprintf(f, "}\n");
+    fclose(f);
 }
