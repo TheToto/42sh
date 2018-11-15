@@ -28,6 +28,6 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
         return NULL;
     }
     new->type = N_WHILE;
-    new->son->token_WHILE = under_node;
+    new->son = under_node;
     return new;
 }

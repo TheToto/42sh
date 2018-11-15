@@ -29,6 +29,6 @@ struct ast_node *create_ast_node_redirect(int fd,
         return NULL;
     }
     new->type = N_REDIRECT;
-    new->son->token_REDIRECT = under_node;
+    new->son = under_node;
     return new;
 }

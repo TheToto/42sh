@@ -27,6 +27,6 @@ struct ast_node *create_ast_node_semicolon(struct ast_node *left_child,
         return NULL;
     }
     new->type = N_SEMICOLON;
-    new->son->token_SEMICOLON = under_node;
+    new->son = under_node;
     return new;
 }

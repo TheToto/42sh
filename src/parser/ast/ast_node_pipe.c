@@ -26,6 +26,6 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
         return NULL;
     }
     new->type = N_PIPE;
-    new->son->token_PIPE = under_node;
+    new->son = under_node;
     return new;
 }

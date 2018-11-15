@@ -27,6 +27,6 @@ struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
         return NULL;
     }
     new->type = N_AMPERSAND;
-    new->son->token_AMPERSAND = under_node;
+    new->son = under_node;
     return new;
 }

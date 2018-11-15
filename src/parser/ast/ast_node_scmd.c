@@ -39,7 +39,7 @@ struct ast_node *create_ast_node_scmd(void)
         return NULL;
     }
     new->type = N_SCMD;
-    new->son->token_SCMD = under_node;
+    new->son = under_node;
     return new;
 }
 
@@ -58,7 +58,7 @@ void add_prefix_scmd(struct ast_node *node, char *prefix)
         return;
 
     }
-    struct ast_node_scmd *cur = node->son->token_SCMD;
+    struct ast_node_scmd *cur = node->son;
     if (cur->pre_size == cur->pre_capacity)
     {
         char **new = realloc(cur->prefix, 2 * cur->pre_size);
@@ -89,7 +89,7 @@ void add_element_scmd(struct ast_node *node, char *element)
         return;
 
     }
-    struct ast_node_scmd *cur = node->son->token_SCMD;
+    struct ast_node_scmd *cur = node->son;
     if (cur->elt_size == cur->elt_capacity)
     {
         char **new = realloc(cur->elements, 2 * cur->elt_size);

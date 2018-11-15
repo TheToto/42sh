@@ -165,7 +165,7 @@ enum node_type
 struct ast_node
 {
     enum node_type type;
-    union ast_type *son;
+    void *son;
 };
 
 /**

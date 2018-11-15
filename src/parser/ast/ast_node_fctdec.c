@@ -27,6 +27,6 @@ struct ast_node *create_ast_node_fctdec(char *name,
         return NULL;
     }
     new->type = N_FCTDEC;
-    new->son->token_FCTDEC = under_node;
+    new->son = under_node;
     return new;
 }
