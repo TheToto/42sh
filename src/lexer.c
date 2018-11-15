@@ -145,7 +145,8 @@ int should_change(enum token_type *type, enum token_type type_next,
         *type = WORD;
     if (((*type != type_next)
                 && ((*type < 10 && *type > 22) || type_next == WORD)
-                && (*type != NAME || (type_next == WORD && tmp[0] != '=')))
+                && (*type != NAME || (type_tmp != 38 
+                    && tmp[0] != '=' && type_tmp != 36)))
                 || ((*type == WORD || *type == ASSIGNMENT_WORD)
                     && (type_tmp != NAME && tmp[0] != '=')))
     {
