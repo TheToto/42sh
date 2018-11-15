@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 static struct ast_node_lor *create_ast_n_lor_int(struct ast_node *left_child,
         struct ast_node *right_child)

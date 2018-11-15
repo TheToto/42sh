@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 static struct ast_node_pipe *create_ast_node_pipe_int(struct ast_node *ls,
         struct ast_node *rs)

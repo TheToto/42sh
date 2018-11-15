@@ -190,8 +190,7 @@ struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
  * @param exec operation to apply to each \a value. Must be a pre-created node
  * @return newly created ast_node and its type
  */
-struct ast_node *create_ast_node_for(char **values,
-        char *value, struct ast_node *exec);
+struct ast_node *create_ast_node_for(char *value, struct ast_node *exec);
 /**
  * @brief Add the \a value string to the element array in node
  * @param node pre-created ast_node(for) being target of adding

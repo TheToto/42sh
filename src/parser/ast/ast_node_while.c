@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 //CODING STYLE DE MERDE
 static struct ast_node_while *create_ast_node_while_int(struct ast_node *cond,

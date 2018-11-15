@@ -2,6 +2,7 @@
 #include <err.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 static struct ast_node_case *create_ast_node_case_intern(struct ast_node *exec,
         struct ast_node_case *prev_case)
@@ -73,7 +74,7 @@ void add_value_case(struct ast_node *node, char *value)
     cur->size += 1;
 }
 
-void destroy_ast_node_case(struct ast_node *node)
+/*void destroy_ast_node_case(struct ast_node *node)
 {
     struct ast_node_case *target = node->son;
     if (target->next)
@@ -82,14 +83,14 @@ void destroy_ast_node_case(struct ast_node *node)
     free(target->values);
     free(node->son);
     free(node);
-}
+}*/
 
 void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
 {
     fprintf(fd, "%lu [label= \"CASE: ", *num);
     for (size_t i = 0; i < node->size; i++)
         fprintf(fd, "%s", node->values[i]);
-    fprintf(fd, "\"];\n", *num);
+    fprintf(fd, "\"];\n");
 
     size_t save = *num;
 

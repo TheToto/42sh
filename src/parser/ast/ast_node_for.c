@@ -2,9 +2,10 @@
 #include <err.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
-static struct ast_node_for *create_ast_node_for_intern(char **values,
-        char *value, struct ast_node *exec)
+static struct ast_node_for *create_ast_node_for_intern(char *value,
+        struct ast_node *exec)
 {
     struct ast_node_for *new = malloc(sizeof(struct ast_node_for));
     if (!new)

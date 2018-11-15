@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
+#include "print.h"
 
 static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
         enum redirect_type type, int io_number, char *word,

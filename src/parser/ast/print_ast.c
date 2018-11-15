@@ -53,6 +53,7 @@ void makedot(struct ast_node *ast, char *path)
 {
     FILE *f = fopen(path, "w");
     fprintf(f, "digraph AST {\n");
-    print_ast_node(ast);
+    size_t i = 0;
+    print_ast_node(ast, &i, f);
     fprintf(f, "}\n");
 }

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
-
+#include "print.h"
 
 static struct ast_node_not *create_ast_n_not_int(struct ast_node *child)
 {
