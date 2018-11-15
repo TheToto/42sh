@@ -51,7 +51,7 @@ void add_value_for(struct ast_node *node, char *value)
         warnx("cannot do add_value_for: node or value is null");
         return;
     }
-    if (node->type != token_FOR)
+    if (node->type != N_FOR)
     {
         warnx("cannot do add_value_for: node is not case");
         return;

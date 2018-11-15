@@ -3,8 +3,8 @@
 #include "parser.h"
 #include "ast.h"
 
-static struct ast_node_case *create_ast_node_case_intern(char **values,
-        struct ast_node *exec, struct ast_node_case *prev_case)
+static struct ast_node_case *create_ast_node_case_intern(struct ast_node *exec,
+        struct ast_node_case *prev_case)
 {
     struct ast_node_case *new = malloc(sizeof(struct ast_node_case));
     if (!new)
@@ -52,7 +52,7 @@ void add_value_case(struct ast_node *node, char *value)
         warnx("cannot do add_value_case: node or value is null");
         return;
     }
-    if (node->type != token_CASE)
+    if (node->type != N_CASE)
     {
         warnx("cannot do add_value_case: node is not case");
         return;
