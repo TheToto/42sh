@@ -63,6 +63,8 @@ static enum option get_option(char *opt)
  */
 static enum shopt get_shopt(char *arg)
 {
+    if (!arg)
+        return OTHER;
     if (!strcmp(arg, "ast_print"))
         return ASTPRINT;
     if (!strcmp(arg, "dotglob"))
