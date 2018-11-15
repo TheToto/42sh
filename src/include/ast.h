@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 /**
   * @brief Construction of 'if' ast_node
   */
@@ -16,6 +18,8 @@ struct ast_node_for
     struct ast_node *exec; ///command to execute for each value
     char **values;         ///the array of string
     char *value;           ///the current tested string
+    size_t capacity;       ///capacity of the array of strings
+    size_t size;           ///current size of the array of string
 };
 
 /// @brief Construction of 'while' ast_node
@@ -36,6 +40,8 @@ struct ast_node_case
 {
     struct ast_node *exec;      ///command to execute if current case true
     char **values;              ///array of string to compare in this case
+    size_t size;                ///current size of the array of strings
+    size_t capacity;            ///capacity of the array of strings
     struct ast_node_case *next; ///pointer to the next case of the switch
 };
 
@@ -61,6 +67,7 @@ struct ast_node_redirect
     enum redirect_type type; ///redirection type (see \a enum \a redirect_type)
     int io_number;           ///redirected stream
     char *word;              ///name of the File Descriptor
+    struct ast_node *node;   ///what will be redirected. Must be pre-created
 };
 
 /// @brief Construction of '&' ast_node (ampersand)
@@ -151,7 +158,6 @@ enum node_type
     N_CASE,
     N_REDIRECT,
     N_SCMD,
-    N_CMD,
     N_FCTDEC,
     N_LOGICAL_AND,
     N_LOGICAL_OR,
@@ -186,6 +192,13 @@ struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
  */
 struct ast_node *create_ast_node_for(char **values,
         char *value, struct ast_node *exec);
+/**
+ * @brief Add the \a value string to the element array in node
+ * @param node pre-created ast_node(for) being target of adding
+ * @param value string to add. Must not be empty.
+ * @return void, changement being done internally
+ */
+void add_element_for(struct ast_node *node, char *value);
 
 /**
  * @brief Create '||' ast_node (logical or)
@@ -205,7 +218,8 @@ struct ast_node *create_ast_node_lor(struct ast_node *left_child,
  * @return newly created ast_node and its type
  */
 struct ast_node *create_ast_node_redirect(int fd,
-        enum redirect_type type, int io_number, char *word);
+        enum redirect_type type, int io_number, char *word,
+        struct ast_node *node);
 
 /**
  * @brief Create 'while' ast_node
@@ -225,6 +239,14 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
  */
 struct ast_node *create_ast_node_case(char **values,
         struct ast_node *exec, struct ast_node_case *prev_case);
+
+/**
+ * @brief Add the \a value string to the element array in node
+ * @param node pre-created ast_node(case) being target of adding
+ * @param value string to add. Must not be empty.
+ * @return void, changement being done internally
+ */
+void add_element_case(struct ast_node *node, char *value);
 
 /**
  * @brief Create 'if' ast_node

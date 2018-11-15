@@ -30,3 +30,14 @@ struct ast_node *create_ast_node_fctdec(char *name,
     new->son = under_node;
     return new;
 }
+
+void print_ast_fctdec(struct ast_node_fctdec *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label= \"%s\"];\n", node->name);
+    size_t save = *num;
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    print_ast_node(node->function, num, fd);
+}
+

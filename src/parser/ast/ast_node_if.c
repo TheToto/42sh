@@ -32,3 +32,22 @@ struct ast_node *create_ast_node_if(struct ast_node *e_true,
     new->son = under_node;
     return new;
 }
+
+void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label= \"IF\"];\n", *num);
+    size_t save = *num;
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu[label= \"true\"];\n", save, *num);
+    print_ast_node(node->e_true, num, fd);
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu[label= \"condition\"];\n", save, *num);
+    print_ast_node(node->condition, num, fd);
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu[label= \"false\"];\n", save, *num);
+    print_ast_node(node->e_false, num, fd);
+}
+

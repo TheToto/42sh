@@ -29,3 +29,18 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
     new->son = under_node;
     return new;
 }
+
+void print_ast_pipe(struct ast_node_pipe *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label= \"|\"];\n", *num);
+    size_t save = *num;
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    print_ast_node(node->ls, num, fd);
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    print_ast_node(node->rs, num, fd);
+}
+

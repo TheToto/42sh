@@ -31,3 +31,17 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
     new->son = under_node;
     return new;
 }
+
+void print_ast_while(struct ast_node_while *node, size_t *num, FILE *fd)
+{
+    fprintf(fd, "%lu [label= \"WHILE\"];\n", *num);
+    size_t save = *num;
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu[label= \"condition\"];\n", save, *num);
+    print_ast_node(node->condition, num, fd);
+
+    *num += 1;
+    fprintf(fd, "%lu -> %lu[label= \"do\"];\n", save, *num);
+    print_ast_node(node->exec, num, fd);
+}
