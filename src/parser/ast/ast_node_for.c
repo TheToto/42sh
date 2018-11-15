@@ -81,7 +81,7 @@ void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
     for (size_t i = 0; i < node->size - 1; i++)
         fprintf(fd, "%s, ", node->values[i]);
     fprintf(fd, "%s", node->values[node->size - 1]);
-    fprintf(fd, "\"];\n", *num);
+    fprintf(fd, "\"];\n");
 
     *num += 1;
     fprintf(fd, "%lu -> %lu[label= \"do\"];\n", save, *num);

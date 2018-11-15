@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+#include "ast.h"
+
 void makedot(struct ast_node *ast, char *path);
 void print_ast_node(struct ast_node *ast, size_t *num,FILE *f);
 

@@ -5,6 +5,7 @@
 
 #include "options.h"
 #include "lexer.h"
+#include "print.h"
 
 // Get the option type accordig to the enum
 static enum option get_option(char *opt, size_t section)
