@@ -231,7 +231,7 @@ struct ast_node *rule_funcdec(struct token_list **tok)
 
 struct ast_node *rule_simple_command(struct token_list **tok)
 {
-    struct ast_node *ast_command = create_ast_node_scmd(NULL, NULL);
+    struct ast_node *ast_command = create_ast_node_scmd();
     rule_prefix(ast_command, tok);
     rule_element(ast_command, tok);
     /// TODO -> VERIF SIZE prefix + element MUST BE > 0
@@ -245,7 +245,7 @@ void rule_prefix(struct ast_node *scmd,
 
     while (TOK_TYPE(tok) == ASSIGNMENT_WORD)
     {
-        scmd_add_prefix(scmd, TOK_STR(tok));
+        add_prefix_scmd(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
     }
 }
@@ -256,7 +256,7 @@ void rule_element(struct ast_node *scmd, struct token_list **tok)
 
     while (TOK_TYPE(tok) == WORD)
     {
-        scmd_add_element(scmd, TOK_STR(tok));
+        add_element_scmd(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
     }
 }

@@ -82,7 +82,9 @@ void options(char *argv[])
                 printf("-c args OK\n");
                 i++;
                 printf("exec: %s\n", argv[i]);
-                lexer(argv[i]);
+                struct lexer *l = lexer(argv[i]);
+                struct ast_node *ast = rule_input(l->token_list);
+                //execute(ast);
                 break;
             case SHOPT:
                 //activates shopt variables
