@@ -63,7 +63,7 @@ void add_prefix_scmd(struct ast_node *node, char *prefix)
     struct ast_node_scmd *cur = node->son;
     if (cur->pre_size == cur->pre_capacity)
     {
-        char **new = realloc(cur->prefix, 2 * cur->pre_size);
+        char **new = realloc(cur->prefix, 2 * cur->pre_size * sizeof(char*));
         if (!new)
         {
             warnx("realloc failed in add_prefix_scmd(%s)", prefix);

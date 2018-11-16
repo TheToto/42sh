@@ -61,7 +61,7 @@ void add_value_for(struct ast_node *node, char *value)
     struct ast_node_for *cur = node->son;
     if (cur->size == cur->capacity)
     {
-        char **new = realloc(cur->values, 2 * cur->capacity);
+        char **new = realloc(cur->values, 2 * cur->capacity * sizeof(char*));
         if (!new)
         {
             warnx("cannot realloc in add_value_for");

@@ -3,6 +3,7 @@
 
 #include "parser.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 static void debug_token(struct token_list **tok)
 {
@@ -34,13 +35,14 @@ debug_token(tok);
         // DO NOTHING (Not an error)
         return NULL;
     }
-    //NEXT_TOK(tok);
     struct ast_node *res = rule_list(tok);
+    if (!res)
+        return NULL;
     if (TOK_TYPE(tok) == NEWLINE || TOK_TYPE(tok) == END_OF_FILE)
     {
         return res;
     }
-    // ERROR
+    warnx("Your input is malformed.");
     return NULL;
 }
 
@@ -50,7 +52,6 @@ printf("Enter in list\n");
 debug_token(tok);
     struct ast_node *left_andor = rule_andor(tok);
     if (!left_andor)
-        // ERROR
         return NULL;
     if (TOK_TYPE(tok) == SEMICOLON || TOK_TYPE(tok) == AMPERSAND)
     {
@@ -63,6 +64,8 @@ debug_token(tok);
             return left_andor;
         }
         struct ast_node *right_list = rule_list(tok);
+        if (!right_list)
+            return NULL;
         if (save == SEMICOLON)
             return create_ast_node_semicolon(left_andor, right_list);
         return create_ast_node_ampersand(left_andor, right_list);
@@ -76,7 +79,6 @@ printf("Enter in andor\n");
 debug_token(tok);
     struct ast_node *left_pip = rule_pipeline(tok);
     if (!left_pip)
-        // ERROR
         return NULL;
     if (TOK_TYPE(tok) == LOGICAL_AND || TOK_TYPE(tok) == LOGICAL_OR)
     {
@@ -84,6 +86,8 @@ debug_token(tok);
         NEXT_TOK(tok);
         remove_new_line(tok);
         struct ast_node *right_andor = rule_andor(tok);
+        if (!right_andor)
+            return NULL;
         if (save == LOGICAL_AND)
             return create_ast_node_land(left_pip, right_andor);
         return create_ast_node_lor(left_pip, right_andor);
@@ -102,11 +106,15 @@ debug_token(tok);
         not = 1;
     }
     struct ast_node *left_command = rule_command(tok);
+    if (!left_command)
+        return NULL;
     struct ast_node *res = left_command;
     if (TOK_TYPE(tok) == PIPE)
     {
         NEXT_TOK(tok);
         struct ast_node *right_pipe = rule_pipe(tok);
+        if (!right_pipe)
+            return NULL;
         res = create_ast_node_pipe(left_command, right_pipe);
     }
     if (not)
@@ -122,9 +130,13 @@ printf("Enter in pipe\n");
 debug_token(tok);
     remove_new_line(tok);
     struct ast_node *left_command = rule_command(tok);
+    if (!left_command)
+        return NULL;
     if (TOK_TYPE(tok) == PIPE)
     {
         struct ast_node *right_pipe = rule_pipe(tok);
+        if (!right_pipe)
+            return NULL;
         return create_ast_node_pipe(left_command, right_pipe);
     }
     return left_command;
@@ -176,10 +188,14 @@ debug_token(tok);
     {
         NEXT_TOK(tok);
         struct ast_node *res = rule_compound_list(tok);
-        return rule_compound_list(tok);
+        if (!res)
+            return NULL;
         if (TOK_TYPE(tok) != BRACKET_OFF)
-            // ERROR
-            errx(1, "Handle errors better please");
+        {
+            warnx("Need an '}' after this compound list");
+            destroy_ast(res);
+            return NULL;
+        }
         NEXT_TOK(tok);
         return res;
     }
@@ -187,13 +203,19 @@ debug_token(tok);
     {
         NEXT_TOK(tok);
         struct ast_node *res = rule_compound_list(tok);
+        if (!res)
+            return NULL;
         if (TOK_TYPE(tok) != PARENTHESIS_OFF)
-            // ERROR
-            errx(1, "Handle errors better please");
+        {
+            warnx("Need an ')' after this compound list");
+            destroy_ast(res);
+            return NULL;
+        }
         NEXT_TOK(tok);
         return res;
     }
-    errx(1, "Handle errors better please");
+    warnx("Can't find this shell command");
+    return NULL;
 }
 
 
@@ -203,17 +225,41 @@ printf("Enter in if\n");
 debug_token(tok);
     NEXT_TOK(tok);
     struct ast_node *condition = rule_compound_list(tok);
+    if (!condition)
+        return NULL;
     if (TOK_TYPE(tok) != THEN)
-        errx(1, "Error no then after if : %d", TOK_TYPE(tok));
+    {
+        warnx("No then after if statement");
+        return NULL;
+    }
     NEXT_TOK(tok);
     struct ast_node *e_true = rule_compound_list(tok);
-
+    if (!e_true)
+    {
+        destroy_ast(condition);
+        return NULL;
+    }
     struct ast_node *e_false = NULL;
+    if (!e_false)
     if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
+    {
         e_false = rule_else_clause(tok);
+        if (!e_false)
+        {
+            destroy_ast(condition);
+            destroy_ast(e_true);
+            return NULL;
+        }
+    }
 
     if (TOK_TYPE(tok) != FI)
-        errx(2, "Error no fi at end of if statement");
+    {
+        destroy_ast(e_true);
+        destroy_ast(e_false);
+        destroy_ast(condition);
+        warnx("Error no fi at end of if statement");
+        return NULL;
+    }
     NEXT_TOK(tok);
     return create_ast_node_if(e_true, e_false, condition);
 }
@@ -226,19 +272,46 @@ struct ast_node *rule_else_clause(struct token_list **tok)
         return rule_compound_list(tok);
     }
     if (TOK_TYPE(tok) != ELIF)
-        errx(1,"Error, no else no elfi");
+    {
+        warnx("No else, no elfi at else clause");
+        return NULL;
+    }
 
     NEXT_TOK(tok); // skip ELFI
     struct ast_node *condition = rule_compound_list(tok);
+    if (!condition)
+        return NULL;
     if (TOK_TYPE(tok) != THEN)
-        errx(1, "Error no then after if");
+    {
+        destroy_ast(condition);
+        warnx("No then after elif");
+        return NULL;
+    }
     NEXT_TOK(tok); // skip THEN
     struct ast_node *e_true = rule_compound_list(tok);
-
+    if (!e_true)
+    {
+        destroy_ast(condition);
+        return NULL;
+    }
     struct ast_node *e_false = NULL;
+    if (!e_false)
+    {
+        destroy_ast(e_true);
+        destroy_ast(condition);
+        return NULL;
+    }
     if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
+    {
         e_false = rule_else_clause(tok);
-
+        if (!e_false)
+        {
+            destroy_ast(e_true);
+            destroy_ast(e_false);
+            destroy_ast(condition);
+            return NULL;
+        }
+    }
     return create_ast_node_if(e_true, e_false, condition);
 }
 
@@ -247,12 +320,20 @@ struct ast_node *rule_for(struct token_list **tok)
 printf("Enter in for\n");
 debug_token(tok);
     if (TOK_TYPE(tok) != FOR)
-        errx(1,"Need FOR at begin of for");
+    {
+        warnx("Need FOR at begin of for");
+        return NULL;
+    }
     NEXT_TOK(tok);
     if (TOK_TYPE(tok) != WORD)
-        errx(1,"I need a FOR name");
+    {
+        warnx("No var name in FOR");
+        return NULL;
+    }
     char *value = TOK_STR(tok);
     struct ast_node *for_node = create_ast_node_for(value, NULL);
+    if (!for_node)
+        return NULL;
     remove_new_line(tok);
     if (TOK_TYPE(tok) == IN)
     {
@@ -264,11 +345,20 @@ debug_token(tok);
         }
 
         if (TOK_TYPE(tok) != NEWLINE && TOK_TYPE(tok) != SEMICOLON)
-            errx(1, "Need ; or \\n after 'in (WORD)*' in for statement");
+        {
+            destroy_ast(for_node);
+            warnx("Need ; or \\n after 'in (WORD)*' in for statement");
+            return NULL;
+        }
         NEXT_TOK(tok);
     }
     remove_new_line(tok);
     struct ast_node *do_group = rule_do_group(tok);
+    if (!do_group)
+    {
+        destroy_ast(for_node);
+        return NULL;
+    }
     struct ast_node_for *intern = for_node->son;
     intern->exec = do_group;
     return for_node;
@@ -279,14 +369,28 @@ struct ast_node *rule_while(struct token_list **tok)
 printf("Enter in while\n");
 debug_token(tok);
     if (TOK_TYPE(tok) != WHILE)
-        errx(1, "Wtf dude ?");
+    {
+        warnx("No while at begining of while...");
+        return NULL;
+    }
     NEXT_TOK(tok);
 
     struct ast_node *condition = rule_compound_list(tok);
+    if (!condition)
+        return NULL;
     if (TOK_TYPE(tok) != DO)
-        errx(1, "I need a do after a while cond");
+    {
+        destroy_ast(condition);
+        warnx("Need a do after a while condition");
+        return NULL;
+    }
     NEXT_TOK(tok);
     struct ast_node *do_group = rule_do_group(tok);
+    if (!do_group)
+    {
+        destroy_ast(condition);
+        return NULL;
+    }
 
     return create_ast_node_while(condition, do_group);
 }
@@ -307,15 +411,29 @@ struct ast_node *rule_until(struct token_list **tok)
 printf("Enter in until\n");
 debug_token(tok);
     if (TOK_TYPE(tok) != UNTIL)
-        errx(1, "Wtf dude ?");
+    {
+        warnx("No until at begining of until...");
+        return NULL;
+    }
     NEXT_TOK(tok);
 
     struct ast_node *condition = rule_compound_list(tok);
+    if (!condition)
+        return NULL;
+
     if (TOK_TYPE(tok) != DO)
-        errx(1, "I need a do after a while cond");
+    {
+        destroy_ast(condition);
+        warnx("Need a do after a while condition");
+        return NULL;
+    }
     NEXT_TOK(tok);
     struct ast_node *do_group = rule_do_group(tok);
-
+    if (!do_group)
+    {
+        destroy_ast(condition);
+        return NULL;
+    }
     struct ast_node *not_cond = create_ast_node_not(condition);
     return create_ast_node_while(not_cond, do_group);
 }
@@ -325,6 +443,7 @@ struct ast_node *rule_case(struct token_list **tok)
 printf("Enter in case\n");
 debug_token(tok);
     /// TODO CASE
+    warnx("TODO : rule_case");
     tok = tok;
     return NULL;
 }
@@ -385,15 +504,24 @@ debug_token(tok);
     if (TOK_TYPE(tok) == WORD)
         name_func = TOK_STR(tok);
     else
-        errx(1,"Seriously, handle errors");
+    {
+        warnx("This function has no name");
+        return NULL;
+    }
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
         NEXT_TOK(tok);
     else
-        errx(1,"Seriously, handle errors");
+    {
+        warnx("Need a '(' at function declaration");
+        return NULL;
+    }
     if (TOK_TYPE(tok) == PARENTHESIS_OFF)
         NEXT_TOK(tok);
     else
-        errx(1,"Seriously, handle errors");
+    {
+        warnx("Need a ')' at function declaration");
+        return NULL;
+    }
     remove_new_line(tok);
     return create_ast_node_fctdec(name_func, rule_shell_command(tok));
 }
@@ -403,9 +531,17 @@ struct ast_node *rule_simple_command(struct token_list **tok)
 printf("Enter in simple command\n");
 debug_token(tok);
     struct ast_node *ast_command = create_ast_node_scmd();
+    if (!ast_command)
+        return NULL;
     rule_prefix(ast_command, tok);
     rule_element(ast_command, tok);
-    /// TODO -> VERIF SIZE prefix + element MUST BE > 0
+    struct ast_node_scmd *intern_scmd = ast_command->son;
+    if (intern_scmd->elt_size + intern_scmd->pre_size < 1)
+    {
+        destroy_ast(ast_command);
+        warnx("Need at least one prefix or one command in simple command");
+        return NULL;
+    }
     return ast_command;
 }
 
@@ -441,6 +577,7 @@ struct ast_node *rule_compound_redirection(struct token_list **tok)
 printf("Enter in redirection\n");
 debug_token(tok);
     /// TODO -> RULE REDIRECTION and call this EVERYWHERE.
+    warnx("TODO: rule_redirection");
     tok = tok;
     return NULL;
 }

@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <err.h>
 #include <stdlib.h>
+#include <err.h>
 
 #include "options.h"
 #include "lexer.h"
@@ -117,11 +118,13 @@ void options(char *argv[])
 {
     enum option opt = NONE;
     size_t section = 0;
-
-    for (size_t i = 1; argv[i]; i++)
+    size_t i = 1;
+    for ( ; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);
         section = section > sect ? section : sect;
+        if (section == 2)
+            break;
         opt = get_option(argv[i]);
         switch (opt)
         {
@@ -135,6 +138,8 @@ void options(char *argv[])
                 struct lexer *l = lexer(argv[i]);
                 struct token_list *copy = l->token_list;
                 struct ast_node *ast = rule_input(&(l->token_list));
+                if (!ast)
+                    errx(2, "Error in parsing");
                 l->token_list = copy;
                 makedot(ast, "ast.dot");
 
@@ -173,5 +178,9 @@ void options(char *argv[])
                     errx(1, "Usage: ./42sh [options] [file]");
                 }
         }
+    }
+    for ( ; argv[i]; i++)
+    {
+        printf("File to exec : %s\n", argv[i]);
     }
 }
