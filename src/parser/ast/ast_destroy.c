@@ -4,6 +4,8 @@
 
 void destroy_ast(struct ast_node *root)
 {
+    if (!root)
+        return;
     switch (root->type)
     {
         case N_IF:
