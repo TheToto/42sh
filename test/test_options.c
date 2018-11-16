@@ -42,9 +42,9 @@ void test_options(void)
     opt = get_option("-c");
     TEST_ASSERT_EQUAL_INT(CMD, opt);
     opt = get_option("-O");
-    TEST_ASSERT_EQUAL_INT(SHOPT, opt);
+    TEST_ASSERT_EQUAL_INT(SHOPT_MINUS, opt);
     opt = get_option("+O");
-    TEST_ASSERT_EQUAL_INT(SHOPT, opt);
+    TEST_ASSERT_EQUAL_INT(SHOPT_PLUS, opt);
     opt = get_option("-hello");
     TEST_ASSERT_EQUAL_INT(NONE, opt);
 }
