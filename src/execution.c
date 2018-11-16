@@ -1,6 +1,6 @@
 /**
  *\file execution.c
- *\author sabrina.meng
+ *\author sabrina.meng thomas.lupin
  *\version 0.3
  *\date 15-11-2018
  *\brief Execution of the AST
@@ -11,7 +11,12 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
+#include "options.h"
+#include "lexer.h"
+#include "print.h"
 #include "execution.h"
+#include "parser.h"
+#include "ast_destroy.h"
 
 /**
  *\fn exec_scmd
@@ -142,4 +147,30 @@ int exec_node(struct ast_node *node)
             break;
     }
     return 0;
+}
+
+/**
+ *\fn exec_amin
+ *\brief Send a string to lexer, parser, and exec
+ *\param str  The string to execute
+ *\return Return an int depending on the commands given
+ */
+int exec_main(char *str)
+{
+    printf("exec: %s\n", str);
+    struct lexer *l = lexer(str);
+    struct token_list *copy = l->token_list;
+    struct ast_node *ast = rule_input(&(l->token_list));
+    if (!ast)
+        errx(2, "Error in parsing");
+    l->token_list = copy;
+    makedot(ast, "ast.dot");
+
+    printf("\nExecution result:\n");
+    int res = exec_node(ast);
+
+    destroy_ast(ast);
+    lexer_destroy(l);
+
+    return res;
 }
