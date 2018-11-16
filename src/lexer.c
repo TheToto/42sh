@@ -113,7 +113,7 @@ char *get_next_str(char **beg)
             for (; *cur && *cur != '\n'; cur++)
                 len += 1;
         }
-        if (!strlen(res))
+        if (!strlen(*beg))
         {
             free(res);
             return NULL;
@@ -235,6 +235,8 @@ struct lexer *lexer(char *str)
         return NULL;
     struct token_list *cur = l->token_list;
     char *val = get_next_str(&str);
+    for (; val && !*val;free(val), val = get_next_str(&str))
+        continue;
     for (; val; cur = cur->next)
     {
         char *save = val;
