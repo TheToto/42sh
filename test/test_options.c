@@ -7,6 +7,7 @@ void setUp(void)
     TEST_FILE("lexer_func.c");
     TEST_FILE("options.c");
     TEST_FILE("execution.c");
+    TEST_FILE("env/var.c");
     TEST_FILE("readfile.c");
     TEST_FILE("parser/input.c");
     TEST_FILE("parser/ast/print_ast.c");
