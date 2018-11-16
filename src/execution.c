@@ -96,6 +96,13 @@ static void exec_for(struct ast_node_for *n_for, struct variables *var)
     }
 }
 
+static void exec_semicolon(struct ast_node_semicolon *n_semi,
+        struct variables *var)
+{
+    exec_node(n_semi->left_child, var);
+    exec_node(n_semi->right_child, var);
+}
+
 /**
  *\fn exec_redirect
  *\brief Execute the redirection
@@ -153,6 +160,12 @@ int exec_node(struct ast_node *node, struct variables *var)
             break;
         case N_REDIRECT:
             exec_redirect(node->son);
+            break;
+        case N_SEMICOLON:
+            exec_semicolon(node->son, var);
+            break;
+        case N_AMPERSAND:
+            exec_semicolon(node->son, var);
             break;
         default:
             break;
