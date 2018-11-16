@@ -1,1 +1,42 @@
-# 42sh
+# Project 42sh by louis.holleville, thomas.lupin, arthur.busuttil, sabrina.meng
+## Version 0.3
+
+The purpose of this project is to program a shell that have the same
+behavior as the bash --posix.
+
+HOW TO COMPILE
+    > mkdir build
+    > cd build
+    > cmake ..
+    > make
+    > ./42sh [options] [file]
+
+OPTIONS
+    -c <command>
+        Execute the command given.
+
+    [-+]O
+        Enable or disable shopt options (not implemented yet)
+
+    --norc
+        This option deactivates the resource reader.
+
+    --ast-print
+        This option activates the AST printer.
+
+    --version
+        This option prints the current 42sh version on the standard output
+        and exits.
+
+COMMANDS
+    - "if <condition>; then <command>; fi"
+    - "while <condition>; do <command>; done"
+    - "until <condition>; do <command>; done"
+    - "for var in <variables>; do <command>; done"
+
+TEST SUITE
+    We used ceedling for the test suite.
+    Outside the 42sh/ git directory, launch the following commands:
+        > ceedling new 42sh/
+        > cd 42sh/
+        > ./test/test.sh
