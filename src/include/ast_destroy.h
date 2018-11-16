@@ -1,3 +1,5 @@
+#include "ast.h"
+
 /**
  * @brief Destroying function for 'simple_command' nodes. Recursively called.
  * @param node Node to be destroyed. Its type was checked before the call.
