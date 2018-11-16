@@ -34,6 +34,70 @@ void tearDow(void)
 {
 }
 
+
+void test_ast_creation_for(void)
+{
+    struct ast_node *n_for = create_ast_node_for(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_for);
+    destroy_ast(n_for);
+}
+
+void test_ast_creation_not(void)
+{
+    struct ast_node *n_not = create_ast_node_not(NULL);
+    TEST_ASSERT_NOT_NULL(n_not);
+    destroy_ast(n_not);
+}
+
+void test_ast_creation_semicolon(void)
+{
+    struct ast_node *n_semicolon = create_ast_node_semicolon(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_semicolon);
+    destroy_ast(n_semicolon);
+}
+void test_ast_creation_ampersand(void)
+{
+    struct ast_node *n_ampersand = create_ast_node_ampersand(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_ampersand);
+    destroy_ast(n_ampersand);
+}
+
+void test_ast_creation_if(void)
+{
+    struct ast_node *n_if = create_ast_node_if(NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_if);
+    destroy_ast(n_if);
+}
+
+void test_ast_creation_pipe(void)
+{
+    struct ast_node *n_pipe = create_ast_node_pipe(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_pipe);
+    destroy_ast(n_pipe);
+}
+
+void test_ast_creation_while(void)
+{
+    struct ast_node *n_while = create_ast_node_while(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_while);
+    destroy_ast(n_while);
+}
+
+void test_ast_creation_logical_and(void)
+{
+    struct ast_node *n_land = create_ast_node_land(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_land);
+    destroy_ast(n_land);
+}
+
+void test_ast_creation_lor(void)
+{
+    struct ast_node *n_lor = create_ast_node_lor(NULL, NULL);
+    TEST_ASSERT_NOT_NULL(n_lor);
+    destroy_ast(n_lor);
+}
+
+
 void test_ast_creation_destroy(void)
 {
     struct ast_node *n_for = create_ast_node_for(NULL, NULL);
