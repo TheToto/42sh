@@ -155,6 +155,31 @@ static int check_ast_print(char **argv)
     return 0;
 }
 
+static void exec_shopt(char **argv, size_t *i, size_t section, enum option opt)
+{
+    if (section == 1)
+    {
+        (*i)++;
+        enum shopt shopt = get_shopt(argv[*i]);
+        if (shopt == OTHER)
+            err_shopt();
+        if (shopt == NO && opt == SHOPT_MINUS)
+            print_shopt_minus();
+        if (shopt == NO && opt == SHOPT_PLUS)
+            print_shopt_plus();
+    }
+}
+
+static void exec_cmd(size_t section, char **argv, size_t i, int ast)
+{
+    if (section == 1 && !(argv[++i] && argv[i][0] != '-'))
+    {
+        warnx("Invalid arguments for -c option");
+        errx(1, "Usage: -c <command>");
+    }
+    exit(exec_main(argv[i], ast));
+}
+
 /**
  *\fn options
  *\brief Do actions according to each options
@@ -163,61 +188,34 @@ static int check_ast_print(char **argv)
  */
 void options(char *argv[])
 {
-    enum option opt = NONE;
     size_t section = 0;
     size_t i = 1;
-    int ast = check_ast_print(argv);;
+    int ast = check_ast_print(argv);
     for ( ; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);
         section = section > sect ? section : sect;
         if (section == 2)
             break;
-        opt = get_option(argv[i]);
-        switch (opt)
+        enum option opt = get_option(argv[i]);
+        if (opt == CMD)
+            exec_cmd(section, argv, i, ast);
+        else if (opt == SHOPT_PLUS || opt == SHOPT_MINUS)
+            exec_shopt(argv, &i, section, opt);
+        else if (opt == NORC) //if (!section) : deactivate ressource reader
+            continue;
+        else if (opt == AST) //OK
+            continue;
+        else if (opt == VERSION)
         {
-            case CMD:
-                if (section == 1 && !(argv[++i] && argv[i][0] != '-'))
-                {
-                    warnx("Invalid arguments for -c option");
-                    errx(1, "Usage: -c <command>");
-                }
-                exit(exec_main(argv[i], ast));
-                break;
-            case SHOPT_PLUS:
-            case SHOPT_MINUS:
-                if (section == 1)
-                {
-                    enum shopt shopt = get_shopt(argv[++i]);
-                    if (shopt == OTHER)
-                        err_shopt();
-                    if (shopt == NO && opt == SHOPT_MINUS)
-                        print_shopt_minus();
-                    if (shopt == NO && opt == SHOPT_PLUS)
-                        print_shopt_plus();
-                }
-                break;
-            case NORC:
-                //if (!section)
-                //deactivates ressource reader
-                break;
-            case AST: //OK
-                break;
-            case VERSION:
-                if (!section)
-                {
-                    printf("Version 0.3\n");
-                    exit(0);
-                }
-                break;
-            default:
-                if (section != 2)
-                {
-                    warnx("Unrecognized option");
-                    errx(1, "Usage: ./42sh [options] [file]");
-                }
+            if (!section)
+            {
+                printf("Version 0.3\n");
+                exit(0);
+            }
         }
     }
+
     for ( ; argv[i]; i++)
     {
         printf("File to exec : %s\n", argv[i]);
