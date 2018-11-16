@@ -45,7 +45,7 @@ static size_t get_section(char *arg)
  *\param char *opt  The option to check
  *\return Return an enum value according to the option
  */
-static enum option get_option(char *opt)
+enum option get_option(char *opt)
 {
     if (!strcmp(opt, "--norc"))
         return NORC;
@@ -66,7 +66,7 @@ static enum option get_option(char *opt)
  *\param char *arg  The shopt variable to check
  *\return Return an enum value according to the shopt variable
  */
-static enum shopt get_shopt(char *arg)
+enum shopt get_shopt(char *arg)
 {
     if (!arg)
         return OTHER;
