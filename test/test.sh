@@ -14,7 +14,7 @@ while read line; do
     PASSED*) printf $GREEN"$line"$DEFAULT"\n";;
     FAILED* | "BUILD FAILURE*") printf $RED"$line"$DEFAULT"\n";;
     Test* | TESTED* | OVERALL*) printf $YELLOW"$line"$DEFAULT"\n";;
-    *) echo $DEFAULT"$line"$DEFAULT;;
+    *) printf $DEFAULT"$line"$DEFAULT"\n";;
     esac
 done < tmp
 rm tmp
