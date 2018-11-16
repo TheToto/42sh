@@ -48,7 +48,6 @@ static int exec_scmd(struct ast_node_scmd *scmd)
  *\fn exec_if
  *\brief Execute the if command
  *\param struct ast_node_if *n_if   The AST node of the if command
- *\return No return value
  */
 static void exec_if(struct ast_node_if *n_if)
 {
@@ -63,7 +62,6 @@ static void exec_if(struct ast_node_if *n_if)
  *\fn exec_while
  *\brief Execute the while command
  *\param struct ast_node_while *n_while   The AST node of the while command
- *\return No return value
  */
 static void exec_while(struct ast_node_while *n_while)
 {
@@ -75,11 +73,45 @@ static void exec_while(struct ast_node_while *n_while)
  *\fn exec_for
  *\brief Execute the for command
  *\param struct ast_node_for *n_for   The AST node of the for command
- *\return No return value
  */
 static void exec_for(struct ast_node_for *n_for)
 {
-    n_for = n_for;
+    for (size_t i = 0; i < n_for->size; i++)
+        exec_node(n_for->exec);
+}
+
+/**
+ *\fn exec_redirect
+ *\brief Execute the redirection
+ *\param struct ast_node_redirect *n_redirect  The AST node of the redirection
+ */
+static void exec_redirect(struct ast_node_redirect *n_redirect)
+{
+    switch (n_redirect->type)
+    {
+        case R_LESS:
+            break;
+        case R_GREAT:
+            break;
+        case R_DLESS:
+            break;
+        case R_DGREAT:
+            break;
+        case R_LESSAND:
+            break;
+        case R_GREATAND:
+            break;
+        case R_LESSGREAT:
+            break;
+        case R_DLESSDASH:
+            break;
+        case R_CLOBBER:
+            break;
+        case R_PIPE:
+            break;
+        default:
+            break;
+    }
 }
 
 /**
@@ -102,6 +134,9 @@ int exec_node(struct ast_node *node)
             break;
         case N_FOR:
             exec_for(node->son);
+            break;
+        case N_REDIRECT:
+            exec_redirect(node->son);
             break;
         default:
             break;

@@ -29,10 +29,6 @@ enum shopt
     XPGECHO,
 };
 
-/**
- *\fn options
- *\brief Do actions according to each options
- *\param char *argv[]   The command line to parse
- *\return The return value depends on the options
- */
+enum option get_option(char *opt);
+enum shopt get_shopt(char *arg);
 void options(char *argv[]);
