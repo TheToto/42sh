@@ -85,10 +85,10 @@
   :test:
     :compile:
       :*:
-        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include -DTEST"
+        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"
     :link:
       :*:
-        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include -DTEST"
+        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"
 
 :plugins:
   :load_paths:

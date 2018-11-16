@@ -9,7 +9,6 @@ void setUp(void)
     TEST_FILE("execution.c");
     TEST_FILE("env/var.c");
     TEST_FILE("readfile.c");
-    TEST_FILE("parser/input.c");
     TEST_FILE("parser/ast/print_ast.c");
     TEST_FILE("parser/ast/ast_destroy.c");
     TEST_FILE("parser/ast/ast_node_ampersand.c");
@@ -25,6 +24,21 @@ void setUp(void)
     TEST_FILE("parser/ast/ast_node_scmd.c");
     TEST_FILE("parser/ast/ast_node_semicolon.c");
     TEST_FILE("parser/ast/ast_node_while.c");
+    TEST_FILE("parser/rule_andor.c");
+    TEST_FILE("parser/rule_case.c");
+    TEST_FILE("parser/rule_command.c");
+    TEST_FILE("parser/rule_compound_list.c");
+    TEST_FILE("parser/rule_for.c");
+    TEST_FILE("parser/rule_funcdec.c");
+    TEST_FILE("parser/rule_if.c");
+    TEST_FILE("parser/rule_input.c");
+    TEST_FILE("parser/rule_list.c");
+    TEST_FILE("parser/rule_pipe.c");
+    TEST_FILE("parser/rule_pipeline.c");
+    TEST_FILE("parser/rule_redirection.c");
+    TEST_FILE("parser/rule_shell_command.c");
+    TEST_FILE("parser/rule_simple_command.c");
+    TEST_FILE("parser/rule_while.c");
 }
 
 void tearDow(void)
