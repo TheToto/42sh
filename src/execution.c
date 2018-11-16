@@ -61,13 +61,13 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
  *\brief Execute the if command
  *\param struct ast_node_if *n_if   The AST node of the if command
  */
-static void exec_if(struct ast_node_if *n_if, struct variables *var)
+static int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
     int res = exec_node(n_if->condition, var);
     if (res == 0)
-        exec_node(n_if->e_true, var);
+        return exec_node(n_if->e_true, var);
     else
-        exec_node(n_if->e_false, var);
+        return exec_node(n_if->e_false, var);
 }
 
 /**
@@ -75,10 +75,12 @@ static void exec_if(struct ast_node_if *n_if, struct variables *var)
  *\brief Execute the while command
  *\param struct ast_node_while *n_while   The AST node of the while command
  */
-static void exec_while(struct ast_node_while *n_while, struct variables *var)
+static int exec_while(struct ast_node_while *n_while, struct variables *var)
 {
+    int res = 0;
     while (exec_node(n_while->condition, var) == 0)
-        exec_node(n_while->exec, var);
+        res = exec_node(n_while->exec, var);
+    return res;
 }
 
 /**
@@ -86,21 +88,23 @@ static void exec_while(struct ast_node_while *n_while, struct variables *var)
  *\brief Execute the for command
  *\param struct ast_node_for *n_for   The AST node of the for command
  */
-static void exec_for(struct ast_node_for *n_for, struct variables *var)
+static int exec_for(struct ast_node_for *n_for, struct variables *var)
 {
     char *name = n_for->value;
+    int res = 0;
     for (size_t i = 0; i < n_for->size; i++)
     {
         add_var(var, name, n_for->values[i]);
-        exec_node(n_for->exec, var);
+        res = exec_node(n_for->exec, var);
     }
+    return res;
 }
 
-static void exec_semicolon(struct ast_node_semicolon *n_semi,
+static int exec_semicolon(struct ast_node_semicolon *n_semi,
         struct variables *var)
 {
     exec_node(n_semi->left_child, var);
-    exec_node(n_semi->right_child, var);
+    return exec_node(n_semi->right_child, var);
 }
 
 /**
@@ -108,7 +112,7 @@ static void exec_semicolon(struct ast_node_semicolon *n_semi,
  *\brief Execute the redirection
  *\param struct ast_node_redirect *n_redirect  The AST node of the redirection
  */
-static void exec_redirect(struct ast_node_redirect *n_redirect)
+static int exec_redirect(struct ast_node_redirect *n_redirect)
 {
     switch (n_redirect->type)
     {
@@ -135,6 +139,17 @@ static void exec_redirect(struct ast_node_redirect *n_redirect)
         default:
             break;
     }
+    return 0;
+}
+
+/**
+ *\fn exec_not
+ *\brief Execute the not node
+ *\param struct ast_node_redirect *n_redirect  The AST node of the not
+ */
+static int exec_not(struct ast_node_not *n_not, struct variables *var)
+{
+    return exec_node(n_not->child, var) == 0;
 }
 
 /**
@@ -150,22 +165,25 @@ int exec_node(struct ast_node *node, struct variables *var)
         case N_SCMD:
             return exec_scmd(node->son, var);
         case N_IF:
-            exec_if(node->son, var);
+            return exec_if(node->son, var);
             break;
         case N_WHILE:
-            exec_while(node->son, var);
+            return exec_while(node->son, var);
             break;
         case N_FOR:
-            exec_for(node->son, var);
+            return exec_for(node->son, var);
             break;
         case N_REDIRECT:
-            exec_redirect(node->son);
+            return exec_redirect(node->son);
             break;
         case N_SEMICOLON:
-            exec_semicolon(node->son, var);
+            return exec_semicolon(node->son, var);
             break;
         case N_AMPERSAND:
-            exec_semicolon(node->son, var);
+            return exec_semicolon(node->son, var);
+            break;
+        case N_NOT:
+            return exec_not(node->son, var);
             break;
         default:
             break;
