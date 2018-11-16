@@ -10,6 +10,7 @@
 #include <err.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "var.h"
 #include "execution.h"
@@ -28,14 +29,13 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     int err = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
-    for (size_t i = 0; i < scmd->elt_size; i++)
-        replace_var_scmd(var, scmd, i);
+    char **expanded = replace_var_scmd(var, scmd);
     pid = fork();
     if (pid < 0)
         errx(1, "ERROR: Fork failed");
     else if (pid == 0)
     {
-        err = execvp(*scmd->elements, scmd->elements);
+        err = execvp(*expanded, expanded);
         if (err < 0)
             errx(1, "ERROR: Exec failed");
     }
@@ -45,6 +45,9 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
             continue;
     }
     printf("%s return %d\n", *scmd->elements, status);
+    for (size_t i = 0; i < scmd->elt_size + 1; i++)
+        free(expanded[i]);
+    free(expanded);
     return status;
 }
 

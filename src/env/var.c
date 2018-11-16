@@ -82,7 +82,8 @@ void add_var(struct variables *var, char *name, char *value)
 
     if (!found)
     {
-        cur->value = value;
+        free(cur->value);
+        cur->value = strdup(value);
         return;
     }
     if (pos == var->capacity)
@@ -168,11 +169,22 @@ void assign_prefix(struct variables *var, char *prefix)
  * @fn replace_var
  * @brief replace element by its new variable if a declaration was made
  */
-void replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd,
-        size_t pos)
+char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
 {
-    char *value = get_var(var, scmd->elements[pos] + 1);
-    if (value)
-        scmd->elements[pos] = value;
+    char **res = calloc(scmd->elt_size + 1, sizeof(char*));
+    for (size_t i = 0; i < scmd->elt_size; i++)
+    {
+        res[i] = strdup(scmd->elements[i]);
+        if (scmd->elements[i][0] == '$')
+        {
+            char *value = get_var(var, scmd->elements[i] + 1);
+            if (value)
+            {
+                free(res[i]);
+                res[i] = strdup(value);
+            }
+        }
+    }
+    return res;
 }
 
