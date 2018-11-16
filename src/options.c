@@ -134,19 +134,7 @@ void options(char *argv[])
                     warnx("Invalid arguments for -c option");
                     errx(1, "Usage: -c <command>");
                 }
-                printf("exec: %s\n", argv[i]);
-                struct lexer *l = lexer(argv[i]);
-                struct token_list *copy = l->token_list;
-                struct ast_node *ast = rule_input(&(l->token_list));
-                if (!ast)
-                    errx(2, "Error in parsing");
-                l->token_list = copy;
-                makedot(ast, "ast.dot");
-
-                printf("\nExecution result:\n");
-                exec_node(ast);
-                destroy_ast(ast);
-                lexer_destroy(l);
+                exit(exec_main(argv[i]));
                 break;
             case SHOPT:
                 if (section == 1)
@@ -182,5 +170,6 @@ void options(char *argv[])
     for ( ; argv[i]; i++)
     {
         printf("File to exec : %s\n", argv[i]);
+        launch_file(argv[i]);   
     }
 }
