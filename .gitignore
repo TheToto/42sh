@@ -1,2 +1,5 @@
 build/
 *.o
+*.swp
+ceedling
+vendor
