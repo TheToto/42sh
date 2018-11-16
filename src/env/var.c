@@ -10,7 +10,9 @@
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
+#include <stdio.h>
 #include "var.h"
+#include "ast.h"
 
 /**
  * @fn init_var
@@ -71,15 +73,17 @@ void add_var(struct variables *var, char *name, char *value)
     size_t pos = 0;
     struct var *cur = var->lib[pos];
     int found = 1;
-    for (; found && pos < var->size; pos++, cur = var->lib[pos])
+    for (; found && pos < var->size; pos++)
     {
         if (strcmp(cur->name, name) == 0)
             found = 0;
+        cur = var->lib[pos];
     }
 
-    if (found)
+    if (!found)
     {
-        cur->value = value;
+        free(cur->value);
+        cur->value = strdup(value);
         return;
     }
     if (pos == var->capacity)
@@ -141,3 +145,46 @@ char *get_var(struct variables *var, char *name)
         return NULL;
     return cur->value;
 }
+
+/**
+ * @fn assign_prefix
+ * @brief Add the declararion to the array of variables
+ */
+void assign_prefix(struct variables *var, char *prefix)
+{
+    char name[256] =
+    {
+        0
+    };
+    char value[256] =
+    {
+        0
+    };
+    sscanf(prefix, "%s=%s", name, value);
+    //recursive call here for further expansion
+    add_var(var, name, value);
+}
+
+/**
+ * @fn replace_var
+ * @brief replace element by its new variable if a declaration was made
+ */
+char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
+{
+    char **res = calloc(scmd->elt_size + 1, sizeof(char*));
+    for (size_t i = 0; i < scmd->elt_size; i++)
+    {
+        res[i] = strdup(scmd->elements[i]);
+        if (scmd->elements[i][0] == '$')
+        {
+            char *value = get_var(var, scmd->elements[i] + 1);
+            if (value)
+            {
+                free(res[i]);
+                res[i] = strdup(value);
+            }
+        }
+    }
+    return res;
+}
+

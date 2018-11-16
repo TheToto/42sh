@@ -9,7 +9,9 @@
 #pragma once
 
 #include "ast.h"
+#include "var.h"
 
-int exec_node(struct ast_node *node);
 int exec_main(char *str);
 void launch_file(char *path);
+
+int exec_node(struct ast_node *node, struct variables *var);

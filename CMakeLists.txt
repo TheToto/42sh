@@ -5,6 +5,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -std=c99 -pedantic")
 include_directories(src/include)
 file(GLOB SOURCES
         "src/*.c"
+        "src/env/*.c"
         "src/parser/*.c"
         "src/parser/ast/*.c")
 

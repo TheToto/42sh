@@ -83,7 +83,7 @@ void destroy_ast_node_for(struct ast_node_for *node)
 
 void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"FOR in ", *num);
+    fprintf(fd, "%lu [label= \"FOR %s IN ", *num, node->value);
     size_t save = *num;
     for (size_t i = 0; i < node->size - 1; i++)
         fprintf(fd, "%s, ", node->values[i]);

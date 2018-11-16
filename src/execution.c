@@ -10,7 +10,9 @@
 #include <err.h>
 #include <sys/wait.h>
 #include <stdio.h>
+#include <stdlib.h>
 
+#include "var.h"
 #include "options.h"
 #include "lexer.h"
 #include "print.h"
@@ -24,19 +26,21 @@
  *\param struct ast_node_scmd *scmd The AST node of the simple command
  *\return Return an int depending on the command
  */
-static int exec_scmd(struct ast_node_scmd *scmd)
+static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
 {
     //if !builtin cmd
     pid_t pid;
     int status;
     int err = 0;
-
+    for (size_t i = 0; i < scmd->pre_size; i++)
+        assign_prefix(var, scmd->prefix[i]);
+    char **expanded = replace_var_scmd(var, scmd);
     pid = fork();
     if (pid < 0)
         errx(1, "ERROR: Fork failed");
     else if (pid == 0)
     {
-        err = execvp(*scmd->elements, scmd->elements);
+        err = execvp(*expanded, expanded);
         if (err < 0)
             errx(1, "ERROR: Exec failed");
     }
@@ -46,6 +50,9 @@ static int exec_scmd(struct ast_node_scmd *scmd)
             continue;
     }
     printf("%s return %d\n", *scmd->elements, status);
+    for (size_t i = 0; i < scmd->elt_size + 1; i++)
+        free(expanded[i]);
+    free(expanded);
     return status;
 }
 
@@ -54,13 +61,13 @@ static int exec_scmd(struct ast_node_scmd *scmd)
  *\brief Execute the if command
  *\param struct ast_node_if *n_if   The AST node of the if command
  */
-static void exec_if(struct ast_node_if *n_if)
+static void exec_if(struct ast_node_if *n_if, struct variables *var)
 {
-    int res = exec_node(n_if->condition);
+    int res = exec_node(n_if->condition, var);
     if (res == 0)
-        exec_node(n_if->e_true);
+        exec_node(n_if->e_true, var);
     else
-        exec_node(n_if->e_false);
+        exec_node(n_if->e_false, var);
 }
 
 /**
@@ -68,10 +75,10 @@ static void exec_if(struct ast_node_if *n_if)
  *\brief Execute the while command
  *\param struct ast_node_while *n_while   The AST node of the while command
  */
-static void exec_while(struct ast_node_while *n_while)
+static void exec_while(struct ast_node_while *n_while, struct variables *var)
 {
-    while (exec_node(n_while->condition) == 0)
-        exec_node(n_while->exec);
+    while (exec_node(n_while->condition, var) == 0)
+        exec_node(n_while->exec, var);
 }
 
 /**
@@ -79,10 +86,14 @@ static void exec_while(struct ast_node_while *n_while)
  *\brief Execute the for command
  *\param struct ast_node_for *n_for   The AST node of the for command
  */
-static void exec_for(struct ast_node_for *n_for)
+static void exec_for(struct ast_node_for *n_for, struct variables *var)
 {
+    char *name = n_for->value;
     for (size_t i = 0; i < n_for->size; i++)
-        exec_node(n_for->exec);
+    {
+        add_var(var, name, n_for->values[i]);
+        exec_node(n_for->exec, var);
+    }
 }
 
 /**
@@ -125,20 +136,20 @@ static void exec_redirect(struct ast_node_redirect *n_redirect)
  *\param struct ast_node *node  The AST node to execute
  *\return Return an int depending on the commands given
  */
-int exec_node(struct ast_node *node)
+int exec_node(struct ast_node *node, struct variables *var)
 {
     switch (node->type)
     {
         case N_SCMD:
-            return exec_scmd(node->son);
+            return exec_scmd(node->son, var);
         case N_IF:
-            exec_if(node->son);
+            exec_if(node->son, var);
             break;
         case N_WHILE:
-            exec_while(node->son);
+            exec_while(node->son, var);
             break;
         case N_FOR:
-            exec_for(node->son);
+            exec_for(node->son, var);
             break;
         case N_REDIRECT:
             exec_redirect(node->son);
@@ -161,16 +172,18 @@ int exec_main(char *str)
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
+    struct variables *library = init_var();
     if (!ast)
         errx(2, "Error in parsing");
     l->token_list = copy;
     makedot(ast, "ast.dot");
 
     printf("\nExecution result:\n");
-    int res = exec_node(ast);
+    int res = exec_node(ast, library);
 
     destroy_ast(ast);
     lexer_destroy(l);
+    destroy_var(library);
 
     return res;
 }

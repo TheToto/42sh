@@ -10,20 +10,20 @@ static struct ast_node_scmd *create_ast_node_scmd_intern(void)
     struct ast_node_scmd *new = malloc(sizeof(struct ast_node_scmd));
     if (!new)
         return NULL;
-    new->prefix = malloc(8 * sizeof(char*));
+    new->prefix = calloc(8, sizeof(char*));
     if (!new->prefix)
     {
         free(new);
         return NULL;
     }
-    new->elements = malloc(8 * sizeof(char*));
+    new->elements = calloc(8, sizeof(char*));
     if (!new->elements)
     {
         free(new->prefix);
         free(new);
     }
-    new->elt_capacity = 8;
-    new->pre_capacity = 8;
+    new->elt_capacity = 7;
+    new->pre_capacity = 7;
     new->elt_size = 0;
     new->pre_size = 0;
     return new;
@@ -63,7 +63,9 @@ void add_prefix_scmd(struct ast_node *node, char *prefix)
     struct ast_node_scmd *cur = node->son;
     if (cur->pre_size == cur->pre_capacity)
     {
-        char **new = realloc(cur->prefix, 2 * cur->pre_size * sizeof(char*));
+        cur->pre_capacity += 1;
+        char **new = realloc(cur->prefix, 2 * cur->pre_capacity
+                * sizeof(char*));
         if (!new)
         {
             warnx("realloc failed in add_prefix_scmd(%s)", prefix);
@@ -71,6 +73,9 @@ void add_prefix_scmd(struct ast_node *node, char *prefix)
         }
         cur->prefix = new;
         cur->pre_capacity *= 2;
+        for (size_t i = cur->pre_size; i < cur->pre_capacity; i++)
+            cur->prefix[i] = 0;
+        cur->pre_size -= 1;
     }
     cur->prefix[cur->pre_size] = prefix;
     cur->pre_size += 1;
@@ -94,7 +99,8 @@ void add_element_scmd(struct ast_node *node, char *element)
     struct ast_node_scmd *cur = node->son;
     if (cur->elt_size == cur->elt_capacity)
     {
-        char **new = realloc(cur->elements, 2 * cur->elt_size);
+        cur->elt_capacity += 1;
+        char **new = realloc(cur->elements, 2 * cur->elt_capacity);
         if (!new)
         {
             warnx("realloc failed in add_element_scmd(%s)", element);
@@ -102,6 +108,9 @@ void add_element_scmd(struct ast_node *node, char *element)
         }
         cur->elements = new;
         cur->elt_capacity *= 2;
+        for (size_t i = cur->elt_size; i < cur->elt_capacity; i++)
+            cur->elements[i] = 0;
+        cur->elt_size -= 1;
     }
     cur->elements[cur->elt_size] = element;
     cur->elt_size += 1;
