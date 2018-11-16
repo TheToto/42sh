@@ -17,7 +17,7 @@
  *\brief Read the whole file \b path and send it to exec
  *\param path Path to file
  */
-void launch_file(char *path)
+void launch_file(char *path, int is_print)
 {
     FILE *f = fopen(path, "r");
     if (!f)
@@ -35,7 +35,7 @@ void launch_file(char *path)
     fread(buffer, sizeof(char), numbytes, f);
     fclose(f);
 
-    exec_main(buffer);
+    exec_main(buffer, is_print);
 
     free(buffer);
 }

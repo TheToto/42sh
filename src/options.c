@@ -111,6 +111,10 @@ static void err_shopt(void)
     \txpg_echo");
 }
 
+/**
+ *\fn print_shopt_minus
+ *\brief Prints the same output as bash with the -O option
+ */
 static void print_shopt_minus(void)
 {
     printf("ast_print         off\n");
@@ -124,6 +128,10 @@ static void print_shopt_minus(void)
     exit(0);
 }
 
+/**
+ *\fn print_shopt_plus
+ *\brief Prints the same output as bash with the +O option
+ */
 static void print_shopt_plus(void)
 {
     printf("shopt -u ast_print\n");
@@ -137,6 +145,16 @@ static void print_shopt_plus(void)
     exit(0);
 }
 
+static int check_ast_print(char **argv)
+{
+    for (size_t i = 1; argv[i]; i++)
+    {
+        if (!strcmp(argv[i], "--ast-print"))
+            return 1;
+    }
+    return 0;
+}
+
 /**
  *\fn options
  *\brief Do actions according to each options
@@ -148,6 +166,7 @@ void options(char *argv[])
     enum option opt = NONE;
     size_t section = 0;
     size_t i = 1;
+    int ast = check_ast_print(argv);;
     for ( ; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);
@@ -163,7 +182,7 @@ void options(char *argv[])
                     warnx("Invalid arguments for -c option");
                     errx(1, "Usage: -c <command>");
                 }
-                exit(exec_main(argv[i]));
+                exit(exec_main(argv[i], ast));
                 break;
             case SHOPT_PLUS:
             case SHOPT_MINUS:
@@ -182,9 +201,7 @@ void options(char *argv[])
                 //if (!section)
                 //deactivates ressource reader
                 break;
-            case AST:
-                //if (!section)
-                //ast print
+            case AST: //OK
                 break;
             case VERSION:
                 if (!section)
@@ -204,6 +221,6 @@ void options(char *argv[])
     for ( ; argv[i]; i++)
     {
         printf("File to exec : %s\n", argv[i]);
-        launch_file(argv[i]);   
+        launch_file(argv[i], ast);
     }
 }

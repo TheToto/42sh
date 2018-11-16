@@ -179,7 +179,7 @@ int exec_node(struct ast_node *node, struct variables *var)
  *\param str  The string to execute
  *\return Return an int depending on the commands given
  */
-int exec_main(char *str)
+int exec_main(char *str, int is_print)
 {
     printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
@@ -189,7 +189,8 @@ int exec_main(char *str)
     if (!ast)
         errx(2, "Error in parsing");
     l->token_list = copy;
-    makedot(ast, "ast.dot");
+    if (is_print)
+        makedot(ast, "ast.dot");
 
     printf("\nExecution result:\n");
     int res = exec_node(ast, library);
