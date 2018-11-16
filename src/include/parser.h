@@ -94,4 +94,4 @@ struct ast_node *rule_andor(struct token_list **tok);
 struct ast_node *rule_list(struct token_list **tok);
 struct ast_node *rule_input(struct token_list **tok);
 void remove_new_line(struct token_list **tok);
-
+void debug_token(struct token_list **tok);
