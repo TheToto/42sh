@@ -146,13 +146,13 @@ enum token_type bin_op_and_default_token(char *val)
         return LOGICAL_OR;
     if (!strcmp(val, "&"))
         return AMPERSAND;
-    if (!fnmatch("+([1-9])", val, FNM_EXTMATCH))
+    if (!fnmatch("+([0-9])", val, FNM_EXTMATCH))
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
         return NEWLINE;
-    if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])=*", val, FNM_EXTMATCH))
+    if (!fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])=*", val, FNM_EXTMATCH))
         return ASSIGNMENT_WORD;
-    if (!fnmatch("[_a-zA-Z]*([_1-9a-zA-Z])", val, FNM_EXTMATCH))
+    if (!fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", val, FNM_EXTMATCH))
         return NAME;
     return WORD;
 }
