@@ -334,6 +334,7 @@ debug_token(tok);
     struct ast_node *for_node = create_ast_node_for(value, NULL);
     if (!for_node)
         return NULL;
+    NEXT_TOK(tok);
     remove_new_line(tok);
     if (TOK_TYPE(tok) == IN)
     {
@@ -397,12 +398,21 @@ debug_token(tok);
 
 struct ast_node *rule_do_group(struct token_list **tok)
 {
+printf("Enter in do group\n");
+debug_token(tok);
+    if (TOK_TYPE(tok) != DO)
+    {
+        warnx("Need a do in do group");
+        return NULL;
+    }
+    NEXT_TOK(tok);
     struct ast_node *do_group = rule_compound_list(tok);
     if (TOK_TYPE(tok) == DONE)
     {
         NEXT_TOK(tok);
         return do_group;
     }
+debug_token(tok);
     errx(1, "I need a done after a do group");
 }
 

@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 
+#include "var.h"
 #include "execution.h"
 
 /**
@@ -19,13 +20,16 @@
  *\param struct ast_node_scmd *scmd The AST node of the simple command
  *\return Return an int depending on the command
  */
-static int exec_scmd(struct ast_node_scmd *scmd)
+static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
 {
     //if !builtin cmd
     pid_t pid;
     int status;
     int err = 0;
-
+    for (size_t i = 0; i < scmd->pre_size; i++)
+        assign_prefix(var, scmd->prefix[i]);
+    for (size_t i = 0; i < scmd->elt_size; i++)
+        replace_var_scmd(var, scmd, i);
     pid = fork();
     if (pid < 0)
         errx(1, "ERROR: Fork failed");
@@ -50,13 +54,13 @@ static int exec_scmd(struct ast_node_scmd *scmd)
  *\param struct ast_node_if *n_if   The AST node of the if command
  *\return No return value
  */
-static void exec_if(struct ast_node_if *n_if)
+static void exec_if(struct ast_node_if *n_if, struct variables *var)
 {
-    int res = exec_node(n_if->condition);
+    int res = exec_node(n_if->condition, var);
     if (res == 0)
-        exec_node(n_if->e_true);
+        exec_node(n_if->e_true, var);
     else
-        exec_node(n_if->e_false);
+        exec_node(n_if->e_false, var);
 }
 
 /**
@@ -65,10 +69,10 @@ static void exec_if(struct ast_node_if *n_if)
  *\param struct ast_node_while *n_while   The AST node of the while command
  *\return No return value
  */
-static void exec_while(struct ast_node_while *n_while)
+static void exec_while(struct ast_node_while *n_while, struct variables *var)
 {
-    while (exec_node(n_while->condition) == 0)
-        exec_node(n_while->exec);
+    while (exec_node(n_while->condition, var) == 0)
+        exec_node(n_while->exec, var);
 }
 
 /**
@@ -77,9 +81,14 @@ static void exec_while(struct ast_node_while *n_while)
  *\param struct ast_node_for *n_for   The AST node of the for command
  *\return No return value
  */
-static void exec_for(struct ast_node_for *n_for)
+static void exec_for(struct ast_node_for *n_for, struct variables *var)
 {
-    n_for = n_for;
+    char *name = n_for->value;
+    for (size_t i = 0; i < n_for->size; i++)
+    {
+        add_var(var, name, n_for->values[i]);
+        exec_node(n_for->exec, var);
+    }
 }
 
 /**
@@ -88,20 +97,20 @@ static void exec_for(struct ast_node_for *n_for)
  *\param struct ast_node *node  The AST node to execute
  *\return Return an int depending on the commands given
  */
-int exec_node(struct ast_node *node)
+int exec_node(struct ast_node *node, struct variables *var)
 {
     switch (node->type)
     {
         case N_SCMD:
-            return exec_scmd(node->son);
+            return exec_scmd(node->son, var);
         case N_IF:
-            exec_if(node->son);
+            exec_if(node->son, var);
             break;
         case N_WHILE:
-            exec_while(node->son);
+            exec_while(node->son, var);
             break;
         case N_FOR:
-            exec_for(node->son);
+            exec_for(node->son, var);
             break;
         default:
             break;

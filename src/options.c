@@ -19,6 +19,7 @@
 #include "print.h"
 #include "execution.h"
 #include "ast_destroy.h"
+#include "var.h"
 
 /**
  *\fn get_section
@@ -138,15 +139,17 @@ void options(char *argv[])
                 struct lexer *l = lexer(argv[i]);
                 struct token_list *copy = l->token_list;
                 struct ast_node *ast = rule_input(&(l->token_list));
+                struct variables *library = init_var();
                 if (!ast)
                     errx(2, "Error in parsing");
                 l->token_list = copy;
                 makedot(ast, "ast.dot");
 
                 printf("\nExecution result:\n");
-                exec_node(ast);
+                exec_node(ast, library);
                 destroy_ast(ast);
                 lexer_destroy(l);
+                destroy_var(library);
                 break;
             case SHOPT:
                 if (section == 1)
