@@ -264,7 +264,7 @@ debug_token(tok);
         }
 
         if (TOK_TYPE(tok) != NEWLINE && TOK_TYPE(tok) != SEMICOLON)
-            errx("Need ; or \\n after 'in (WORD)*' in for statement");
+            errx(1, "Need ; or \\n after 'in (WORD)*' in for statement");
         NEXT_TOK(tok);
     }
     remove_new_line(tok);

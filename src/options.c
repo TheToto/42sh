@@ -133,7 +133,9 @@ void options(char *argv[])
                 }
                 printf("exec: %s\n", argv[i]);
                 struct lexer *l = lexer(argv[i]);
+                struct token_list *copy = l->token_list;
                 struct ast_node *ast = rule_input(&(l->token_list));
+                l->token_list = copy;
                 makedot(ast, "ast.dot");
 
                 printf("\nExecution result:\n");

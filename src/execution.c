@@ -75,7 +75,7 @@ static void exec_if(struct ast_node_if *n_if)
  */
 static void exec_while(struct ast_node_while *n_while)
 {
-    while (exec_node(n_while->condition))
+    while (exec_node(n_while->condition) == 0)
         exec_node(n_while->exec);
 }
 

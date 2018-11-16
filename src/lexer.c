@@ -70,6 +70,8 @@ struct lexer *init_lexer(void)
 void set_tl(struct token_list *tl, char *str, enum token_type tok)
 {
     tl->str = str;
+    if (tok == NAME)
+        tok = WORD;
     tl->type = tok;
     tl->next = NULL;
 }
