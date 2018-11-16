@@ -56,8 +56,10 @@ enum option get_option(char *opt)
         return VERSION;
     if (!strcmp(opt, "-c"))
         return CMD;
-    if (!strcmp(opt, "-O") || !strcmp(opt, "+O"))
-        return SHOPT;
+    if (!strcmp(opt, "-O"))
+        return SHOPT_MINUS;
+    if (!strcmp(opt, "+O"))
+        return SHOPT_PLUS;
     return NONE;
 }
 
@@ -70,7 +72,7 @@ enum option get_option(char *opt)
 enum shopt get_shopt(char *arg)
 {
     if (!arg)
-        return OTHER;
+        return NO;
     if (!strcmp(arg, "ast_print"))
         return ASTPRINT;
     if (!strcmp(arg, "dotglob"))
@@ -109,6 +111,32 @@ static void err_shopt(void)
     \txpg_echo");
 }
 
+static void print_shopt_minus(void)
+{
+    printf("ast_print         off\n");
+    printf("dotglob           off\n");
+    printf("expand_aliasases  off\n");
+    printf("extglob           off\n");
+    printf("nocaseglob        off\n");
+    printf("nullglob          off\n");
+    printf("sourcepath        on\n");
+    printf("xpg_echo          off\n");
+    exit(0);
+}
+
+static void print_shopt_plus(void)
+{
+    printf("shopt -u ast_print\n");
+    printf("shopt -u dotglob\n");
+    printf("shopt -u expand_aliases\n");
+    printf("shopt -u extglob\n");
+    printf("shopt -u nocaseglob\n");
+    printf("shopt -u nullglob\n");
+    printf("shopt -s sourcepath\n");
+    printf("shopt -u xpg_echo\n");
+    exit(0);
+}
+
 /**
  *\fn options
  *\brief Do actions according to each options
@@ -137,12 +165,17 @@ void options(char *argv[])
                 }
                 exit(exec_main(argv[i]));
                 break;
-            case SHOPT:
+            case SHOPT_PLUS:
+            case SHOPT_MINUS:
                 if (section == 1)
                 {
                     enum shopt shopt = get_shopt(argv[++i]);
                     if (shopt == OTHER)
                         err_shopt();
+                    if (shopt == NO && opt == SHOPT_MINUS)
+                        print_shopt_minus();
+                    if (shopt == NO && opt == SHOPT_PLUS)
+                        print_shopt_plus();
                 }
                 break;
             case NORC:

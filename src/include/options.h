@@ -6,7 +6,8 @@
 enum option
 {
     NONE = 0,///<Unknown or no options
-    SHOPT,///<[-+]O        Enables shopt variables
+    SHOPT_MINUS,///<-O     Disables shopt variables
+    SHOPT_PLUS,///<+O      Enables shopt variables
     CMD,///<-c <command>   Executes the command
     NORC,///<--norc        Deactivates ressource reader
     AST,///<--ast-print    Prints the AST
@@ -19,6 +20,7 @@ enum option
 enum shopt
 {
     OTHER = 0,
+    NO,
     ASTPRINT,
     DOTGLOB,
     EXP_ALIAS,
