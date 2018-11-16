@@ -181,7 +181,7 @@ int exec_node(struct ast_node *node, struct variables *var)
  */
 int exec_main(char *str, int is_print)
 {
-    printf("exec: %s\n", str);
+    //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
@@ -192,7 +192,7 @@ int exec_main(char *str, int is_print)
     if (is_print)
         makedot(ast, "ast.dot");
 
-    printf("\nExecution result:\n");
+    //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
     destroy_ast(ast);
