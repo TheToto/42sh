@@ -218,7 +218,7 @@ void options(char *argv[])
 
     for ( ; argv[i]; i++)
     {
-        printf("File to exec : %s\n", argv[i]);
+        //printf("File to exec : %s\n", argv[i]);
         launch_file(argv[i], ast);
     }
 }
