@@ -8,8 +8,8 @@
 
 struct ast_node *rule_compound_redirection(struct token_list **tok)
 {
-    //printf("Enter in redirection\n");
-    //debug_token(tok);
+    printf("Enter in redirection\n");
+    debug_token(tok);
     /// TODO -> RULE REDIRECTION and call this EVERYWHERE.
     warnx("TODO: rule_redirection");
     tok = tok;

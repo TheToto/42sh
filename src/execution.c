@@ -31,7 +31,7 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     //if !builtin cmd
     pid_t pid;
     int status;
-    int err = 0;
+    int error = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
     char **expanded = replace_var_scmd(var, scmd);
@@ -40,9 +40,9 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
         errx(1, "ERROR: Fork failed");
     else if (pid == 0)
     {
-        err = execvp(*expanded, expanded);
-        if (err < 0)
-            errx(1, "ERROR: Exec failed");
+        error = execvp(*expanded, expanded);
+        if (error < 0)
+            err(1, "Exec %s failed", *expanded);
     }
     else
     {
@@ -210,7 +210,7 @@ int exec_main(char *str, int is_print)
     if (is_print)
         makedot(ast, "ast.dot");
 
-    //printf("\nExecution result:\n");
+    printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
     destroy_ast(ast);

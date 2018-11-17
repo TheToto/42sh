@@ -7,8 +7,8 @@
 
 struct ast_node *rule_shell_command(struct token_list **tok)
 {
-    //printf("Enter in shell command\n");
-    //debug_token(tok);
+    printf("Enter in shell command\n");
+    debug_token(tok);
     if (TOK_TYPE(tok) == IF)
         return rule_if(tok);
     if (TOK_TYPE(tok) == FOR)

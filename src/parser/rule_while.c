@@ -7,8 +7,8 @@
 
 struct ast_node *rule_while(struct token_list **tok)
 {
-    //printf("Enter in while\n");
-    //debug_token(tok);
+    printf("Enter in while\n");
+    debug_token(tok);
     if (TOK_TYPE(tok) != WHILE)
     {
         warnx("No while at begining of while...");
@@ -37,8 +37,8 @@ struct ast_node *rule_while(struct token_list **tok)
 
 struct ast_node *rule_do_group(struct token_list **tok)
 {
-    //printf("Enter in do group\n");
-    //debug_token(tok);
+    printf("Enter in do group\n");
+    debug_token(tok);
     if (TOK_TYPE(tok) != DO)
     {
         warnx("Need a do in do group");
@@ -57,8 +57,8 @@ struct ast_node *rule_do_group(struct token_list **tok)
 
 struct ast_node *rule_until(struct token_list **tok)
 {
-    //printf("Enter in until\n");
-    //debug_token(tok);
+    printf("Enter in until\n");
+    debug_token(tok);
     if (TOK_TYPE(tok) != UNTIL)
     {
         warnx("No until at begining of until...");

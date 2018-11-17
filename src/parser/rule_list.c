@@ -7,8 +7,8 @@
 
 struct ast_node *rule_list(struct token_list **tok)
 {
-    //printf("Enter in list\n");
-    //debug_token(tok);
+    printf("Enter in list\n");
+    debug_token(tok);
     struct ast_node *left_andor = rule_andor(tok);
     if (!left_andor)
         return NULL;

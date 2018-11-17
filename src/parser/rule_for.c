@@ -7,8 +7,8 @@
 
 struct ast_node *rule_for(struct token_list **tok)
 {
-    //printf("Enter in for\n");
-    //debug_token(tok);
+    printf("Enter in for\n");
+    debug_token(tok);
     if (TOK_TYPE(tok) != FOR)
     {
         warnx("Need FOR at begin of for");

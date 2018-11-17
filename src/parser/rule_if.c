@@ -7,8 +7,8 @@
 
 struct ast_node *rule_if(struct token_list **tok)
 {
-    //printf("Enter in if\n");
-    //debug_token(tok);
+    printf("Enter in if\n");
+    debug_token(tok);
     NEXT_TOK(tok);
     struct ast_node *condition = rule_compound_list(tok);
     if (!condition)

@@ -20,16 +20,17 @@ void debug_token(struct token_list **tok)
 
 void remove_new_line(struct token_list **tok)
 {
-    //printf("Enter in newline\n");
-    //debug_token(tok);
+    printf("Enter in newline\n");
+    debug_token(tok);
     while (TOK_TYPE(tok) == NEWLINE)
         NEXT_TOK(tok);
 }
 
 struct ast_node *rule_input(struct token_list **tok)
 {
-    //printf("Enter in input\n");
-    //debug_token(tok);
+    printf("Enter in input\n");
+    debug_token(tok);
+    remove_new_line(tok);
     if (TOK_TYPE(tok) == NEWLINE || TOK_TYPE(tok) == END_OF_FILE)
     {
         // DO NOTHING (Not an error)
@@ -38,9 +39,14 @@ struct ast_node *rule_input(struct token_list **tok)
     struct ast_node *res = rule_list(tok);
     if (!res)
         return NULL;
-    if (TOK_TYPE(tok) == NEWLINE || TOK_TYPE(tok) == END_OF_FILE)
+    remove_new_line(tok);
+    if (TOK_TYPE(tok) == END_OF_FILE)
     {
         return res;
+    }
+    else
+    {
+        return create_ast_node_semicolon(res, rule_input(tok));
     }
     warnx("Your input is malformed.");
     return NULL;

@@ -7,8 +7,8 @@
 
 struct ast_node *rule_simple_command(struct token_list **tok)
 {
-    //printf("Enter in simple command\n");
-    //debug_token(tok);
+    printf("Enter in simple command\n");
+    debug_token(tok);
     struct ast_node *ast_command = create_ast_node_scmd();
     if (!ast_command)
         return NULL;
@@ -27,8 +27,8 @@ struct ast_node *rule_simple_command(struct token_list **tok)
 void rule_prefix(struct ast_node *scmd,
         struct token_list **tok)
 {
-    //printf("Enter in prefix\n");
-    //debug_token(tok);
+    printf("Enter in prefix\n");
+    debug_token(tok);
     /// TODO -> RULE  REDIRECTION IF ITS A REDIR
 
     while (TOK_TYPE(tok) == ASSIGNMENT_WORD)
@@ -40,8 +40,8 @@ void rule_prefix(struct ast_node *scmd,
 
 void rule_element(struct ast_node *scmd, struct token_list **tok)
 {
-    //printf("Enter in element\n");
-    //debug_token(tok);
+    printf("Enter in element\n");
+    debug_token(tok);
     /// TODO -> RULE REDIRECTION IF ITS A REDIR
 
     while (TOK_TYPE(tok) == WORD)
