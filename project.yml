@@ -34,6 +34,45 @@
   :support:
     - test/support
 
+:files:
+  :support:
+    - src/lexer.c;
+    - src/lexer_func.c;
+    - src/options.c;
+    - src/execution.c;
+    - src/env/var.c;
+    - src/readfile.c;
+    - src/parser/ast/print_ast.c;
+    - src/parser/ast/ast_destroy.c;
+    - src/parser/ast/ast_node_ampersand.c;
+    - src/parser/ast/ast_node_case.c;
+    - src/parser/ast/ast_node_fctdec.c;
+    - src/parser/ast/ast_node_for.c;
+    - src/parser/ast/ast_node_if.c;
+    - src/parser/ast/ast_node_logical_and.c;
+    - src/parser/ast/ast_node_logical_or.c;
+    - src/parser/ast/ast_node_not.c;
+    - src/parser/ast/ast_node_pipe.c;
+    - src/parser/ast/ast_node_redirect.c;
+    - src/parser/ast/ast_node_scmd.c;
+    - src/parser/ast/ast_node_semicolon.c;
+    - src/parser/ast/ast_node_while.c;
+    - src/parser/rule_andor.c;
+    - src/parser/rule_case.c;
+    - src/parser/rule_command.c;
+    - src/parser/rule_compound_list.c;
+    - src/parser/rule_for.c;
+    - src/parser/rule_funcdec.c;
+    - src/parser/rule_if.c;
+    - src/parser/rule_input.c;
+    - src/parser/rule_list.c;
+    - src/parser/rule_pipe.c;
+    - src/parser/rule_pipeline.c;
+    - src/parser/rule_redirection.c;
+    - src/parser/rule_shell_command.c;
+    - src/parser/rule_simple_command.c;
+    - src/parser/rule_while.c;
+
 :defines:
   # in order to add common defines:
   #  1) remove the trailing [] from the :common: section

@@ -3,7 +3,6 @@
 
 void setUp(void)
 {
-    TEST_FILE("lexer_func.c")
 }
 
 void tearDown(void)
