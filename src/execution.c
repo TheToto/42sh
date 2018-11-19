@@ -49,7 +49,8 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
         while (waitpid(pid, &status, 0) != pid)
             continue;
     }
-    //printf("%s return %d\n", *scmd->elements, status);
+    status = WEXITSTATUS(status);
+    printf("%s return %d\n", *scmd->elements, status);
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);
     free(expanded);
