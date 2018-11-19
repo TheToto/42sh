@@ -57,7 +57,8 @@ enum redirect_type
     R_LESSGREAT,          //<>
     R_DLESSDASH,          //<<-
     R_CLOBBER,            //>|
-    R_PIPE                //|
+    R_PIPE,                //|
+    R_NONE
 };
 
 /// @brief Construction of 'redirection' ast_node

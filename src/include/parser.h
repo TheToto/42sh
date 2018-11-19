@@ -73,7 +73,8 @@ struct lexer
     struct token_list *token_list;
 };
 
-struct ast_node *rule_compound_redirection(struct token_list **tok);
+struct ast_node *rule_redirection(struct token_list **tok,
+        struct ast_node *child);
 void rule_element(struct ast_node *scmd, struct token_list **tok);
 void rule_prefix(struct ast_node *scmd, struct token_list **tok);
 struct ast_node *rule_compound_list(struct token_list **tok);
