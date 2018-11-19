@@ -27,14 +27,13 @@ void launch_file(char *path, int is_print)
     size_t numbytes = ftell(f);
 
     fseek(f, 0L, SEEK_SET);
-    char *buffer = calloc(numbytes, sizeof(char));
+    char *buffer = calloc(numbytes + 1, sizeof(char));
 
     if(buffer == NULL)
         err(1, "Failed to malloc buffer");
 
     fread(buffer, sizeof(char), numbytes, f);
     fclose(f);
-
     exec_main(buffer, is_print);
 
     free(buffer);
