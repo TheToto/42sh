@@ -42,7 +42,6 @@ struct ast_node *rule_redirection(struct token_list **tok,
 {
     printf("Enter in redirection\n");
     debug_token(tok);
-    /// TODO -> RULE REDIRECTION and call this EVERYWHERE.
     int fd = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
     {

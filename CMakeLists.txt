@@ -8,6 +8,6 @@ file(GLOB SOURCES
         "src/*.c"
         "src/env/*.c"
         "src/parser/*.c"
-        "src/parser/ast/*.c")
+        "src/ast/*.c")
 
 add_executable(42sh ${SOURCES})
