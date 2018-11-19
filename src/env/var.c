@@ -160,7 +160,7 @@ void assign_prefix(struct variables *var, char *prefix)
     {
         0
     };
-    sscanf(prefix, "%s=%s", name, value);
+    sscanf(prefix, "%[^=]=%s", name, value);
     //recursive call here for further expansion
     add_var(var, name, value);
 }

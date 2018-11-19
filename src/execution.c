@@ -35,22 +35,25 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
     char **expanded = replace_var_scmd(var, scmd);
-    pid = fork();
-    if (pid < 0)
-        errx(1, "ERROR: Fork failed");
-    else if (pid == 0)
+    if (scmd->elt_size > 0)
     {
-        error = execvp(*expanded, expanded);
-        if (error < 0)
-            err(1, "Exec %s failed", *expanded);
+        pid = fork();
+        if (pid < 0)
+            errx(1, "ERROR: Fork failed");
+        else if (pid == 0)
+        {
+            error = execvp(*expanded, expanded);
+            if (error < 0)
+                err(1, "Exec %s failed", *expanded);
+        }
+        else
+        {
+            while (waitpid(pid, &status, 0) != pid)
+                continue;
+        }
+        status = WEXITSTATUS(status);
+        printf("%s return %d\n", *scmd->elements, status);
     }
-    else
-    {
-        while (waitpid(pid, &status, 0) != pid)
-            continue;
-    }
-    status = WEXITSTATUS(status);
-    printf("%s return %d\n", *scmd->elements, status);
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);
     free(expanded);
