@@ -1,5 +1,6 @@
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "parser.h"
 #include "ast.h"
@@ -22,7 +23,7 @@ void remove_new_line(struct token_list **tok)
 {
     printf("Enter in newline\n");
     debug_token(tok);
-    while (TOK_TYPE(tok) == NEWLINE)
+    while (TOK_TYPE(tok) == NEW_LINE)
         NEXT_TOK(tok);
 }
 
@@ -31,10 +32,13 @@ struct ast_node *rule_input(struct token_list **tok)
     printf("Enter in input\n");
     debug_token(tok);
     remove_new_line(tok);
-    if (TOK_TYPE(tok) == NEWLINE || TOK_TYPE(tok) == END_OF_FILE)
+    if (TOK_TYPE(tok) == NEW_LINE || TOK_TYPE(tok) == END_OF_FILE)
     {
         // DO NOTHING (Not an error)
-        return NULL;
+        struct ast_node *empty = malloc(sizeof(struct ast_node));
+        empty->type = N_NONE;
+        empty->son = NULL;
+        return empty;
     }
     struct ast_node *res = rule_list(tok);
     if (!res)
@@ -46,6 +50,12 @@ struct ast_node *rule_input(struct token_list **tok)
     }
     else
     {
+        struct ast_node *right_input = rule_input(tok);
+        if (!right_input)
+        {
+            destroy_ast(res);
+            return NULL;
+        }
         return create_ast_node_semicolon(res, rule_input(tok));
     }
     warnx("Your input is malformed.");

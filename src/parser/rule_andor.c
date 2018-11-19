@@ -19,7 +19,10 @@ struct ast_node *rule_andor(struct token_list **tok)
         remove_new_line(tok);
         struct ast_node *right_andor = rule_andor(tok);
         if (!right_andor)
+        {
+            destroy_ast(left_pip);
             return NULL;
+        }
         if (save == LOGICAL_AND)
             return create_ast_node_land(left_pip, right_andor);
         return create_ast_node_lor(left_pip, right_andor);

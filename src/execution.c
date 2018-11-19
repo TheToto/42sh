@@ -170,22 +170,18 @@ int exec_node(struct ast_node *node, struct variables *var)
             break;
         case N_WHILE:
             return exec_while(node->son, var);
-            break;
         case N_FOR:
             return exec_for(node->son, var);
-            break;
         case N_REDIRECT:
             return exec_redirect(node->son);
-            break;
         case N_SEMICOLON:
             return exec_semicolon(node->son, var);
-            break;
         case N_AMPERSAND:
             return exec_semicolon(node->son, var);
-            break;
         case N_NOT:
             return exec_not(node->son, var);
-            break;
+        case N_NONE:
+            return 0;
         default:
             break;
     }
@@ -193,7 +189,7 @@ int exec_node(struct ast_node *node, struct variables *var)
 }
 
 /**
- *\fn exec_amin
+ *\fn exec_main
  *\brief Send a string to lexer, parser, and exec
  *\param str  The string to execute
  *\return Return an int depending on the commands given

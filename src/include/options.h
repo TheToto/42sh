@@ -34,3 +34,4 @@ enum shopt
 enum option get_option(char *opt);
 enum shopt get_shopt(char *arg);
 void options(char *argv[]);
+int show_prompt(void);

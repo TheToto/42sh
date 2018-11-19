@@ -101,14 +101,14 @@ static void err_shopt(void)
     warnx("Invalid arguments for [-+]O option");
     warnx("Usage: [-+]O shopt_variable");
     errx(1, "Shopt variables:\n\
-    \tast_print\n\
-    \tdotglob\n\
-    \texpand_aliases\n\
-    \textglob\n\
-    \tnocaseglob\n\
-    \tnullglob\n\
-    \tsourcepath\n\
-    \txpg_echo");
+            \tast_print\n\
+            \tdotglob\n\
+            \texpand_aliases\n\
+            \textglob\n\
+            \tnocaseglob\n\
+            \tnullglob\n\
+            \tsourcepath\n\
+            \txpg_echo");
 }
 
 /**
@@ -215,10 +215,16 @@ void options(char *argv[])
             }
         }
     }
-
-    for ( ; argv[i]; i++)
+    if (!argv[i])
     {
-        //printf("File to exec : %s\n", argv[i]);
-        launch_file(argv[i], ast);
+        exit(show_prompt());
+    }
+    else
+    {
+        for ( ; argv[i]; i++)
+        {
+            printf("File to exec : %s\n", argv[i]);
+            launch_file(argv[i], ast);
+        }
     }
 }
