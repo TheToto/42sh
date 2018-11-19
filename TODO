@@ -1,9 +1,11 @@
 # LEXER
 * [x] Basic lexer
-* [~] Handle parenthesis (in progress)
+* [~] Handle quotes (in progress)
 
 # PARSER
 * [x] Handle GRAMMAR
+* [ ] Redirections
+* [ ] Case statement
 
 # TEST SUITE
 * [x] Set up ceedling
@@ -30,3 +32,8 @@
 * [x] while/until statement
 * [x] not statement
 * [x] Simple command
+* [ ] Redirections
+* [ ] Case statement
+
+# Built in
+* [ ]
