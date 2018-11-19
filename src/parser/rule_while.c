@@ -51,8 +51,9 @@ struct ast_node *rule_do_group(struct token_list **tok)
         NEXT_TOK(tok);
         return do_group;
     }
-    NEXT_TOK(tok);
-    errx(1, "I need a done after a do group");
+    destroy_ast(do_group);
+    warnx("I need a done after a do group");
+    return NULL;
 }
 
 struct ast_node *rule_until(struct token_list **tok)

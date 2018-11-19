@@ -24,7 +24,10 @@ struct ast_node *rule_pipeline(struct token_list **tok)
         NEXT_TOK(tok);
         struct ast_node *right_pipe = rule_pipe(tok);
         if (!right_pipe)
+        {
+            destroy_ast(res);
             return NULL;
+        }
         res = create_ast_node_pipe(left_command, right_pipe);
     }
     if (not)

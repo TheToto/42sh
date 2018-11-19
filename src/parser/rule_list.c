@@ -24,7 +24,10 @@ struct ast_node *rule_list(struct token_list **tok)
         }
         struct ast_node *right_list = rule_list(tok);
         if (!right_list)
+        {
+            destroy_ast(left_andor);
             return NULL;
+        }
         if (save == SEMICOLON)
             return create_ast_node_semicolon(left_andor, right_list);
         return create_ast_node_ampersand(left_andor, right_list);

@@ -15,6 +15,7 @@ struct ast_node *rule_if(struct token_list **tok)
         return NULL;
     if (TOK_TYPE(tok) != THEN)
     {
+        destroy_ast(condition);
         warnx("No then after if statement");
         return NULL;
     }
