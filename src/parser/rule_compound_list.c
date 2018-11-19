@@ -28,7 +28,7 @@ struct ast_node *rule_compound_list(struct token_list **tok)
     remove_new_line(tok); // skip (\n)*
     struct ast_node *left_andor = rule_andor(tok);
     if (TOK_TYPE(tok) == SEMICOLON || TOK_TYPE(tok) == AMPERSAND
-            || TOK_TYPE(tok) == NEWLINE)
+            || TOK_TYPE(tok) == NEW_LINE)
     {
         enum token_type save = TOK_TYPE(tok);
         NEXT_TOK(tok); // skip & || ;

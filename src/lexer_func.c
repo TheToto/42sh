@@ -132,7 +132,7 @@ enum token_type special_token(char *val)
  * \fn enum token_type bin_op_and_default_token (char *val)
  * \brief Test if val correspond to a binary operator
  * or one of following token or not:
- * IO_NUMBER, NEWLINE, ASSIGNMENT_WORD, NAME.
+ * IO_NUMBER, NEW_LINE, ASSIGNMENT_WORD, NAME.
  *
  * \param val Pointer to the string we want to check.
  * \return The token corresponding to val if it matching, WORD else.
@@ -149,7 +149,7 @@ enum token_type bin_op_and_default_token(char *val)
     if (!fnmatch("+([0-9])", val, FNM_EXTMATCH))
         return IO_NUMBER;
     if (!strcmp(val, "\n"))
-        return NEWLINE;
+        return NEW_LINE;
     if (!fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])=*", val, FNM_EXTMATCH))
         return ASSIGNMENT_WORD;
     if (!fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", val, FNM_EXTMATCH))

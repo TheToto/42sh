@@ -46,6 +46,8 @@ void print_ast_node(struct ast_node *ast, size_t *num, FILE *f)
         case N_PIPE:
             print_ast_pipe(ast->son, num, f);
             break;
+        case N_NONE:
+            break;
     }
 }
 

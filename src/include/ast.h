@@ -165,6 +165,7 @@ enum node_type
     N_SEMICOLON,
     N_NOT,
     N_PIPE,
+    N_NONE
 };
 
 /// @brief Each ast node is composed by this truct and a pointer to its type

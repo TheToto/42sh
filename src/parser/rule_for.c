@@ -35,7 +35,7 @@ struct ast_node *rule_for(struct token_list **tok)
             NEXT_TOK(tok);
         }
 
-        if (TOK_TYPE(tok) != NEWLINE && TOK_TYPE(tok) != SEMICOLON)
+        if (TOK_TYPE(tok) != NEW_LINE && TOK_TYPE(tok) != SEMICOLON)
         {
             destroy_ast(for_node);
             warnx("Need ; or \\n after 'in (WORD)*' in for statement");
