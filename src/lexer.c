@@ -143,14 +143,14 @@ int should_change(enum token_type *type, enum token_type type_next,
     char *str = lstring[1];
     char *word = lstring[2];
     enum token_type type_tmp = get_token_type(tmp);
-    if (*type == IO_NUMBER && type_tmp > 8)
+    if (*type == IO_NUMBER && type_tmp > 8 && *type != type_next)
         *type = WORD;
     if (((*type != type_next)
                 && ((*type < 10 && *type > 22) || type_next == WORD)
                 && (*type != NAME || (type_tmp != 38 
                     && tmp[0] != '=' && type_tmp != 36)))
                 || ((*type == WORD)
-                    && (type_tmp != NAME && tmp[0] != '='))
+                    && (type_tmp < NAME && type_tmp != 33 && tmp[0] != '='))
                 || (*type == ASSIGNMENT_WORD && type_tmp < NAME))
     {
         if ((*type == SEMICOLON && type_next == DSEMICOLON)
