@@ -54,8 +54,8 @@
     - src/parser/ast/ast_node_not.c;
     - src/parser/ast/ast_node_pipe.c;
     - src/parser/ast/ast_node_redirect.c;
-    - src/parser/ast/ast_node_scmd.c;
     - src/parser/ast/ast_node_semicolon.c;
+    - src/parser/ast/ast_node_scmd.c;
     - src/parser/ast/ast_node_while.c;
     - src/parser/rule_andor.c;
     - src/parser/rule_case.c;
@@ -72,6 +72,7 @@
     - src/parser/rule_shell_command.c;
     - src/parser/rule_simple_command.c;
     - src/parser/rule_while.c;
+    - src/prompt.c
 
 :defines:
   # in order to add common defines:
@@ -102,6 +103,15 @@
 :gcov:
     :html_report_type: basic
 
+:tools:
+    :test_linker:
+        :executable: gcc
+        :arguments:
+        - ${1} #list of object files to link (Ruby method call param list sub)
+        - -lreadline
+        - -fsanitize=address
+        - -o ${2} #executable file output (Ruby method call param list sub)
+
 #:tools:
 # Ceedling defaults to using gcc for compiling, linking, etc.
 # As [:tools] is blank, gcc will be used (so long as it's in your system path)
@@ -124,7 +134,7 @@
   :test:
     :compile:
       :*:
-        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"
+        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include -fsanitize=address"
     :link:
       :*:
         - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"

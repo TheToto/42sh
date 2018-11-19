@@ -19,6 +19,7 @@ struct ast_node *rule_funcdec(struct token_list **tok)
         warnx("This function has no name");
         return NULL;
     }
+    NEXT_TOK(tok);
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
         NEXT_TOK(tok);
     else
