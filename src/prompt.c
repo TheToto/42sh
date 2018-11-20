@@ -38,14 +38,19 @@ static int exec_prompt(char *str, struct variables *library)
     return res;
 }
 
-
-int show_prompt(void)
+static char *init_path(void)
 {
     size_t len = strlen(getenv("HOME")) + strlen("/.42sh_history") + 1;
     char *histpath = calloc(len, sizeof(char));
     strcat(histpath, getenv("HOME"));
     strcat(histpath, "/.42sh_history");
-    HIST_ENTRY **hist = history_list();;
+    return histpath;
+}
+
+int show_prompt(void)
+{
+    char *histpath = init_path();
+    HIST_ENTRY **hist = history_list();
     putenv("INPUTRC=42shrc");
     struct variables *library = init_var();
     while (1)
@@ -53,12 +58,18 @@ int show_prompt(void)
         char *buf = readline("[42sh@pc]$ ");
         if (buf && *buf)
             add_history(buf);
+        if (!strcmp(buf, "exit"))
+        {
+            free(buf);
+            break;
+        }
         exec_prompt(buf, library);
         free(buf);
-        write_history(histpath);
     }
-    for (int i = 0; i < history_length; i++)
-        free_history_entry(hist[i]);
+    append_history(history_length, histpath);
+    history_truncate_file(histpath, 500);
+
     destroy_var(library);
     free(histpath);
+    return 0;
 }
