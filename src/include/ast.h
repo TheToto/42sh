@@ -57,7 +57,6 @@ enum redirect_type
     R_LESSGREAT,          //<>
     R_DLESSDASH,          //<<-
     R_CLOBBER,            //>|
-    R_PIPE,                //|
     R_NONE
 };
 
@@ -128,26 +127,6 @@ struct ast_node_fctdec
 {
     char *name;                 ///name of the function
     struct ast_node *function;  ///body of the function
-};
-
-/// @brief Union of all ast_nodes
-union ast_type
-{
-    struct ast_node_if *token_IF;
-    struct ast_node_for *token_FOR;
-    struct ast_node_while *token_WHILE;
-    struct ast_node_case *token_CASE;
-    struct ast_node_redirect *token_REDIRECT;
-    struct ast_node_cmd *token_CMD;
-    struct ast_node_fctdec *token_FCT_DEC;
-    struct ast_node_land *token_LAND;
-    struct ast_node_lor *token_LOR;
-    struct ast_node_ampersand *token_AMPERSAND;
-    struct ast_node_semicolon *token_SEMICOLON;
-    struct ast_node_not *token_NOT;
-    struct ast_node_pipe *token_PIPE;
-    struct ast_node_scmd *token_SCMD;
-    struct ast_node_fctdec *token_FCTDEC;
 };
 
 ///brief Enumeration of handled nodes
