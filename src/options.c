@@ -8,6 +8,9 @@
  *[GNU long option] [option] script-file
  */
 
+#define _POSIX_C_SOURCE
+#define _DEFAULT_SOURCE
+
 #include <string.h>
 #include <stdio.h>
 #include <err.h>
@@ -203,7 +206,7 @@ void options(char *argv[])
         else if (opt == SHOPT_PLUS || opt == SHOPT_MINUS)
             exec_shopt(argv, &i, section, opt);
         else if (opt == NORC) //if (!section) : deactivate ressource reader
-            continue;
+            unsetenv("INPUTRC");
         else if (opt == AST) //OK
             continue;
         else if (opt == VERSION)
