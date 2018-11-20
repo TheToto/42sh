@@ -47,9 +47,4 @@ struct ast_node *rule_command(struct token_list **tok)
     }
     // HANDLE ERRORS HERE PLEASE
     return rule_simple_command(tok);
-
-    //
-    /// -> TODO : REDIRECTIONS FOR FUNCDEC AND SHELL COMMAND
-    //
-
 }
