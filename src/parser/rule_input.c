@@ -8,6 +8,7 @@
 
 void debug_token(struct token_list **tok)
 {
+    return;
     struct token_list *t = *tok;
     while (t)
     {
@@ -21,7 +22,7 @@ void debug_token(struct token_list **tok)
 
 void remove_new_line(struct token_list **tok)
 {
-    printf("Enter in newline\n");
+    //printf("Enter in newline\n");
     debug_token(tok);
     while (TOK_TYPE(tok) == NEW_LINE)
         NEXT_TOK(tok);
@@ -29,7 +30,7 @@ void remove_new_line(struct token_list **tok)
 
 struct ast_node *rule_input(struct token_list **tok)
 {
-    printf("Enter in input\n");
+    //printf("Enter in input\n");
     debug_token(tok);
     remove_new_line(tok);
     if (TOK_TYPE(tok) == NEW_LINE || TOK_TYPE(tok) == END_OF_FILE)

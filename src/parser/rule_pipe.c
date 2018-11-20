@@ -7,7 +7,7 @@
 
 struct ast_node *rule_pipe(struct token_list **tok)
 {
-    printf("Enter in pipe\n");
+    //printf("Enter in pipe\n");
     debug_token(tok);
     remove_new_line(tok);
     struct ast_node *left_command = rule_command(tok);

@@ -27,7 +27,7 @@ static struct ast_node *apply_redir(struct token_list **tok,
 
 struct ast_node *rule_simple_command(struct token_list **tok)
 {
-    printf("Enter in simple command\n");
+    //printf("Enter in simple command\n");
     debug_token(tok);
     struct ast_node *ast_command = create_ast_node_scmd();
     struct ast_node *res = ast_command;
@@ -52,7 +52,7 @@ struct ast_node *rule_simple_command(struct token_list **tok)
 struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res)
 {
-    printf("Enter in prefix\n");
+    //printf("Enter in prefix\n");
     debug_token(tok);
     /// TODO -> RULE  REDIRECTION IF ITS A REDIR
 
@@ -69,7 +69,7 @@ struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
 struct ast_node *rule_element(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res)
 {
-    printf("Enter in element\n");
+    //printf("Enter in element\n");
     debug_token(tok);
     /// TODO -> RULE REDIRECTION IF ITS A REDIR
 

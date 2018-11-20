@@ -23,7 +23,7 @@ static int check_andor(enum token_type t)
 
 struct ast_node *rule_compound_list(struct token_list **tok)
 {
-    printf("Enter in compound list\n");
+    //printf("Enter in compound list\n");
     debug_token(tok);
     remove_new_line(tok); // skip (\n)*
     struct ast_node *left_andor = rule_andor(tok);

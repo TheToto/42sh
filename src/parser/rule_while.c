@@ -7,7 +7,7 @@
 
 struct ast_node *rule_while(struct token_list **tok)
 {
-    printf("Enter in while\n");
+    //printf("Enter in while\n");
     debug_token(tok);
     if (TOK_TYPE(tok) != WHILE)
     {
@@ -37,7 +37,7 @@ struct ast_node *rule_while(struct token_list **tok)
 
 struct ast_node *rule_do_group(struct token_list **tok)
 {
-    printf("Enter in do group\n");
+    //printf("Enter in do group\n");
     debug_token(tok);
     if (TOK_TYPE(tok) != DO)
     {

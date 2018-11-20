@@ -7,7 +7,7 @@
 
 struct ast_node *rule_pipeline(struct token_list **tok)
 {
-    printf("Enter in pipeline\n");
+    //printf("Enter in pipeline\n");
     debug_token(tok);
     short not = 0;
     if (TOK_TYPE(tok) == NOT)

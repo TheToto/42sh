@@ -38,7 +38,7 @@ static enum redirect_type translate_redirect(enum token_type tok)
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
-    printf("Enter in redirection\n");
+    //printf("Enter in redirection\n");
     debug_token(tok);
     int fd = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)

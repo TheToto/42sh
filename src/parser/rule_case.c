@@ -7,7 +7,7 @@
 
 struct ast_node *rule_case(struct token_list **tok)
 {
-    printf("Enter in case\n");
+    //printf("Enter in case\n");
     debug_token(tok);
     /// TODO CASE
     warnx("TODO : rule_case");

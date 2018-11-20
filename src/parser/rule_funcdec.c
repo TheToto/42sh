@@ -7,7 +7,7 @@
 
 struct ast_node *rule_funcdec(struct token_list **tok)
 {
-    printf("Enter in funcdec\n");
+    //printf("Enter in funcdec\n");
     debug_token(tok);
     char *name_func;
     if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))

@@ -52,7 +52,7 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
                 continue;
         }
         status = WEXITSTATUS(status);
-        printf("%s return %d\n", *scmd->elements, status);
+        //printf("%s return %d\n", *scmd->elements, status);
     }
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);
@@ -210,7 +210,7 @@ int exec_main(char *str, int is_print)
     if (is_print)
         makedot(ast, "ast.dot");
 
-    printf("\nExecution result:\n");
+    //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
     destroy_ast(ast);
