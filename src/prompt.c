@@ -50,8 +50,7 @@ static char *init_path(void)
 int show_prompt(void)
 {
     char *histpath = init_path();
-    HIST_ENTRY **hist = history_list();
-    putenv("INPUTRC=42shrc");
+    putenv("INPUTRC=~/.42shrc");
     struct variables *library = init_var();
     while (1)
     {
