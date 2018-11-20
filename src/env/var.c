@@ -178,11 +178,11 @@ char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
         if (scmd->elements[i][0] == '$')
         {
             char *value = get_var(var, scmd->elements[i] + 1);
+            free(res[i]);
             if (value)
-            {
-                free(res[i]);
                 res[i] = strdup(value);
-            }
+            else
+                res[i] = strdup("");
         }
     }
     return res;
