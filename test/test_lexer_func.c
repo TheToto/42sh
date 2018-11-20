@@ -11,6 +11,7 @@ void tearDown(void)
 
 void test_redirection_token(void)
 {
+    printf("-Testing: getting redirection token-\n");
     enum token_type token = get_token_type("<");
     TEST_ASSERT_EQUAL_INT(0, token);
     token = get_token_type(">");
@@ -35,12 +36,14 @@ void test_redirection_token(void)
 
 void test_quote_token(void)
 {
+    printf("-Testing: getting quotted word token-\n");
     enum token_type token = get_token_type("Iam\"quoted\"trustme");
     TEST_ASSERT_EQUAL_INT(37, token);
 }
 
 void test_condition_token(void)
 {
+    printf("-Testing: getting condition token-\n");
     enum token_type token = get_token_type("if");
     TEST_ASSERT_EQUAL_INT(10, token);
     token = get_token_type("then");
@@ -55,6 +58,7 @@ void test_condition_token(void)
 
 void test_case_token(void)
 {
+    printf("-Testing: getting case related token-\n");
     enum token_type token = get_token_type("case");
     TEST_ASSERT_EQUAL_INT(15, token);
     token = get_token_type("esac");
@@ -65,6 +69,7 @@ void test_case_token(void)
 
 void test_loop_token(void)
 {
+    printf("-Testing: getting loop related token-\n");
     enum token_type token = get_token_type("while");
     TEST_ASSERT_EQUAL_INT(18, token);
     token = get_token_type("until");
@@ -81,6 +86,7 @@ void test_loop_token(void)
 
 void test_special_token(void)
 {
+    printf("-Testing: getting enclosure and 'in' words token-\n");
     enum token_type token = get_token_type("in");
     TEST_ASSERT_EQUAL_INT(24, token);
     token = get_token_type("{");
@@ -95,6 +101,7 @@ void test_special_token(void)
 
 void test_bin_op_token(void)
 {
+    printf("-Testing: getting binary operator token-\n");
     enum token_type token = get_token_type("&&");
     TEST_ASSERT_EQUAL_INT(29, token);
     token = get_token_type("||");
@@ -107,6 +114,7 @@ void test_bin_op_token(void)
 
 void test_default_token(void)
 {
+    printf("-Testing: getting words, io-number and name related token-\n");
     enum token_type token = get_token_type("1234567890");
     TEST_ASSERT_EQUAL_INT(33, token);
     token = get_token_type("\n");

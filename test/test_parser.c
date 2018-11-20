@@ -15,6 +15,7 @@ void tearDow(void)
 
 void test_parser(void)
 {
+    printf("-Testing: parser not null with arguments-\n");
     struct lexer *l = lexer("if true; then true; else false; fi");
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));

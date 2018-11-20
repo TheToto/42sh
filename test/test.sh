@@ -57,11 +57,15 @@ while read line; do
     fi
 
     case $line in
-    "FAILED TEST"*) printf "    "$RED"-------------------\n"
-                    printf "    $line\n"
-                    printf "    -------------------\n\n"
-                    is_err=1;;
-    TESTED* ) printf "    "$YELLOW"$line"$DEFAULT"\n\n";;
+    *-Testing:*   )
+              test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
+              printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
+    "FAILED TEST"*)
+              printf "    "$RED"-------------------\n"
+              printf "    $line\n"
+              printf "    -------------------\n\n"
+              is_err=1;;
+    TESTED* ) printf "\n    "$YELLOW"$line"$DEFAULT"\n\n";;
     PASSED* ) printf "    "$GREEN"$line"$DEFAULT"\n";;
     FAILED* ) printf "    "$RED"$line"$DEFAULT"\n";;
     IGNORED*) printf "    "$DEFAULT"$line"$DEFAULT"\n";;
