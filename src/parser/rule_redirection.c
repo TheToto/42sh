@@ -29,8 +29,6 @@ static enum redirect_type translate_redirect(enum token_type tok)
             return R_DLESSDASH;
         case CLOBBER:            //>|        8
             return R_CLOBBER;
-        case PIPE:
-            return R_PIPE;
         default:
             break;
     }
@@ -49,6 +47,7 @@ struct ast_node *rule_redirection(struct token_list **tok,
         fd = strtol(TOK_STR(tok), NULL, 10);
         if (errno || fd < 0)
         {
+            destroy_ast(child);
             warnx("Wrong IO Number");
             return NULL;
         }
@@ -62,12 +61,14 @@ struct ast_node *rule_redirection(struct token_list **tok,
     enum redirect_type r_type = translate_redirect(TOK_TYPE(tok));
     if (r_type == R_NONE)
     {
+        destroy_ast(child);
         warnx("%s is not a correct redirector", TOK_STR(tok));
         return NULL;
     }
     NEXT_TOK(tok);
     if (TOK_TYPE(tok) != WORD)
     {
+        destroy_ast(child);
         warnx("Need a destination in redirection");
         return NULL;
     }
