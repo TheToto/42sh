@@ -33,6 +33,7 @@
 * [x] not statement
 * [x] Simple command
 * [ ] Redirections
+* [ ] Handle expansion in redirections
 * [ ] Case statement
 * [ ] Handle func declaration
 

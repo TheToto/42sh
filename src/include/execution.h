@@ -14,4 +14,5 @@
 int exec_main(char *str, int is_print);
 void launch_file(char *path, int is_print);
 
+int exec_redirect(struct ast_node_redirect *n, struct variables *var);
 int exec_node(struct ast_node *node, struct variables *var);
