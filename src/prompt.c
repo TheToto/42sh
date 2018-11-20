@@ -1,10 +1,10 @@
+#define _XOPEN_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <err.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 #include "execution.h"
 #include "lexer.h"
@@ -41,7 +41,12 @@ static int exec_prompt(char *str, struct variables *library)
 
 int show_prompt(void)
 {
+    size_t len = strlen(getenv("HOME")) + strlen("/.42sh_history") + 1;
+    char *histpath = calloc(len, sizeof(char));
+    strcat(histpath, getenv("HOME"));
+    strcat(histpath, "/.42sh_history");
     HIST_ENTRY **hist = history_list();;
+    putenv("INPUTRC=42shrc");
     struct variables *library = init_var();
     while (1)
     {
@@ -50,9 +55,10 @@ int show_prompt(void)
             add_history(buf);
         exec_prompt(buf, library);
         free(buf);
-        write_history(".42sh_history");
+        write_history(histpath);
     }
     for (int i = 0; i < history_length; i++)
         free_history_entry(hist[i]);
     destroy_var(library);
+    free(histpath);
 }
