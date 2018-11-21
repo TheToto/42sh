@@ -143,7 +143,7 @@ int should_change(enum token_type *type, enum token_type type_next,
     char *str = lstring[1];
     char *word = lstring[2];
     enum token_type type_tmp = get_token_type(tmp);
-    if (*type == IO_NUMBER && type_tmp > 8 && *type != type_next)
+    if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
     if (((*type != type_next)
                 && ((*type < 10 && *type > 22) || type_next == WORD)
