@@ -16,10 +16,13 @@ sanity="no"
 
 while test $# -gt 0; do
     case $1 in
-        -c | -category)
+        -c | --category)
             list_of_category=""
             shift
-            new_len="$#"
+            if test "$1" = ";"; then
+                printf $RED"\nERROR: no category: one category at least should be tested\n\n"$DEFAULT
+                exit 1
+            fi
             while test $# -gt 0 -a "$1" != ";"; do
                 case $1 in
                     ast | lexer | parser | option);;
