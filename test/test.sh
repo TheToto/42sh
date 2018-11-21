@@ -147,21 +147,34 @@ pretty_printf_err () {
     done < "$1"
 }
 
+list_of_dir="$(ls test/scripts)"
+
+list_of_file=""
+
+for dir in $list_of_dir; do
+    is_in $dir "$list_of_category"
+    is_asked=$?
+    if [ $is_asked -eq 0 ]; then
+        dir_path="test/scripts/$dir"
+        for file in $(ls "$dir_path"); do
+            list_of_file="$list_of_file"" $dir_path""/$file"
+        done
+    fi
+done
+
 printf "\n"$ANNONCE"  ------------"$DEFAULT"\n"
 printf $YELLOW"  GLOBAL TESTS"$DEFAULT"\n"
 printf $ANNONCE"  ------------"$DEFAULT"\n\n"
-
-cd test
 
 TESTED=0
 PASSED=0
 FAILED=0
 
-for file in $(ls scripts); do
+for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "scripts/$file" > tmp_ref 2> tmp_ref_err
-    ../build/42sh "scripts/$file" > tmp_def 2> tmp_def_err
+    bash "$file" > tmp_ref 2> tmp_ref_err
+    ../build/42sh "$file" > tmp_def 2> tmp_def_err
 
     diff tmp_def tmp_ref > res
     diff_content="$(cat res)"
