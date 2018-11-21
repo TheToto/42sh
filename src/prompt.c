@@ -50,13 +50,13 @@ static char *init_path(char *file)
 
 static void launchrc(int is_print)
 {
-        char *filerc = init_path("/.42shrc");
-        struct stat buf;
-        if (!stat("/etc/42shrc", &buf))
-            launch_file("/etc/42shrc", is_print);
-        else
-            launch_file(filerc, is_print);
-        free(filerc);
+    char *filerc = init_path("/.42shrc");
+    struct stat buf;
+    if (!stat("/etc/42shrc", &buf))
+        launch_file("/etc/42shrc", is_print);
+    else if (!stat(filerc, &buf))
+        launch_file(filerc, is_print);
+    free(filerc);
 }
 
 int show_prompt(int norc, int is_print)
