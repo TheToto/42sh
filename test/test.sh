@@ -36,11 +36,15 @@ cd ..
 #                                  UNITAR                                    #
 ##############################################################################
 
+list="$(ls test/unitary)"
+
+printf "  $list"
+
 ceedling > tmp 2> tmp_err
 
-printf $ANNONCE"\n  ------------"$DEFAULT"\n"
-printf $YELLOW"  UNITAR TESTS"$DEFAULT"\n"
-printf $ANNONCE"  ------------"$DEFAULT"\n\n"
+printf $ANNONCE"\n  -------------"$DEFAULT"\n"
+printf $YELLOW"  UNITARY TESTS"$DEFAULT"\n"
+printf $ANNONCE"  -------------"$DEFAULT"\n\n"
 
 is_err=0
 
