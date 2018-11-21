@@ -204,6 +204,7 @@ for file in $list_of_file; do
     timeout $timeout build/42sh "$file" > tmp_def 2> tmp_def_err
 
     exit_status="$?"
+    exit_status_sanity=1
 
     if [ $sanity -eq 1 ]; then
         valgrind build/42sh "$file" 2> tmp_sanity > /dev/null
