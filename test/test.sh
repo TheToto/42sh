@@ -11,7 +11,7 @@ DEFAULT="\033[1;39m"
 ##############################################################################
 
 list_of_category="ast_tests lexer_tests parser_tests option_tests"
-timeout="no"
+timeout="10000d"
 sanity="no"
 
 while test $# -gt 0; do
@@ -39,6 +39,15 @@ while test $# -gt 0; do
             fi;;
         -l | --list)
             printf "\nlist of categories:\n\t- ast\n\t- lexer\n\t- options\n\t- parser\n\n";;
+        -t | --timeout)
+            shift
+            case $1 in
+                *[!.0-9]*)
+                    printf $RED"\nERROR: Invalid time: $1\n\n"$DEFAULT
+                    exit 1;;
+                * )
+                    timeout="$1""s";;
+            esac;;
         * )
             printf $RED"\nERROR: invalid option: $1\n\n"$DEFAULT
             exit 1;;
@@ -145,6 +154,7 @@ rm tmp tmp_err
 ##############################################################################
 
 pretty_printf_err () {
+    printf $RED"      FAILED: differences between bash and 42sh\n\n"$DEFAULT
     while read line; do
         printf $RED"      $line\n"$DEFAULT
     done < "$1"
@@ -177,11 +187,16 @@ for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" > tmp_ref 2> tmp_ref_err
-    ../build/42sh "$file" > tmp_def 2> tmp_def_err
+    timeout $timeout ../build/42sh "$file" > tmp_def 2> tmp_def_err
+
+    exit_status="$?"
 
     diff tmp_def tmp_ref > res
     diff_content="$(cat res)"
-    if [ -n "$diff_content" ]; then
+    if [ $exit_status -eq 124 ]; then
+        FAILED="$(($FAILED + 1))"
+        printf $RED"      FAILED: Timeout\n\n"$DEFAULT
+    elif [ -n "$diff_content" -o  ]; then
         FAILED="$(($FAILED + 1))"
         pretty_printf_err res
         printf "\n"
