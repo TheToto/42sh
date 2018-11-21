@@ -12,7 +12,7 @@ DEFAULT="\033[1;39m"
 
 list_of_category="ast_tests lexer_tests parser_tests option_tests"
 timeout="10000d"
-sanity="no"
+sanity=0
 
 while test $# -gt 0; do
     case $1 in
@@ -48,6 +48,8 @@ while test $# -gt 0; do
                 printf $RED"\nERROR: Invalid time: $1\n\n"$DEFAULT
                 exit 1
             fi;;
+        -s | --sanity)
+            sanity=1;;
         * )
             printf $RED"\nERROR: invalid option: $1\n\n"$DEFAULT
             exit 1;;
@@ -160,6 +162,18 @@ pretty_printf_err () {
     done < "$1"
 }
 
+check_sanity () {
+    while read line; do
+        case $line in
+            *"LEAK SUMMARY"* )
+                return 0;;
+            * )
+                continue;;
+        esac
+    done < tmp_sanity
+    return 1
+}
+
 list_of_dir="$(ls test/scripts)"
 
 list_of_file=""
@@ -187,13 +201,23 @@ for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" > tmp_ref 2> tmp_ref_err
-    timeout $timeout ../build/42sh "$file" > tmp_def 2> tmp_def_err
+    timeout $timeout build/42sh "$file" > tmp_def 2> tmp_def_err
 
     exit_status="$?"
 
+    if [ $sanity -eq 1 ]; then
+        valgrind build/42sh "$file" 2> tmp_sanity > /dev/null
+        check_sanity
+        exit_status_sanity="$?"
+        rm tmp_sanity
+    fi
+
     diff tmp_def tmp_ref > res
     diff_content="$(cat res)"
-    if [ $exit_status -eq 124 ]; then
+    if [ $exit_status_sanity -eq 0 ]; then
+        FAILED="$(($FAILED + 1))"
+        printf $RED"      FAILED: Leaks\n\n"$DEFAULT
+    elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED: Timeout\n\n"$DEFAULT
     elif [ -n "$diff_content" -o  ]; then
