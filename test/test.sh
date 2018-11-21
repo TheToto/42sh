@@ -6,13 +6,59 @@ YELLOW="\033[1;33m"
 ANNONCE="\033[38;5;37m"
 DEFAULT="\033[1;39m"
 
-printf $ANNONCE"---------"$DEFAULT"\n"
-printf $YELLOW"  BEGIN"$DEFAULT"\n"
-printf $ANNONCE"---------"$DEFAULT"\n\n"
+##############################################################################
+#                               OPTION PARSING                               #
+##############################################################################
+
+list_of_category="ast_tests lexer_tests parser_tests option_tests"
+timeout="no"
+sanity="no"
+
+while test $# -gt 0; do
+    case $1 in
+        -c | -category)
+            list_of_category=""
+            shift
+            new_len="$#"
+            while test $# -gt 0 -a "$1" != ";"; do
+                case $1 in
+                    ast | lexer | parser | option);;
+                    * )
+                        printf $RED"\nERROR: invalid category: $1\n\n"$DEFAULT
+                        exit 1;;
+                esac
+                list_of_category="$list_of_category $1""_tests"
+                shift
+            done
+            if test "$1" != ";"; then
+                printf $RED"\nERROR: category list should finish with '\;'\n\n"
+                exit 1;
+            fi;;
+        -l | --list)
+            printf "\nlist of categories:\n\t- ast\n\t- lexer\n\t- options\n\t- parser\n\n";;
+        * )
+            printf $RED"\nERROR: invalid option: $1\n\n"$DEFAULT
+            exit 1;;
+    esac
+    shift
+done
+
+is_in () {
+    for item in $2; do
+        if [ $1 = $item ]; then
+            return 0
+        fi
+    done
+    return 1
+}
 
 ##############################################################################
 #                                  COMPIL'                                   #
 ##############################################################################
+
+printf $ANNONCE"---------"$DEFAULT"\n"
+printf $YELLOW"  BEGIN"$DEFAULT"\n"
+printf $ANNONCE"---------"$DEFAULT"\n\n"
 
 printf $ANNONCE"  ----------------\n"$DEFAULT
 printf $YELLOW"  BUILDING PROJECT\n"$DEFAULT
@@ -33,14 +79,27 @@ printf $ANNONCE"    COMPLETE!\n"$DEFAULT
 cd ..
 
 ##############################################################################
-#                                  UNITAR                                    #
+#                                  UNITARY                                   #
 ##############################################################################
 
-list="$(ls test/unitary)"
+list_of_dir="$(ls test/unitary)"
 
-printf "  $list"
+list_of_file=""
 
-ceedling > tmp 2> tmp_err
+for dir in $list_of_dir; do
+    is_in $dir "$list_of_category"
+    is_asked=$?
+    if [ $is_asked -eq 0 ]; then
+        dir_path="test/unitary/$dir"
+        for file in $(ls "$dir_path"); do
+            list_of_file="$list_of_file"" test:$dir_path""/$file"
+        done
+    fi
+done
+
+printf "$list_of_life"
+
+ceedling $list_of_file > tmp 2> tmp_err
 
 printf $ANNONCE"\n  -------------"$DEFAULT"\n"
 printf $YELLOW"  UNITARY TESTS"$DEFAULT"\n"
