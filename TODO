@@ -36,6 +36,11 @@
 * [ ] Case statement
 * [ ] Handle func declaration
 
+# Interactive mode
+* [x] Interactive mode
+* [x] History
+* [x] Ressource file reader
+
 # Built in
 * [ ]
 
