@@ -10,6 +10,11 @@ DEFAULT="\033[1;39m"
 #                               OPTION PARSING                               #
 ##############################################################################
 
+if test "$1" = "check"; then
+    shift
+    cd ..
+fi
+
 list_of_category="ast_tests lexer_tests parser_tests option_tests"
 timeout="10000d"
 sanity=0

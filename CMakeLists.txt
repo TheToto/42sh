@@ -11,3 +11,4 @@ file(GLOB SOURCES
         "src/ast/*.c")
 
 add_executable(42sh ${SOURCES})
+add_custom_target(check "../test/test.sh" "check")
