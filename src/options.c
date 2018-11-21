@@ -194,6 +194,7 @@ void options(char *argv[])
     size_t section = 0;
     size_t i = 1;
     int ast = check_ast_print(argv);
+    int norc = 0;
     for ( ; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);
@@ -206,7 +207,7 @@ void options(char *argv[])
         else if (opt == SHOPT_PLUS || opt == SHOPT_MINUS)
             exec_shopt(argv, &i, section, opt);
         else if (opt == NORC) //if (!section) : deactivate ressource reader
-            unsetenv("INPUTRC");
+            norc = 1;
         else if (opt == AST) //OK
             continue;
         else if (opt == VERSION)
@@ -219,9 +220,7 @@ void options(char *argv[])
         }
     }
     if (!argv[i])
-    {
-        exit(show_prompt());
-    }
+        exit(show_prompt(norc, ast));
     else
     {
         for ( ; argv[i]; i++)

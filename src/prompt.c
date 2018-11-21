@@ -5,6 +5,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <err.h>
+#include <sys/stat.h>
 
 #include "execution.h"
 #include "lexer.h"
@@ -38,19 +39,31 @@ static int exec_prompt(char *str, struct variables *library)
     return res;
 }
 
-static char *init_path(void)
+static char *init_path(char *file)
 {
-    size_t len = strlen(getenv("HOME")) + strlen("/.42sh_history") + 1;
+    size_t len = strlen(getenv("HOME")) + strlen(file) + 1;
     char *histpath = calloc(len, sizeof(char));
     strcat(histpath, getenv("HOME"));
-    strcat(histpath, "/.42sh_history");
+    strcat(histpath, file);
     return histpath;
 }
 
-int show_prompt(void)
+static void launchrc(int is_print)
 {
-    char *histpath = init_path();
-    putenv("INPUTRC=~/.42shrc");
+        char *filerc = init_path("/.42shrc");
+        struct stat buf;
+        if (!stat("/etc/42shrc", &buf))
+            launch_file("/etc/42shrc", is_print);
+        else
+            launch_file(filerc, is_print);
+        free(filerc);
+}
+
+int show_prompt(int norc, int is_print)
+{
+    char *histpath = init_path("/.42sh_history");
+    if (!norc)
+        launchrc(is_print);
     struct variables *library = init_var();
     while (1)
     {
