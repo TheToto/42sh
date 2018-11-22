@@ -63,4 +63,3 @@ void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
         print_ast_node(node->e_false, num, fd);
     }
 }
-

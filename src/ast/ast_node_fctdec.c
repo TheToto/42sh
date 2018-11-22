@@ -48,4 +48,3 @@ void print_ast_fctdec(struct ast_node_fctdec *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->function, num, fd);
 }
-

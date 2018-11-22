@@ -94,4 +94,3 @@ void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu[label= \"do\"];\n", save, *num);
     print_ast_node(node->exec, num, fd);
 }
-

@@ -53,4 +53,3 @@ void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->right_child, num, fd);
 }
-
