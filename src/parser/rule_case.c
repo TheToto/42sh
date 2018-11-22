@@ -128,5 +128,6 @@ struct ast_node *rule_case(struct token_list **tok)
         warnx("Need a ESAC keyword in case statement");
         return NULL;
     }
+    NEXT_TOK(tok);
     return case_node;
 }
