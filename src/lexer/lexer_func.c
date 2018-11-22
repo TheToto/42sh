@@ -1,15 +1,14 @@
-#include <string.h>
-#include <fnmatch.h>
-
-#include "lexer.h"
-#include "parser.h"
-
 /**
  * \file lexer_func.c
  * \brief Contain all function needed to get the token of a given string.
  * \author Arthur Busuttil
  * \version 0.3
  */
+#include <string.h>
+#include <fnmatch.h>
+
+#include "lexer.h"
+#include "parser.h"
 
 /**
  * \fn enum token_type redirection_token (char *val)
@@ -18,8 +17,7 @@
  * \param val Pointer to the string we want to check.
  * \return The token corresponding to val if it is a redirection, WORD else.
  */
-static
-enum token_type redirection_token(char *val)
+static enum token_type redirection_token(char *val)
 {
     if (!strcmp(val, "<"))
         return LESS;
@@ -52,8 +50,7 @@ enum token_type redirection_token(char *val)
  * \return The token corresponding to val if it is a condition
  * or a case element, WORD else.
  */
-static
-enum token_type condition_and_case_token(char *val)
+static enum token_type condition_and_case_token(char *val)
 {
     if (!strcmp(val, "if"))
         return IF;
@@ -83,8 +80,7 @@ enum token_type condition_and_case_token(char *val)
  * \param val Pointer to the string we want to check.
  * \return The token corresponding to val if it is a loop element, WORD else.
  */
-static
-enum token_type loop_token(char *val)
+static enum token_type loop_token(char *val)
 {
     if (!strcmp(val, "while"))
         return WHILE;
@@ -112,8 +108,7 @@ enum token_type loop_token(char *val)
  * \return The token corresponding to val if matching with
  * one of previous element, WORD else.
  */
-static
-enum token_type special_token(char *val)
+static enum token_type special_token(char *val)
 {
     if (!strcmp(val, "in"))
         return IN;
@@ -137,8 +132,7 @@ enum token_type special_token(char *val)
  * \param val Pointer to the string we want to check.
  * \return The token corresponding to val if it matching, WORD else.
  */
-static
-enum token_type bin_op_and_default_token(char *val)
+static enum token_type bin_op_and_default_token(char *val)
 {
     if (!strcmp(val, "&&"))
         return LOGICAL_AND;
@@ -157,14 +151,6 @@ enum token_type bin_op_and_default_token(char *val)
     return WORD;
 }
 
-/**
- * \fn enum token_type get_token_type (char *val)
- * \brief Get the token corresponding to val.
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val. If a '\"' is inside val WORD_EXT
- * is return. If val does not match any token, it return WORDS.
- */
 enum token_type get_token_type(char *val)
 {
     if (!fnmatch("*\"*", val, 0))

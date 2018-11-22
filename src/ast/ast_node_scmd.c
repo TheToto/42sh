@@ -135,4 +135,3 @@ void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
 
     fprintf(fd, "\"];\n");
 }
-

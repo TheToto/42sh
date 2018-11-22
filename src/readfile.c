@@ -1,7 +1,7 @@
 /**
  *\file readfile.c
  *\author thomas.lupin
- *\version 0.3
+ *\version 0.5
  *\date 15-11-2018
  *\brief Read a file
  */
@@ -9,15 +9,11 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <var.h>
 
 #include "execution.h"
 
-/**
- *\fn launch_file
- *\brief Read the whole file \b path and send it to exec
- *\param path Path to file
- */
-void launch_file(char *path, int is_print)
+int launch_file(char *path, int is_print)
 {
     FILE *f = fopen(path, "r");
     if (!f)
@@ -34,7 +30,28 @@ void launch_file(char *path, int is_print)
 
     fread(buffer, sizeof(char), numbytes, f);
     fclose(f);
-    exec_main(buffer, is_print);
+    struct variables *library = init_var();
+    int res = exec_main(buffer, is_print, library);
+    destroy_var(library);
 
     free(buffer);
+    return res;
+}
+
+int launch_pipe(int is_print)
+{
+    int i = 0;
+    char pipe[65535];
+    for (; i < 65536; i++)
+    {
+        char tmp = getc(stdin);
+        if (tmp == EOF)
+            break;
+        pipe[i] = tmp;
+    }
+    pipe[i] = '\0';
+    struct variables *library = init_var();
+    int res = exec_main(pipe, is_print, library);
+    destroy_var(library);
+    return res;
 }

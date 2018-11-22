@@ -109,7 +109,6 @@
         :arguments:
         - ${1} #list of object files to link (Ruby method call param list sub)
         - -lreadline
-        - -fsanitize=address
         - -o ${2} #executable file output (Ruby method call param list sub)
 
 #:tools:
@@ -134,7 +133,7 @@
   :test:
     :compile:
       :*:
-        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include -fsanitize=address"
+        - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"
     :link:
       :*:
         - "-Wall -Wextra -Werror -std=c99 -pedantic -Isrc/include"

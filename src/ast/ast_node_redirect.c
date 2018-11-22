@@ -53,4 +53,3 @@ void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->node, num, fd);
 }
-

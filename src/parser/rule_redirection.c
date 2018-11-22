@@ -1,3 +1,10 @@
+/**
+ *\file rule_redirection.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Redirection rule function
+ */
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>

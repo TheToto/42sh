@@ -6,6 +6,7 @@
 * [x] Handle GRAMMAR
 * [ ] Redirections
 * [ ] Case statement
+* [ ] Show prompt PS2 in if/while/...
 
 # TEST SUITE
 * [x] Set up ceedling
@@ -36,6 +37,11 @@
 * [ ] Handle expansion in redirections
 * [ ] Case statement
 * [ ] Handle func declaration
+
+# Interactive mode
+* [x] Interactive mode
+* [x] History
+* [x] Ressource file reader
 
 # Built in
 * [ ]
