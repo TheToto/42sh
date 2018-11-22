@@ -26,6 +26,7 @@ static struct ast_node_case *create_ast_node_case_intern(char *value)
         return NULL;
     }
     new->cases = arr;
+    new->nodes = asts;
     new->capacity = 8;
     new->size = 0;
     new->value = value;
