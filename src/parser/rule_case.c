@@ -20,8 +20,8 @@ static int add_to_node(struct token_list **tok, struct ast_node *case_node,
         NEXT_TOK(tok);
         if (TOK_TYPE(tok) != WORD)
         {
-            warnx ("Need at least one match item in case item");
-            return 0;
+            warnx ("Wrong word item in case item");
+            return -1;
         }
         add_case_value(case_node, TOK_STR(tok), exec);
         NEXT_TOK(tok);
@@ -55,9 +55,14 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
         warnx("Missing ';;' at end of case item");
         return 0;
     }
+    NEXT_TOK(tok);
     int i = add_to_node(&save, case_node, exec);
-    if (i == 0)
+    if (i < 1)
+    {
+        if (exec && i == 0)
+            destroy_ast(exec);
         return 0;
+    }
     return 1;
 }
 
@@ -108,7 +113,7 @@ struct ast_node *rule_case(struct token_list **tok)
     NEXT_TOK(tok);
     remove_new_line(tok);
     struct ast_node *case_node = create_ast_node_case(comp);
-    if (TOK_TYPE(tok) != ESAC)
+    while (TOK_TYPE(tok) != ESAC)
     {
         int i = rule_case_clause(tok, case_node);
         if (i == 0)
