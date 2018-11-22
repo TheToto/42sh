@@ -187,6 +187,32 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
     exit(res);
 }
 
+static void launch_sh(char *argv[], int i, int ast, int norc)
+{
+    if (!argv[i])
+    {
+        if (isatty(STDIN_FILENO))
+        {
+            exit(show_prompt(norc, ast));
+        }
+        else
+        {
+            exit(launch_pipe(ast));
+        }
+    }
+    else
+    {
+        int res = 0;
+        for (; argv[i]; i++)
+        {
+            printf("File to exec : %s\n", argv[i]);
+            res = launch_file(argv[i], ast);
+        }
+        exit(res);
+    }
+
+}
+
 /**
  *\fn options
  *\brief Do actions according to each options
@@ -231,25 +257,5 @@ void options(char *argv[])
                 break;
         }
     }
-    if (!argv[i])
-    {
-        if (isatty(STDIN_FILENO))
-        {
-            exit(show_prompt(norc, ast));
-        }
-        else
-        {
-            exit(launch_pipe(ast));
-        }
-    }
-    else
-    {
-        int res = 0;
-        for (; argv[i]; i++)
-        {
-            printf("File to exec : %s\n", argv[i]);
-            res = launch_file(argv[i], ast);
-        }
-        exit(res);
-    }
+    launch_sh(argv, i, ast, norc);
 }
