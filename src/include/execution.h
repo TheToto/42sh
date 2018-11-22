@@ -77,3 +77,11 @@ int exec_if(struct ast_node_if *n_if, struct variables *var);
  *\return Return an int depending on the command
  */
 int exec_scmd(struct ast_node_scmd *scmd, struct variables *var);
+
+/**
+ *\fn exec_pipe
+ *\brief Execute a pipe command
+ *\param struct ast_node_pipe *pipe The AST node of the pipe command
+ *\return Return an int depending on the command
+ */
+int exec_pipe(struct ast_node_pipe *pipe, struct variables *var);

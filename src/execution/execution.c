@@ -118,6 +118,9 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_not(node->son, var);
         case N_NONE:
             return 0;
+        case N_PIPE:
+            return exec_pipe(node->son, var);
+
         default:
             break;
     }
