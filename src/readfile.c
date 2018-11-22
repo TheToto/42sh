@@ -42,3 +42,21 @@ int launch_file(char *path, int is_print)
     free(buffer);
     return res;
 }
+
+int launch_pipe(int is_print)
+{
+    int i = 0;
+    char pipe[65535];
+    for (; i < 65536; i++)
+    {
+        char tmp = getc(stdin);
+        if (tmp == EOF)
+            break;
+        pipe[i] = tmp;
+    }
+    pipe[i] = '\0';
+    struct variables *library = init_var();
+    int res = exec_main(pipe, is_print, library);
+    destroy_var(library);
+    return res;
+}

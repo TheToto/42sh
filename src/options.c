@@ -229,7 +229,6 @@ void options(char *argv[])
                 break;
             default:
                 break;
-
         }
     }
     if (!argv[i])
@@ -240,7 +239,7 @@ void options(char *argv[])
         }
         else
         {
-            errx(1, "Handle pipe here");
+            exit(launch_pipe(ast));
         }
     }
     else

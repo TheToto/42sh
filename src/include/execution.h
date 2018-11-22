@@ -13,5 +13,6 @@
 
 int exec_main(char *str, int is_print, struct variables *library);
 int launch_file(char *path, int is_print);
+int launch_pipe(int is_print);
 
 int exec_node(struct ast_node *node, struct variables *var);
