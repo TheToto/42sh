@@ -40,3 +40,44 @@ TEST SUITE
         > ceedling new 42sh/
         > cd 42sh/
         > ./test/test.sh
+
+    A 'make check' command can be written when the current working directory
+    is the 'build' directory. 'make check' run the test-suite without options.
+
+    test.sh:
+        Options:
+
+            -l | --list
+                Print all possible category
+
+            -c | --category <category 1> ... <category n> ;
+                Run tests of selected categories.
+
+            -s | --sanity
+                Run test-suite with sanity check
+
+            -t | --timeout <time>
+                Run tests with a timeout on global tests
+
+        Description:
+            test.sh run two types of tests:
+                - unitary tests
+                - global tests
+            the two types of tests are subdivided into categories wich are
+            the same for both.
+
+            unitary testing use ceedling wich run tests located in
+            'test/unitary/' subdirectories. The result is parsed and print
+            with a more user-friendly display.
+
+            global tests consist in multiple shell scripts located in
+            'test/scripts/' subdirectories. Each test are run with bash and
+            42sh. The output is compared and if they differ, the test fail.
+            according to option a test can fail if it timeout or if any leak
+            is found. Fails possibilities are checked in this order:
+                leak -> timeout -> difference.
+
+            Each time the test-suite is runned, the project is rebuild to
+            be sure of having the last version. As the project stay small this
+            is acceptable, thus it is possible that this will be removed
+            in future releases.
