@@ -13,7 +13,7 @@ static int add_to_node(struct token_list **tok, struct ast_node *case_node,
         warnx ("Need at least one match item in case item");
         return 0;
     }
-    add_value_case(case_node, TOK_STR(tok), exec);
+    add_case_value(case_node, TOK_STR(tok), exec);
     NEXT_TOK(tok);
     while (TOK_TYPE(tok) == PIPE)
     {
@@ -26,6 +26,7 @@ static int add_to_node(struct token_list **tok, struct ast_node *case_node,
         add_case_value(case_node, TOK_STR(tok), exec);
         NEXT_TOK(tok);
     }
+    return 1;
 }
 
 static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
