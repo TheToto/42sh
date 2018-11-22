@@ -13,32 +13,6 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
-/**
- *\fn exec_prompt
- *\brief Send a string to lexer, parser, and exec
- *\param str  The string to execute
- *\return Return an int depending on the commands given
- */
-static int exec_prompt(char *str, struct variables *library)
-{
-    //printf("exec: %s\n", str);
-    struct lexer *l = lexer(str);
-    struct token_list *copy = l->token_list;
-    struct ast_node *ast = rule_input(&(l->token_list));
-    int res = 0;
-    if (!ast)
-        warnx("Error in parsing");
-    else
-        res = exec_node(ast, library);
-
-    l->token_list = copy;
-
-    destroy_ast(ast);
-    lexer_destroy(l);
-
-    return res;
-}
-
 static char *init_path(char *file)
 {
     size_t len = strlen(getenv("HOME")) + strlen(file) + 1;
@@ -54,7 +28,7 @@ static void launchrc(int is_print)
     struct stat buf;
     if (!stat("/etc/42shrc", &buf))
         launch_file("/etc/42shrc", is_print);
-    else if (!stat(filerc, &buf))
+    if (!stat(filerc, &buf))
         launch_file(filerc, is_print);
     free(filerc);
 }
@@ -75,9 +49,9 @@ int show_prompt(int norc, int is_print)
             free(buf);
             break;
         }
-        exec_prompt(buf, library);
+        exec_main(buf, is_print, library);
         free(buf);
-    }
+}
     append_history(history_length, histpath);
     history_truncate_file(histpath, 500);
 

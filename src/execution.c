@@ -197,16 +197,17 @@ int exec_node(struct ast_node *node, struct variables *var)
  *\param str  The string to execute
  *\return Return an int depending on the commands given
  */
-int exec_main(char *str, int is_print)
+int exec_main(char *str, int is_print, struct variables *library)
 {
     //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
-    struct variables *library = init_var();
+
     if (!ast)
         errx(2, "Error in parsing");
     l->token_list = copy;
+
     if (is_print)
         makedot(ast, "ast.dot");
 
@@ -215,7 +216,6 @@ int exec_main(char *str, int is_print)
 
     destroy_ast(ast);
     lexer_destroy(l);
-    destroy_var(library);
 
     return res;
 }

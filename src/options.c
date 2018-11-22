@@ -16,6 +16,7 @@
 #include <err.h>
 #include <stdlib.h>
 #include <err.h>
+#include <unistd.h>
 
 #include "options.h"
 #include "lexer.h"
@@ -180,7 +181,10 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
         warnx("Invalid arguments for -c option");
         errx(1, "Usage: -c <command>");
     }
-    exit(exec_main(argv[i], ast));
+    struct variables *library = init_var();
+    int res = exec_main(argv[i], ast, library);
+    destroy_var(library);
+    exit(res);
 }
 
 /**
@@ -220,13 +224,24 @@ void options(char *argv[])
         }
     }
     if (!argv[i])
-        exit(show_prompt(norc, ast));
+    {
+        if (isatty(STDIN_FILENO))
+        {
+            exit(show_prompt(norc, ast));
+        }
+        else
+        {
+            errx(1, "Handle pipe here");
+        }
+    }
     else
     {
+        int res = 0;
         for ( ; argv[i]; i++)
         {
             printf("File to exec : %s\n", argv[i]);
-            launch_file(argv[i], ast);
+            res = launch_file(argv[i], ast);
         }
+        exit(res);
     }
 }
