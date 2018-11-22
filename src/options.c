@@ -199,28 +199,37 @@ void options(char *argv[])
     size_t i = 1;
     int ast = check_ast_print(argv);
     int norc = 0;
-    for ( ; argv[i]; i++)
+    for (; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);
         section = section > sect ? section : sect;
         if (section == 2)
             break;
         enum option opt = get_option(argv[i]);
-        if (opt == CMD)
-            exec_cmd(section, argv, i, ast);
-        else if (opt == SHOPT_PLUS || opt == SHOPT_MINUS)
-            exec_shopt(argv, &i, section, opt);
-        else if (opt == NORC) //if (!section) : deactivate ressource reader
-            norc = 1;
-        else if (opt == AST) //OK
-            continue;
-        else if (opt == VERSION)
+        switch (opt)
         {
-            if (!section)
-            {
-                printf("Version 0.3\n");
-                exit(0);
-            }
+            case CMD:
+                exec_cmd(section, argv, i, ast);
+                break;
+            case SHOPT_PLUS:
+            case SHOPT_MINUS:
+                exec_shopt(argv, &i, section, opt);
+                break;
+            case NORC:
+                norc = 1;
+                break;
+            case AST:
+                break;
+            case VERSION:
+                if (!section)
+                {
+                    printf("Version 0.3\n");
+                    exit(0);
+                }
+                break;
+            default:
+                break;
+
         }
     }
     if (!argv[i])
@@ -237,7 +246,7 @@ void options(char *argv[])
     else
     {
         int res = 0;
-        for ( ; argv[i]; i++)
+        for (; argv[i]; i++)
         {
             printf("File to exec : %s\n", argv[i]);
             res = launch_file(argv[i], ast);
