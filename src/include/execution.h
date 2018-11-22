@@ -84,4 +84,4 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var);
  *\param struct ast_node_pipe *pipe The AST node of the pipe command
  *\return Return an int depending on the command
  */
-int exec_pipe(struct ast_node_pipe *pipe, struct variables *var);
+int exec_pipe(struct ast_node_pipe *n, struct variables *var);
