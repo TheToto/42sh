@@ -22,6 +22,7 @@ struct ast_node *rule_pipe(struct token_list **tok)
         return NULL;
     if (TOK_TYPE(tok) == PIPE)
     {
+        NEXT_TOK(tok);
         struct ast_node *right_pipe = rule_pipe(tok);
         if (!right_pipe)
         {
