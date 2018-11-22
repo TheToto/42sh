@@ -6,6 +6,7 @@
 * [x] Handle GRAMMAR
 * [ ] Redirections
 * [ ] Case statement
+* [ ] Show prompt PS2 in if/while/...
 
 # TEST SUITE
 * [x] Set up ceedling
