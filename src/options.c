@@ -199,7 +199,6 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
         }
         exit(res);
     }
-
 }
 
 void options(char *argv[])
@@ -215,29 +214,21 @@ void options(char *argv[])
         if (section == 2)
             break;
         enum option opt = get_option(argv[i]);
-        switch (opt)
+        if (opt == CMD)
+            exec_cmd(section, argv, i, ast);
+        else if (opt == CMD || opt == AST)
+            continue;
+        else if (opt == SHOPT_MINUS || opt == SHOPT_PLUS)
+            exec_shopt(argv, &i, section, opt);
+        else if (opt == NORC)
+            norc = 1;
+        else if (opt == VERSION)
         {
-            case CMD:
-                exec_cmd(section, argv, i, ast);
-                break;
-            case SHOPT_PLUS:
-            case SHOPT_MINUS:
-                exec_shopt(argv, &i, section, opt);
-                break;
-            case NORC:
-                norc = 1;
-                break;
-            case AST:
-                break;
-            case VERSION:
-                if (!section)
-                {
-                    printf("Version 0.3\n");
-                    exit(0);
-                }
-                break;
-            default:
-                break;
+            if (!section)
+            {
+                printf("Version 0.3\n");
+                exit(0);
+            }
         }
     }
     launch_sh(argv, i, ast, norc);
