@@ -24,6 +24,7 @@
 #include "execution.h"
 #include "ast_destroy.h"
 #include "var.h"
+#include "readfile.h"
 
 /**
  *\fn get_section
@@ -44,12 +45,6 @@ static size_t get_section(char *arg)
     return 2;
 }
 
-/**
- *\fn get_option
- *\brief Get the option type according to the enum option of the header
- *\param char *opt  The option to check
- *\return Return an enum value according to the option
- */
 enum option get_option(char *opt)
 {
     if (!strcmp(opt, "--norc"))
@@ -67,12 +62,6 @@ enum option get_option(char *opt)
     return NONE;
 }
 
-/**
- *\fn get_shopt
- *\brief Get the shopt variable according to the enum shopt of the header
- *\param char *arg  The shopt variable to check
- *\return Return an enum value according to the shopt variable
- */
 enum shopt get_shopt(char *arg)
 {
     if (!arg)
@@ -213,12 +202,6 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
 
 }
 
-/**
- *\fn options
- *\brief Do actions according to each options
- *\param char *argv[]   The command line to parse
- *\return The return value depends on the options
- */
 void options(char *argv[])
 {
     size_t section = 0;

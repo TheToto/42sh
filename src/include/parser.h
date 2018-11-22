@@ -6,6 +6,7 @@
 
 #define TOK_TYPE(Tok) ((*Tok)->type)
 #define TOK_STR(Tok) ((*Tok)->str)
+
 #define NEXT_TOK_TYPE(Tok) ((*Tok)->next->type)
 #define NEXT_TOK_STR(Tok) ((*Tok)->next->str)
 

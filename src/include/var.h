@@ -7,7 +7,9 @@
  */
 
 #pragma once
+
 #include <stddef.h>
+
 #include "ast.h"
 
 /**
@@ -29,9 +31,48 @@ struct variables
     struct var **lib;   ///<array of defined variables and their value
 };
 
+/**
+ * @fn init_var
+ * @brief Initialization of the array of variables
+ * @details malloc the structure and malloc an array of an initial size of 8.
+ * @return return the newly allocated structure
+ */
 struct variables *init_var(void);
+
+/**
+ * @fn add_var
+ * @brief Add a new variable to the array
+ * @details Look if a variable with the same name already exist and replace its
+ * value when appropriated. Otherwise, realloc if size too small and allocate
+ * the definition at first available cell in the array.
+ * @param var the pre-created array of definitions
+ * @param name the name of the variable
+ * @param value the value of the variable
+ * @return return the newly allocated structure
+ */
 void add_var(struct variables *var, char *name, char *value);
+
+/**
+ * @fn destroy_var
+ * @brief Destroy array of variables and all incorporated variables.
+ */
 void destroy_var(struct variables *var);
+
+/**
+ * @fn get_var
+ * @brief Look for the variable with name \a name in the array \var
+ * @return NULL if not found, its value otherwise
+ */
 char *get_var(struct variables *var, char *name);
+
+/**
+ * @fn assign_prefix
+ * @brief Add the declararion to the array of variables
+ */
 void assign_prefix(struct variables *var, char *prefix);
+
+/**
+ * @fn replace_var
+ * @brief replace element by its new variable if a declaration was made
+ */
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd);

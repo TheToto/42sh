@@ -1,3 +1,11 @@
+/**
+ *\file prompt.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Function to use the prompt
+ */
+
 #define _XOPEN_SOURCE
 
 #include <stdio.h>
@@ -12,6 +20,7 @@
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "readfile.h"
 
 static char *init_path(char *file)
 {

@@ -1,7 +1,7 @@
 /**
  *\file readfile.c
  *\author thomas.lupin
- *\version 0.3
+ *\version 0.5
  *\date 15-11-2018
  *\brief Read a file
  */
@@ -13,11 +13,6 @@
 
 #include "execution.h"
 
-/**
- *\fn launch_file
- *\brief Read the whole file \b path and send it to exec
- *\param path Path to file
- */
 int launch_file(char *path, int is_print)
 {
     FILE *f = fopen(path, "r");
