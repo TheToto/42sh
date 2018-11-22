@@ -90,36 +90,6 @@ int exec_semicolon(struct ast_node_semicolon *n_semi,
     return exec_node(n_semi->right_child, var);
 }
 
-int exec_redirect(struct ast_node_redirect *n_redirect)
-{
-    switch (n_redirect->type)
-    {
-        case R_LESS:
-            break;
-        case R_GREAT:
-            break;
-        case R_DLESS:
-            break;
-        case R_DGREAT:
-            break;
-        case R_LESSAND:
-            break;
-        case R_GREATAND:
-            break;
-        case R_LESSGREAT:
-            break;
-        case R_DLESSDASH:
-            break;
-        case R_CLOBBER:
-            break;
-        case R_PIPE:
-            break;
-        default:
-            break;
-    }
-    return 0;
-}
-
 int exec_not(struct ast_node_not *n_not, struct variables *var)
 {
     return exec_node(n_not->child, var) == 0;
@@ -139,7 +109,7 @@ int exec_node(struct ast_node *node, struct variables *var)
         case N_FOR:
             return exec_for(node->son, var);
         case N_REDIRECT:
-            return exec_redirect(node->son);
+            return exec_redirect(node->son, var);
         case N_SEMICOLON:
             return exec_semicolon(node->son, var);
         case N_AMPERSAND:

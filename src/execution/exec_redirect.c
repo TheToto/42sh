@@ -24,7 +24,6 @@
 #include "execution.h"
 #include "ast.h"
 
-//also handle GREAT
 static int less(struct ast_node_redirect *n, struct variables *var)
 {
     //handle expansion here
@@ -83,7 +82,7 @@ static int greatand(struct ast_node_redirect *n, struct variables *var)
     int res = 0;
     if (n->io_number == 1)
     {
-        n->fd = open(n->word, O_WRONLY, 00644);
+        n->fd = open(n->word, O_WRONLY | O_CREAT, 00644);
         if (n->fd == -1)
         {
             warn("cannot redirect with %s", n->word);
@@ -95,8 +94,8 @@ static int greatand(struct ast_node_redirect *n, struct variables *var)
         dup2(n->fd, 2);
         close(n->fd);
         res = exec_node(n->node, var);
-        dup2(save1, n->io_number);
-        dup2(save2, n->io_number);
+        dup2(save1, 1);
+        dup2(save2, 2);
     }
     else
     {

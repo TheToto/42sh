@@ -19,7 +19,6 @@
  */
 int exec_main(char *str, int is_print, struct variables *library);
 
-int exec_redirect(struct ast_node_redirect *n, struct variables *var);
 /**
  *\fn exec_node
  *\brief Execute the complete AST
@@ -40,7 +39,7 @@ int exec_not(struct ast_node_not *n_not, struct variables *var);
  *\brief Execute the redirection
  *\param struct ast_node_redirect *n_redirect  The AST node of the redirection
  */
-int exec_redirect(struct ast_node_redirect *n_redirect);
+int exec_redirect(struct ast_node_redirect *n_redirect, struct variables *var);
 
 /**
  *\fn exec_for
