@@ -128,10 +128,10 @@ void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
 {
     fprintf(fd, "%lu [label= \"", *num);
     for (size_t i = 0; i < node->pre_size; i++)
-        fprintf(fd, "%s", node->prefix[i]);
+        fprintf(fd, "%s ", node->prefix[i]);
 
     for (size_t i = 0; i < node->elt_size; i++)
-        fprintf(fd, "%s", node->elements[i]);
+        fprintf(fd, "%s ", node->elements[i]);
 
     fprintf(fd, "\"];\n");
 }

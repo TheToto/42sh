@@ -94,23 +94,14 @@ void destroy_ast_node_case(struct ast_node_case *node)
 
 void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"CASE %s:\"]", *num, node->value);
-    // Il faudra size liens avec la values[i] en label pointe vers le nodes[i]
-
-    /*for (size_t i = 0; i < node->size; i++)
-        fprintf(fd, "%s", node->values[i]);
-    fprintf(fd, "\"];\n");
+    fprintf(fd, "%lu [label= \"CASE %s:\"]\n", *num, node->value);
 
     size_t save = *num;
 
-    if (node->next)
+    for (size_t i = 0; i < node->size; i++)
     {
         *num += 1;
-        fprintf(fd, "%lu -- %lu;\n", save, *num);
-        print_ast_case(node->next, num, fd);
+        fprintf(fd, "%lu -> %lu[label= \"%s\"];\n", save, *num, node->cases[i]);
+        print_ast_node(node->nodes[i], num, fd);
     }
-
-    *num += 1;
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
-    print_ast_node(node->exec, num, fd);*/
 }
