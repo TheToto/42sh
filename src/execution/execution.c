@@ -133,10 +133,14 @@ int exec_main(char *str, int is_print, struct variables *library)
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
+    l->token_list = copy;
 
     if (!ast)
-        errx(2, "Error in parsing");
-    l->token_list = copy;
+    {
+        lexer_destroy(l);
+        warnx("Error in parsing");
+        return 1;
+    }
 
     if (is_print)
         makedot(ast, "ast.dot");
