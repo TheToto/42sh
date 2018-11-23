@@ -28,10 +28,8 @@ int exec_case(struct ast_node_case *node, struct variables *var)
     {
         if (!fnmatch(node->cases[i], str, 0))
         {
-            warnx("[DEBUG] found %s case", node->cases[i]);
             return exec_node(node->nodes[i], var);
         }
     }
-    warnx("[DEBUG] Nothing found case");
     return 0;
 }
