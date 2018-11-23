@@ -1,3 +1,10 @@
+/**
+ *\file rule_redirection.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Redirection rule function
+ */
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>
@@ -35,17 +42,46 @@ static enum redirect_type translate_redirect(enum token_type tok)
     return R_NONE;
 }
 
+static int set_default_io(struct token_list **tok)
+{
+    switch (TOK_TYPE(tok))
+    {
+        case LESS:               //<
+            return 0;
+        case GREAT:              //>
+            return 1;
+        case DLESS:              //<<
+            return 0;
+        case DGREAT:             //>>
+            return 1;
+        case LESSAND:            //<&
+            return 0;
+        case GREATAND:           //>&
+            return 1;
+        case LESSGREAT:          //<>
+            return 0;
+        case DLESSDASH:          //<<-
+            return 0;
+        case CLOBBER:            //>|
+            return 1;
+        default:
+            return 1;
+
+    }
+}
+
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
     printf("Enter in redirection\n");
     debug_token(tok);
     int fd = -1;
+    int io = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
     {
         errno = 0;
-        fd = strtol(TOK_STR(tok), NULL, 10);
-        if (errno || fd < 0)
+        io = strtol(TOK_STR(tok), NULL, 10);
+        if (errno || io < 0)
         {
             destroy_ast(child);
             warnx("Wrong IO Number");
@@ -55,8 +91,7 @@ struct ast_node *rule_redirection(struct token_list **tok,
     }
     else
     {
-        // SET DEFAULT FD
-        fd = 1;
+        io = set_default_io(tok);
     }
     enum redirect_type r_type = translate_redirect(TOK_TYPE(tok));
     if (r_type == R_NONE)
@@ -74,5 +109,5 @@ struct ast_node *rule_redirection(struct token_list **tok,
     }
     char *dest = TOK_STR(tok);
     NEXT_TOK(tok);
-    return create_ast_node_redirect(fd, r_type, fd, dest, child);
+    return create_ast_node_redirect(fd, r_type, io, dest, child);
 }

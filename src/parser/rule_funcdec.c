@@ -1,3 +1,10 @@
+/**
+ *\file rule_funcdec.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Fonction declaration rule function
+ */
 #include <err.h>
 #include <stdio.h>
 

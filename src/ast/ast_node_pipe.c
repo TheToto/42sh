@@ -52,4 +52,3 @@ void print_ast_pipe(struct ast_node_pipe *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->rs, num, fd);
 }
-

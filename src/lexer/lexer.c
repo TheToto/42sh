@@ -1,3 +1,11 @@
+/**
+ * \file lexer.c
+ * \brief Contain all function to create or destroy
+ * a pointer to a lexer structure
+ * according to a given string.
+ * \author Arthur Busuttil
+ * \version 0.5
+ */
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>
@@ -5,22 +13,6 @@
 #include "lexer.h"
 #include "parser.h"
 
-/**
- * \file lexer.c
- * \brief Contain all function to create or destroy
- * a pointer to a lexer structure
- * according to a given string.
- * \author Arthur Busuttil
- * \version 0.4
- */
-
-/**
- * \fn void lexer_destroy (struct lexer *l)
- * \brief Free the lexer and all sub-structure.
- *
- * \param l The lexer we want to free.
- * \return NOTHING.
- */
 void lexer_destroy(struct lexer *l)
 {
     if (!l)
@@ -42,8 +34,7 @@ void lexer_destroy(struct lexer *l)
  *
  * \return A pointer to a lexer initialized.
  */
-    static
-struct lexer *init_lexer(void)
+static struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
     l = calloc(1, sizeof(struct lexer));
@@ -66,8 +57,8 @@ struct lexer *init_lexer(void)
  * \param str The string used to initialize the token_list.
  * \return NOTHING.
  */
-    static
-void set_tl(struct token_list *tl, char *str, enum token_type tok)
+static void set_tl(struct token_list *tl, char *str,
+    enum token_type tok)
 {
     tl->str = str;
     if (tok == NAME)
@@ -85,8 +76,7 @@ void set_tl(struct token_list *tl, char *str, enum token_type tok)
  * the candidate.
  * \return A string containing a valid candidate to correspond to a token.
  */
-    static
-char *get_next_str(char **beg)
+static char *get_next_str(char **beg)
 {
     if (!beg || !*beg || !**beg)
         return NULL;
@@ -135,15 +125,14 @@ char *get_next_str(char **beg)
  * \param i It is the index in the string of the last character of the word.
  * \return If the current position mark a changement of token.
  */
-static
-int should_change(enum token_type *type, enum token_type type_next,
-                  char **lstring, size_t *i)
+static int should_change(enum token_type *type,
+    enum token_type type_next, char **lstring, size_t *i)
 {
     char *tmp = lstring[0];
     char *str = lstring[1];
     char *word = lstring[2];
     enum token_type type_tmp = get_token_type(tmp);
-    if (*type == IO_NUMBER && type_tmp > 8 && *type != type_next)
+    if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
     if (((*type != type_next)
                 && ((*type < 10 && *type > 22) || type_next == WORD)
@@ -184,8 +173,7 @@ int should_change(enum token_type *type, enum token_type type_next,
  * and it's associated token.
  * \return NOTHING.
  */
-static
-void get_next_word_token(char **str, struct token_list *tl)
+static void get_next_word_token(char **str, struct token_list *tl)
 {
     char *word = calloc(1, strlen(*str) + 1);
     size_t i = 0;
@@ -222,13 +210,6 @@ void get_next_word_token(char **str, struct token_list *tl)
     set_tl(tl, word, type);
 }
 
-/**
- * \fn struct lexer *lexer (char *str)
- * \brief Create and initialize a lexer according to a string.
- *
- * \param str The string used to initialize a lexer.
- * \return A pointer to a lexer initialized.
- */
 struct lexer *lexer(char *str)
 {
     struct lexer *l = init_lexer();

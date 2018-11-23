@@ -20,13 +20,7 @@
 #include "parser.h"
 #include "ast_destroy.h"
 
-/**
- *\fn exec_scmd
- *\brief Execute a simple command
- *\param struct ast_node_scmd *scmd The AST node of the simple command
- *\return Return an int depending on the command
- */
-static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
+int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
 {
     //if !builtin cmd
     pid_t pid;
@@ -60,12 +54,7 @@ static int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     return status;
 }
 
-/**
- *\fn exec_if
- *\brief Execute the if command
- *\param struct ast_node_if *n_if   The AST node of the if command
- */
-static int exec_if(struct ast_node_if *n_if, struct variables *var)
+int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
     int res = exec_node(n_if->condition, var);
     if (res == 0)
@@ -74,12 +63,7 @@ static int exec_if(struct ast_node_if *n_if, struct variables *var)
         return exec_node(n_if->e_false, var);
 }
 
-/**
- *\fn exec_while
- *\brief Execute the while command
- *\param struct ast_node_while *n_while   The AST node of the while command
- */
-static int exec_while(struct ast_node_while *n_while, struct variables *var)
+int exec_while(struct ast_node_while *n_while, struct variables *var)
 {
     int res = 0;
     while (exec_node(n_while->condition, var) == 0)
@@ -87,12 +71,7 @@ static int exec_while(struct ast_node_while *n_while, struct variables *var)
     return res;
 }
 
-/**
- *\fn exec_for
- *\brief Execute the for command
- *\param struct ast_node_for *n_for   The AST node of the for command
- */
-static int exec_for(struct ast_node_for *n_for, struct variables *var)
+int exec_for(struct ast_node_for *n_for, struct variables *var)
 {
     char *name = n_for->value;
     int res = 0;
@@ -104,64 +83,18 @@ static int exec_for(struct ast_node_for *n_for, struct variables *var)
     return res;
 }
 
-static int exec_semicolon(struct ast_node_semicolon *n_semi,
+int exec_semicolon(struct ast_node_semicolon *n_semi,
         struct variables *var)
 {
     exec_node(n_semi->left_child, var);
     return exec_node(n_semi->right_child, var);
 }
 
-/**
- *\fn exec_redirect
- *\brief Execute the redirection
- *\param struct ast_node_redirect *n_redirect  The AST node of the redirection
- */
-static int exec_redirect(struct ast_node_redirect *n_redirect)
-{
-    switch (n_redirect->type)
-    {
-        case R_LESS:
-            break;
-        case R_GREAT:
-            break;
-        case R_DLESS:
-            break;
-        case R_DGREAT:
-            break;
-        case R_LESSAND:
-            break;
-        case R_GREATAND:
-            break;
-        case R_LESSGREAT:
-            break;
-        case R_DLESSDASH:
-            break;
-        case R_CLOBBER:
-            break;
-        case R_PIPE:
-            break;
-        default:
-            break;
-    }
-    return 0;
-}
-
-/**
- *\fn exec_not
- *\brief Execute the not node
- *\param struct ast_node_redirect *n_redirect  The AST node of the not
- */
-static int exec_not(struct ast_node_not *n_not, struct variables *var)
+int exec_not(struct ast_node_not *n_not, struct variables *var)
 {
     return exec_node(n_not->child, var) == 0;
 }
 
-/**
- *\fn exec_node
- *\brief Execute the complete AST
- *\param struct ast_node *node  The AST node to execute
- *\return Return an int depending on the commands given
- */
 int exec_node(struct ast_node *node, struct variables *var)
 {
     switch (node->type)
@@ -176,7 +109,7 @@ int exec_node(struct ast_node *node, struct variables *var)
         case N_FOR:
             return exec_for(node->son, var);
         case N_REDIRECT:
-            return exec_redirect(node->son);
+            return exec_redirect(node->son, var);
         case N_SEMICOLON:
             return exec_semicolon(node->son, var);
         case N_AMPERSAND:
@@ -185,28 +118,26 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_not(node->son, var);
         case N_NONE:
             return 0;
+        case N_PIPE:
+            return exec_pipe(node->son, var);
+
         default:
             break;
     }
     return 0;
 }
 
-/**
- *\fn exec_main
- *\brief Send a string to lexer, parser, and exec
- *\param str  The string to execute
- *\return Return an int depending on the commands given
- */
-int exec_main(char *str, int is_print)
+int exec_main(char *str, int is_print, struct variables *library)
 {
     //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
-    struct variables *library = init_var();
+
     if (!ast)
         errx(2, "Error in parsing");
     l->token_list = copy;
+
     if (is_print)
         makedot(ast, "ast.dot");
 
@@ -215,7 +146,6 @@ int exec_main(char *str, int is_print)
 
     destroy_ast(ast);
     lexer_destroy(l);
-    destroy_var(library);
 
     return res;
 }

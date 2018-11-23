@@ -1,3 +1,10 @@
+/**
+ *\file rule_simple_command.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Simple command rule function
+ */
 #include <err.h>
 #include <stdio.h>
 
@@ -74,7 +81,7 @@ struct ast_node *rule_element(struct ast_node *scmd, struct token_list **tok,
     /// TODO -> RULE REDIRECTION IF ITS A REDIR
 
     res = apply_redir(tok, res);
-    while (TOK_TYPE(tok) == WORD)
+    while (TOK_TYPE(tok) == WORD || TOK_TYPE(tok) == WORD_EXT)
     {
         add_element_scmd(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
