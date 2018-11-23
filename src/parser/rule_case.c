@@ -18,6 +18,8 @@ static int add_to_node(struct token_list **tok, struct ast_node *case_node,
     if (TOK_TYPE(tok) != WORD)
     {
         warnx ("Need at least one match item in case item");
+        destroy_ast(exec);
+        destroy_ast(case_node);
         return 0;
     }
     add_case_value(case_node, TOK_STR(tok), exec);
@@ -28,7 +30,8 @@ static int add_to_node(struct token_list **tok, struct ast_node *case_node,
         if (TOK_TYPE(tok) != WORD)
         {
             warnx ("Wrong word item in case item");
-            return -1;
+            destroy_ast(case_node);
+            return 0;
         }
         add_case_value(case_node, TOK_STR(tok), exec);
         NEXT_TOK(tok);
@@ -46,6 +49,7 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
     if (TOK_TYPE(tok) != PARENTHESIS_OFF)
     {
         warnx("Need ')' after a case item");
+        destroy_ast(case_node);
         return 0;
     }
     NEXT_TOK(tok);
@@ -55,22 +59,21 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
     {
         exec = rule_compound_list(tok);
         if (!exec)
+        {
+            destroy_ast(case_node);
             return 0;
+        }
     }
     if (TOK_TYPE(tok) != DSEMICOLON)
     {
+        if (exec)
+            destroy_ast(exec);
+        destroy_ast(case_node);
         warnx("Missing ';;' at end of case item");
         return 0;
     }
     NEXT_TOK(tok);
-    int i = add_to_node(&save, case_node, exec);
-    if (i < 1)
-    {
-        if (exec && i == 0)
-            destroy_ast(exec);
-        return 0;
-    }
-    return 1;
+    return add_to_node(&save, case_node, exec);
 }
 
 static int rule_case_clause(struct token_list **tok,
@@ -124,10 +127,7 @@ struct ast_node *rule_case(struct token_list **tok)
     {
         int i = rule_case_clause(tok, case_node);
         if (i == 0)
-        {
-            destroy_ast(case_node);
             return NULL;
-        }
     }
     if (TOK_TYPE(tok) != ESAC)
     {

@@ -83,10 +83,25 @@ void add_case_value(struct ast_node *node, char *value, struct ast_node *exec)
     cur->size += 1;
 }
 
+static void destroy_case_null(struct ast_node_case *node,
+        struct ast_node *to_null)
+{
+    for (size_t i = 0; i < node->size; i++)
+    {
+        if (node->nodes[i] == to_null)
+        {
+            node->nodes[i] = NULL;
+        }
+    }
+}
+
 void destroy_ast_node_case(struct ast_node_case *node)
 {
     for (size_t i = 0; i < node->size; i++)
+    {
         destroy_ast(node->nodes[i]);
+        destroy_case_null(node, node->nodes[i]);
+    }
     free(node->cases);
     free(node->nodes);
     free(node);
