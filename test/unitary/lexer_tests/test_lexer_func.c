@@ -12,6 +12,7 @@ void tearDown(void)
 void test_redirection_token(void)
 {
     printf("-Testing: getting redirection token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("<");
     TEST_ASSERT_EQUAL_INT(0, token);
     token = get_token_type(">");
@@ -32,18 +33,22 @@ void test_redirection_token(void)
     TEST_ASSERT_EQUAL_INT(8, token);
     token = get_token_type("|");
     TEST_ASSERT_EQUAL_INT(9, token);
+    printf("END");
 }
 
 void test_quote_token(void)
 {
     printf("-Testing: getting quotted word token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("Iam\"quoted\"trustme");
     TEST_ASSERT_EQUAL_INT(37, token);
+    printf("END");
 }
 
 void test_condition_token(void)
 {
     printf("-Testing: getting condition token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("if");
     TEST_ASSERT_EQUAL_INT(10, token);
     token = get_token_type("then");
@@ -54,22 +59,26 @@ void test_condition_token(void)
     TEST_ASSERT_EQUAL_INT(13, token);
     token = get_token_type("fi");
     TEST_ASSERT_EQUAL_INT(14, token);
+    printf("END");
 }
 
 void test_case_token(void)
 {
     printf("-Testing: getting case related token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("case");
     TEST_ASSERT_EQUAL_INT(15, token);
     token = get_token_type("esac");
     TEST_ASSERT_EQUAL_INT(16, token);
     token = get_token_type(";;");
     TEST_ASSERT_EQUAL_INT(17, token);
+    printf("END");
 }
 
 void test_loop_token(void)
 {
     printf("-Testing: getting loop related token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("while");
     TEST_ASSERT_EQUAL_INT(18, token);
     token = get_token_type("until");
@@ -82,11 +91,13 @@ void test_loop_token(void)
     TEST_ASSERT_EQUAL_INT(22, token);
     token = get_token_type(";");
     TEST_ASSERT_EQUAL_INT(23, token);
+    printf("END");
 }
 
 void test_special_token(void)
 {
     printf("-Testing: getting enclosure and 'in' words token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("in");
     TEST_ASSERT_EQUAL_INT(24, token);
     token = get_token_type("{");
@@ -97,11 +108,13 @@ void test_special_token(void)
     TEST_ASSERT_EQUAL_INT(27, token);
     token = get_token_type(")");
     TEST_ASSERT_EQUAL_INT(28, token);
+    printf("END");
 }
 
 void test_bin_op_token(void)
 {
     printf("-Testing: getting binary operator token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("&&");
     TEST_ASSERT_EQUAL_INT(29, token);
     token = get_token_type("||");
@@ -110,11 +123,13 @@ void test_bin_op_token(void)
     TEST_ASSERT_EQUAL_INT(31, token);
     token = get_token_type("!");
     TEST_ASSERT_EQUAL_INT(32, token);
+    printf("END");
 }
 
 void test_default_token(void)
 {
     printf("-Testing: getting words, io-number and name related token-\n");
+    printf("BEGINNING");
     enum token_type token = get_token_type("1234567890");
     TEST_ASSERT_EQUAL_INT(33, token);
     token = get_token_type("\n");
@@ -125,4 +140,5 @@ void test_default_token(void)
     TEST_ASSERT_EQUAL_INT(36, token);
     token = get_token_type("__--%Le_Reste%--__");
     TEST_ASSERT_EQUAL_INT(38, token);
+    printf("END");
 }

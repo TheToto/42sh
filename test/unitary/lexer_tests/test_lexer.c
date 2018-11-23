@@ -12,6 +12,7 @@ void tearDown(void)
 void test_lexer_not_null(void)
 {
     printf("-Testing: lexer not null-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("");
     TEST_ASSERT_NOT_NULL(l);
     TEST_ASSERT_NOT_NULL(l->token_list);
@@ -19,11 +20,13 @@ void test_lexer_not_null(void)
     TEST_ASSERT_NULL(l->token_list->next);
     TEST_ASSERT_EQUAL_INT(39, l->token_list->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_lexer_collapsed(void)
 {
     printf("-Testing: collapsed words-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("ls;else");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -47,11 +50,13 @@ void test_lexer_collapsed(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_do_done_collapsed(void)
 {
     printf("-Testing: do and done collapsed-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("dodone");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -65,11 +70,13 @@ void test_do_done_collapsed(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_lexer_io_number_collapsed(void)
 {
     printf("-Testing: io-number collapsed-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("3>|ok");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -93,11 +100,13 @@ void test_lexer_io_number_collapsed(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_lexer_not_io_number_collapsed(void)
 {
     printf("-Testing: not io-number collapsed-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("3&>|");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -121,11 +130,13 @@ void test_lexer_not_io_number_collapsed(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_lexer_space(void)
 {
     printf("-Testing: words separate with space-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("Space && !Tab");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -154,11 +165,13 @@ void test_lexer_space(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }
 
 void test_lexer_space_and_tab(void)
 {
     printf("-Testing: words separate with space and tabs-\n");
+    printf("BEGINNING");
     struct lexer *l = lexer("\t Space \t || \t Tab \t\n");
     TEST_ASSERT_NOT_NULL(l);
     struct token_list *tl = l->token_list;
@@ -187,4 +200,5 @@ void test_lexer_space_and_tab(void)
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(39, tl->type);
     lexer_destroy(l);
+    printf("END\n");
 }

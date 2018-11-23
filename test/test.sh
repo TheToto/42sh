@@ -139,6 +139,10 @@ while read line; do
     fi
 
     case $line in
+    *BEGINNINGEND*)
+              printf "      "$GREEN"PASSED"$DEFAULT"\n";;
+    *BEGINNING* )
+              printf "      "$RED"FAILED"$DEFAULT"\n";;
     *-Testing:*   )
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
               printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;

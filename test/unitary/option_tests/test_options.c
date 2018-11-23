@@ -12,6 +12,7 @@ void tearDow(void)
 void test_options(void)
 {
     printf("-Testing: getting correct option enum value-\n");
+    printf("BEGINNING");
     enum option opt = get_option("--norc");
     TEST_ASSERT_EQUAL_INT(NORC, opt);
     opt = get_option("--ast-print");
@@ -26,11 +27,13 @@ void test_options(void)
     TEST_ASSERT_EQUAL_INT(SHOPT_PLUS, opt);
     opt = get_option("-hello");
     TEST_ASSERT_EQUAL_INT(NONE, opt);
+    printf("END");
 }
 
 void test_shopt(void)
 {
     printf("-Testing: getting correct shopt enum value-\n");
+    printf("BEGINNING");
     enum shopt opt = get_shopt("ast_print");
     TEST_ASSERT_EQUAL_INT(ASTPRINT, opt);
     opt = get_shopt("dotglob");
@@ -49,4 +52,5 @@ void test_shopt(void)
     TEST_ASSERT_EQUAL_INT(XPGECHO, opt);
     opt = get_shopt("notashopt");
     TEST_ASSERT_EQUAL_INT(OTHER, opt);
+    printf("END");
 }
