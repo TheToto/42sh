@@ -103,7 +103,6 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_scmd(node->son, var);
         case N_IF:
             return exec_if(node->son, var);
-            break;
         case N_WHILE:
             return exec_while(node->son, var);
         case N_FOR:
@@ -116,11 +115,12 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_semicolon(node->son, var);
         case N_NOT:
             return exec_not(node->son, var);
-        case N_NONE:
-            return 0;
         case N_PIPE:
             return exec_pipe(node->son, var);
-
+        case N_CASE:
+            return exec_case(node->son, var);
+        case N_NONE:
+            return 0;
         default:
             break;
     }

@@ -26,10 +26,12 @@ int exec_case(struct ast_node_case *node, struct variables *var)
     char *str = node->value; // USE VARIABLES
     for (size_t i = 0; i < node->size; i++)
     {
-        if (!fnmatch(str, node->cases[i], 0))
+        if (!fnmatch(node->cases[i], str, 0))
         {
+            warnx("[DEBUG] found %s case", node->cases[i]);
             return exec_node(node->nodes[i], var);
         }
     }
+    warnx("[DEBUG] Nothing found case");
     return 0;
 }
