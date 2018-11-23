@@ -33,7 +33,9 @@
 * [x] while/until statement
 * [x] not statement
 * [x] Simple command
-* [ ] Redirections
+* [x] Redirections
+* [x] Pipes
+* [ ] Split executions functions into different files
 * [ ] Handle expansion in redirections
 * [ ] Case statement
 * [ ] Handle func declaration

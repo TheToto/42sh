@@ -1,3 +1,5 @@
+#include <err.h>
+
 #include "ast.h"
 #include "print.h"
 
@@ -54,6 +56,8 @@ void print_ast_node(struct ast_node *ast, size_t *num, FILE *f)
 void makedot(struct ast_node *ast, char *path)
 {
     FILE *f = fopen(path, "w");
+    if (!f)
+        err(1, "Can't open %s", path);
     fprintf(f, "digraph AST {\n");
     size_t i = 0;
     print_ast_node(ast, &i, f);

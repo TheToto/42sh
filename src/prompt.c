@@ -48,9 +48,10 @@ int show_prompt(int norc, int is_print)
     if (!norc)
         launchrc(is_print);
     struct variables *library = init_var();
+    putenv("PS1=[42sh@pc]$ ");
     while (1)
     {
-        char *buf = readline("[42sh@pc]$ ");
+        char *buf = readline(getenv("PS1"));
         if (buf && *buf)
             add_history(buf);
         if (!strcmp(buf, "exit"))

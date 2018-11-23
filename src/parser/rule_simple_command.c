@@ -81,7 +81,7 @@ struct ast_node *rule_element(struct ast_node *scmd, struct token_list **tok,
     /// TODO -> RULE REDIRECTION IF ITS A REDIR
 
     res = apply_redir(tok, res);
-    while (TOK_TYPE(tok) == WORD)
+    while (TOK_TYPE(tok) == WORD || TOK_TYPE(tok) == WORD_EXT)
     {
         add_element_scmd(scmd, TOK_STR(tok));
         NEXT_TOK(tok);
