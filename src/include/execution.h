@@ -85,3 +85,12 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var);
  *\return Return an int depending on the command
  */
 int exec_pipe(struct ast_node_pipe *n, struct variables *var);
+
+
+/**
+ *\fn exec_pipe
+ *\brief Execute a case statement
+ *\param struct ast_node_case *node The AST node of the case statement
+ *\return Return an int depending on the command
+ */
+int exec_case(struct ast_node_case *node, struct variables *var);
