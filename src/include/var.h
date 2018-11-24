@@ -54,25 +54,32 @@ void add_var(struct variables *var, char *name, char *value);
 
 /**
  * @fn destroy_var
- * @brief Destroy array of variables and all incorporated variables.
+ * Destroy array of variables and all incorporated variables.
+ * @param var pointer to the library of variables to destroy
  */
 void destroy_var(struct variables *var);
 
 /**
  * @fn get_var
- * @brief Look for the variable with name \a name in the array \var
+ * Look for the variable with name \a name in the array \var
+ * @param var library to look in
+ * @param name variable researched
  * @return NULL if not found, its value otherwise
  */
 char *get_var(struct variables *var, char *name);
 
 /**
  * @fn assign_prefix
- * @brief Add the declararion to the array of variables
+ * @param var library to be completed
+ * @param prefix prefix to be added
+ * Add the declararion to the array of variables
  */
 void assign_prefix(struct variables *var, char *prefix);
 
 /**
  * @fn replace_var
- * @brief replace element by its new variable if a declaration was made
+ * @param var library to use
+ * @param scmd new variable
+ * Replace element by its new variable if a declaration was made
  */
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd);

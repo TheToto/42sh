@@ -1,3 +1,11 @@
+/**
+ * \file ast_node_logical_or.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of logical or
+ */
+
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"

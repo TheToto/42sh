@@ -1,3 +1,11 @@
+/**
+ * \file ast_node_pipe.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of pipes
+ */
+
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"

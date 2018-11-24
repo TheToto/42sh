@@ -1,3 +1,10 @@
+/**
+ * \file ast_node_redirect.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of redirections
+ */
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"

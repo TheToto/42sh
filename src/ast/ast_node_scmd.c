@@ -1,3 +1,11 @@
+/**
+ * \file ast_node_scmd.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of scmd
+ */
+
 #include <stdlib.h>
 #include <err.h>
 #include "parser.h"
