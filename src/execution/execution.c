@@ -38,7 +38,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
         {
             error = execvp(*expanded, expanded);
             if (error < 0)
-                err(1, "Exec %s failed", *expanded);
+                err(127, "Exec %s failed", *expanded);
         }
         else
         {
