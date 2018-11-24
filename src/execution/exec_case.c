@@ -23,7 +23,9 @@
 
 int exec_case(struct ast_node_case *node, struct variables *var)
 {
-    char *str = node->value; // USE VARIABLES
+    char *str = get_var(var, node->value);
+    if (str == NULL)
+        str = "";
     for (size_t i = 0; i < node->size; i++)
     {
         if (!fnmatch(node->cases[i], str, 0))

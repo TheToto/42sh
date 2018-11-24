@@ -107,6 +107,8 @@ char *get_var(struct variables *var, char *name)
     }
     struct var *cur;
     size_t i = 0;
+    if (name && name[0] != '$') // if no $, return name
+        return name;
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
@@ -141,7 +143,7 @@ char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
         res[i] = strdup(scmd->elements[i]);
         if (scmd->elements[i][0] == '$')
         {
-            char *value = get_var(var, scmd->elements[i] + 1);
+            char *value = get_var(var, scmd->elements[i]);
             free(res[i]);
             if (value)
                 res[i] = strdup(value);
