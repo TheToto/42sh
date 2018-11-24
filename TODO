@@ -4,8 +4,8 @@
 
 # PARSER
 * [x] Handle GRAMMAR
-* [ ] Redirections
-* [ ] Case statement
+* [x] Redirections
+* [x] Case statement
 * [ ] Show prompt PS2 in if/while/...
 
 # TEST SUITE
@@ -37,7 +37,7 @@
 * [x] Pipes
 * [ ] Split executions functions into different files
 * [ ] Handle expansion in redirections
-* [ ] Case statement
+* [x] Case statement
 * [ ] Handle func declaration
 
 # Interactive mode
