@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include "var.h"
 #include "options.h"
@@ -38,7 +39,11 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
         {
             error = execvp(*expanded, expanded);
             if (error < 0)
-                err(127, "Exec %s failed", *expanded);
+            {
+                if (errno == ENOENT)
+                    err(127, "Exec %s failed", *expanded);
+                err(126, "Exec %s failed", *expanded);
+            }
         }
         else
         {
