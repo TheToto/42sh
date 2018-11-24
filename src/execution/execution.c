@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include "var.h"
 #include "options.h"
@@ -38,7 +39,11 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
         {
             error = execvp(*expanded, expanded);
             if (error < 0)
-                err(1, "Exec %s failed", *expanded);
+            {
+                if (errno == ENOENT)
+                    err(127, "Exec %s failed", *expanded);
+                err(126, "Exec %s failed", *expanded);
+            }
         }
         else
         {
@@ -103,7 +108,6 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_scmd(node->son, var);
         case N_IF:
             return exec_if(node->son, var);
-            break;
         case N_WHILE:
             return exec_while(node->son, var);
         case N_FOR:
@@ -116,11 +120,12 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_semicolon(node->son, var);
         case N_NOT:
             return exec_not(node->son, var);
-        case N_NONE:
-            return 0;
         case N_PIPE:
             return exec_pipe(node->son, var);
-
+        case N_CASE:
+            return exec_case(node->son, var);
+        case N_NONE:
+            return 0;
         default:
             break;
     }
@@ -133,10 +138,14 @@ int exec_main(char *str, int is_print, struct variables *library)
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&(l->token_list));
+    l->token_list = copy;
 
     if (!ast)
-        errx(2, "Error in parsing");
-    l->token_list = copy;
+    {
+        lexer_destroy(l);
+        warnx("Error in parsing");
+        return 1;
+    }
 
     if (is_print)
         makedot(ast, "ast.dot");

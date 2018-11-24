@@ -35,19 +35,17 @@ struct ast_node_while
     struct ast_node *exec;      ///<command to execute for each iteration
 };
 
-/** Construction of 'case' ast_node
- * @details This constructor can be called with next set to NULL. Setting next
- * to a previously constructed ast_node_case will ensure a link between theses
- * two. During evaluation, every case will be tested until the matching one is
- * found (or the defalt one at least)
+/**
+ * @brief Construction of 'case' ast_node
+ * @details This constructor can be called casses and nodes set to NULL.
  */
 struct ast_node_case
 {
-    struct ast_node *exec;      ///<command to execute if current case true
-    char **values;              ///<array of string to compare in this case
-    size_t size;                ///<current size of the array of strings
-    size_t capacity;            ///<capacity of the array of strings
-    struct ast_node_case *next; ///<pointer to the next case of the switch
+    char *value;                ///value to compare to \a cases
+    char **cases;               ///array of string to compare in this case
+    struct ast_node **nodes;    ///command to execute if current case true
+    size_t size;                ///current size of the array of strings
+    size_t capacity;            ///capacity of the array of strings
 };
 
 /// This enum is about all handled redirection types
@@ -217,13 +215,11 @@ struct ast_node *create_ast_node_while(struct ast_node *condition, struct
         ast_node *exec);
 
 /**
- * Create 'case' ast_node
- * @param exec      operation to apply is case
- * @param prev_case can be NULL. Pointer to the previous case of the switch
+ * @brief Create 'case' ast_node
+ * @param value      string to compare is case
  * @return newly created ast_node and its type
  */
-struct ast_node *create_ast_node_case(struct ast_node *exec,
-        struct ast_node_case *prev_case);
+struct ast_node *create_ast_node_case(char *value);
 
 /**
  * Add the \a value string to the element array in node
@@ -231,7 +227,7 @@ struct ast_node *create_ast_node_case(struct ast_node *exec,
  * @param value string to add. Must not be empty.
  * @return void, changement being done internally
  */
-void add_value_case(struct ast_node *node, char *value);
+void add_case_value(struct ast_node *node, char *value, struct ast_node *exec);
 
 /**
  * Create 'if' ast_node

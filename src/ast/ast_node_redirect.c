@@ -45,7 +45,7 @@ void destroy_ast_node_redirect(struct ast_node_redirect *node)
 
 void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"REDIR: %d (%d) %s\"];\n", *num, node->fd,
+    fprintf(fd, "%lu [label= \"REDIR: %d (%d) %s\"];\n", *num, node->io_number,
             node->type, node->word);
     size_t save = *num;
 

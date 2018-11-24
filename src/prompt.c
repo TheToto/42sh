@@ -31,23 +31,23 @@ static char *init_path(char *file)
     return histpath;
 }
 
-static void launchrc(int is_print)
+static void launchrc(int is_print, struct variables *var)
 {
     char *filerc = init_path("/.42shrc");
     struct stat buf;
     if (!stat("/etc/42shrc", &buf))
-        launch_file("/etc/42shrc", is_print);
+        launch_file("/etc/42shrc", is_print, var);
     if (!stat(filerc, &buf))
-        launch_file(filerc, is_print);
+        launch_file(filerc, is_print, var);
     free(filerc);
 }
 
 int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
-    if (!norc)
-        launchrc(is_print);
     struct variables *library = init_var();
+    if (!norc)
+        launchrc(is_print, library);
     putenv("PS1=[42sh@pc]$ ");
     while (1)
     {

@@ -4,13 +4,15 @@
 
 # PARSER
 * [x] Handle GRAMMAR
-* [ ] Redirections
-* [ ] Case statement
+* [x] Redirections
+* [x] Case statement
+* [x] Handle ls if (pb with if token)
 * [ ] Show prompt PS2 in if/while/...
 
 # TEST SUITE
 * [x] Set up ceedling
 * [ ] Advanced tests
+* [ ] Test suite options
 
 # DOC
 * [~] Set up Doxygen (in progress)
@@ -27,6 +29,10 @@
 # CMAKE
 * [x] Main rule
 
+# Options
+* [x] 0.3 options
+* [~] shopt
+
 # Execution
 * [x] if statement
 * [x] var assignment
@@ -37,7 +43,7 @@
 * [x] Pipes
 * [ ] Split executions functions into different files
 * [ ] Handle expansion in redirections
-* [ ] Case statement
+* [x] Case statement
 * [ ] Handle func declaration
 
 # Interactive mode
@@ -46,7 +52,15 @@
 * [x] Ressource file reader
 
 # Built in
-* [ ]
+* [~] exit (hardcoded)
+* [ ] cd
+* [ ] shopt
+* [ ] export
+* [ ] alias/unalias
+* [ ] echo
+* [ ] continue/break
+* [ ] source
+* [ ] history
 
 # RETURN VALUE
 * [ ] Fix wrong return value

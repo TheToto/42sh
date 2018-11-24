@@ -13,7 +13,7 @@
 
 #include "execution.h"
 
-int launch_file(char *path, int is_print)
+int launch_file(char *path, int is_print, struct variables *var)
 {
     FILE *f = fopen(path, "r");
     if (!f)
@@ -30,9 +30,7 @@ int launch_file(char *path, int is_print)
 
     fread(buffer, sizeof(char), numbytes, f);
     fclose(f);
-    struct variables *library = init_var();
-    int res = exec_main(buffer, is_print, library);
-    destroy_var(library);
+    int res = exec_main(buffer, is_print, var);
 
     free(buffer);
     return res;

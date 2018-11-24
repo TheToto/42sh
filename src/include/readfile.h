@@ -12,7 +12,7 @@
  *\param path Path to file
  *\param is_print boolean to print the ast
  */
-int launch_file(char *path, int is_print);
+int launch_file(char *path, int is_print, struct variables *var);
 
 /**
  *\fn launch_pipe
