@@ -1,9 +1,9 @@
 /**
- *\file readfile.c
- *\author thomas.lupin
- *\version 0.5
- *\date 15-11-2018
- *\brief Read a file
+ * \file readfile.c
+ * \author thomas.lupin
+ * \version 0.5
+ * \date 15-11-2018
+ * \brief Read a file
  */
 
 #include <err.h>

@@ -1,10 +1,10 @@
 /**
- *\file options.c
- *\author sabrina.meng
- *\version 0.3
- *\date 15-11-2018
- *\brief Options parsing
- *\detail Parse the options with the format
+ * \file options.c
+ * \author sabrina.meng
+ * \version 0.3
+ * \date 15-11-2018
+ * \brief Options parsing
+ * \details Parse the options with the format
  *[GNU long option] [option] script-file
  */
 

@@ -41,11 +41,11 @@ struct ast_node_while
  */
 struct ast_node_case
 {
-    char *value;                ///value to compare to \a cases
-    char **cases;               ///array of string to compare in this case
-    struct ast_node **nodes;    ///command to execute if current case true
-    size_t size;                ///current size of the array of strings
-    size_t capacity;            ///capacity of the array of strings
+    char *value;                ///<value to compare to \a cases
+    char **cases;               ///<array of string to compare in this case
+    struct ast_node **nodes;    ///<command to execute if current case true
+    size_t size;                ///<current size of the array of strings
+    size_t capacity;            ///<capacity of the array of strings
 };
 
 /// This enum is about all handled redirection types
@@ -154,8 +154,8 @@ enum node_type
 ///Each ast node is composed by this truct and a pointer to its type
 struct ast_node
 {
-    enum node_type type;
-    void *son;
+    enum node_type type;///<type of the specialized ast_node
+    void *son;///<pointer to the specilized ast_node
 };
 
 /**
