@@ -23,7 +23,7 @@
 #include "print.h"
 #include "execution.h"
 #include "ast_destroy.h"
-#include "var.h"
+#include "env.h"
 #include "readfile.h"
 
 /**

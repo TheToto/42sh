@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ast.h"
-#include "var.h"
+#include "env.h"
 
 /**
  * Send a string to lexer, parser, and exec
@@ -83,3 +83,11 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var);
  * \return Return an int depending on the command
  */
 int exec_case(struct ast_node_case *node, struct variables *var);
+
+/**
+ * Execute a function declaration statement
+ * \param struct ast_node_case *node The AST node of the fctdec statement
+ * \param var the library of environnement variables
+ * \return Return an int depending on the command
+ */
+int exec_fctdec(struct ast_node_case *node, struct variables *var);
