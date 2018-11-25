@@ -41,7 +41,7 @@ void destroy_ast_node_fctdec(struct ast_node_fctdec *node)
 
 void print_ast_fctdec(struct ast_node_fctdec *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"%s\"];\n", *num, node->name);
+    fprintf(fd, "%lu [label= \"%s()\"];\n", *num, node->name);
     size_t save = *num;
 
     *num += 1;
