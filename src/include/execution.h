@@ -91,3 +91,19 @@ int exec_case(struct ast_node_case *node, struct variables *var);
  * \return Return an int depending on the command
  */
 int exec_fctdec(struct ast_node_case *node, struct variables *var);
+
+/**
+ * Execute a logical and
+ * \param struct ast_node_land *node The AST node of the logical and
+ * \param var the library of environnement variables
+ * \return Return an int depending on the command
+ */
+int exec_land(struct ast_node_land *node, struct variables *var);
+
+/**
+ * Execute a logical or
+ * \param struct ast_node_lor *node The AST node of the logical or
+ * \param var the library of environnement variables
+ * \return Return an int depending on the command
+ */
+int exec_lor(struct ast_node_lor *node, struct variables *var);

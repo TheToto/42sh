@@ -88,6 +88,10 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_case(node->son, var);
         case N_FCTDEC:
             return exec_fctdec(node->son, var);
+        case N_LOGICAL_OR:
+            return exec_lor(node->son, var);
+        case N_LOGICAL_AND:
+            return exec_land(node->son, var);
         case N_NONE:
             return 0;
         default:
