@@ -201,7 +201,6 @@ static void get_next_word_token(char **str, struct token_list *tl)
     {
         strcpy(word, *str);
         type = WORD_EXT;
-        i = strlen(*str);
     }
     *str += i;
     word[i] = 0;
@@ -217,7 +216,7 @@ struct lexer *lexer(char *str)
     char *val = get_next_str(&str);
     for (; val && !*val;free(val), val = get_next_str(&str))
         continue;
-    for (; val; cur = cur->next)
+    while (val)
     {
         char *save = val;
         while (*val)
@@ -234,6 +233,8 @@ struct lexer *lexer(char *str)
         }
         free(save);
         val = get_next_str(&str);
+        if (cur->next)
+            cur = cur->next;
     }
     set_tl(cur, NULL, END_OF_FILE);
     return l;

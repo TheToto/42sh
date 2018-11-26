@@ -1,5 +1,5 @@
 for i in un deux trois;
 do
     printf $i;
-    printf "\n";
+    #printf "\n";
 done

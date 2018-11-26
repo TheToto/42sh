@@ -209,21 +209,21 @@ FAILED=0
 for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "$file" > tmp_ref 2> tmp_ref_err
-    timeout $timeout build/42sh "$file" > tmp_def 2> tmp_def_err
+    bash "$file" > /tmp/tmp_ref 2> /tmp/tmp_ref_err
+    timeout $timeout build/42sh "$file" > /tmp/tmp_def 2> /tmp/tmp_def_err
 
     exit_status="$?"
     exit_status_sanity=1
 
     if [ $sanity -eq 1 ]; then
-        valgrind build/42sh "$file" 2> tmp_sanity > /dev/null
+        valgrind build/42sh "$file" 2> /tmp/tmp_sanity > /tmp/null
         check_sanity
         exit_status_sanity="$?"
-        rm tmp_sanity
+        rm /tmp/tmp_sanity
     fi
 
-    diff tmp_def tmp_ref > res
-    diff_content="$(cat res)"
+    diff /tmp/tmp_def /tmp/tmp_ref > /tmp/res
+    diff_content="$(cat /tmp/res)"
     if [ $exit_status_sanity -eq 0 ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED: Leaks\n\n"$DEFAULT
@@ -239,9 +239,9 @@ for file in $list_of_file; do
         printf $GREEN"      PASSED\n\n"
     fi
 
-    rm tmp_r*
-    rm tmp_d*
-    rm res
+    rm /tmp/tmp_r*
+    rm /tmp/tmp_d*
+    rm /tmp/res
 done
 
 printf $ANNONCE"    ----------------"$DEFAULT"\n"
