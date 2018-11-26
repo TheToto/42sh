@@ -6,8 +6,6 @@
  * execution of scmd
  */
 
-#define _XOPEN_SOURCE
-
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>
@@ -64,23 +62,6 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     {
         status = execute(expanded, status, var);
         //printf("%s return %d\n", *scmd->elements, status);
-    }
-    else
-    {
-        char *str;
-        for (size_t i = 0; i < var->size; i++)
-        {
-            size_t len = strlen(var->lib[i]->name) + strlen(var->lib[i]->value)
-                                + 1;
-            str = calloc(len + 1, sizeof(char));
-            if (!str)
-                errx(1, "Calloc failed");
-            strcat(str, var->lib[i]->name);
-            strcat(str, "=");
-            strcat(str, var->lib[i]->value);
-            putenv(str);
-        }
-        free(str);
     }
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);

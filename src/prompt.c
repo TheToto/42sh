@@ -46,8 +46,10 @@ static void launchrc(int is_print, struct variables *var)
     struct stat buf;
     if (!stat("/etc/42shrc", &buf))
         launch_file("/etc/42shrc", is_print, var);
-    if (!stat(filerc, &buf))
+    else if (!stat(filerc, &buf))
         launch_file(filerc, is_print, var);
+    if (!get_var(var, "PS1"))
+        add_var(var, "PS1", "[42sh@pc]$ ");
     free(filerc);
 }
 
@@ -56,12 +58,11 @@ int show_prompt(int norc, int is_print)
     char *histpath = init_path("/.42sh_history");
     read_history(histpath);
     struct variables *library = init_var();
-    putenv("PS1=[42sh@pc]$ ");
     if (!norc)
         launchrc(is_print, library);
     while (1)
     {
-        char *buf = readline(getenv("PS1"));
+        char *buf = readline(get_var(library, "PS1"));
         if (buf && *buf)
             add_history(buf);
         if (!strcmp(buf, "exit"))

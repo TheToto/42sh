@@ -64,13 +64,13 @@ void add_var(struct variables *var, char *name, char *value)
         return;
     }
     size_t pos = 0;
-    struct var *cur = var->lib[pos];
+    struct var *cur;// = var->lib[pos];
     int found = 1;
     for (; found && pos < var->size; pos++)
     {
+        cur = var->lib[pos];
         if (strcmp(cur->name, name) == 0)
             found = 0;
-        cur = var->lib[pos];
     }
 
     if (!found)
@@ -130,9 +130,9 @@ char *get_var(struct variables *var, char *name)
     }
     struct var *cur;
     size_t i = 0;
-    if (name[0] != '$') // if no $, return name
-        return name;
-    name++; // skip $
+//    if (name[0] != '$') // if no $, return name
+//        return name;
+//    name++; // skip $
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
@@ -166,11 +166,16 @@ char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     for (size_t i = 0; i < scmd->elt_size; i++)
     {
-        char *value = get_var(var, scmd->elements[i]);
-        if (value)
-            res[i] = strdup(value);
+        if (scmd->elements[i][0] == '$')
+        {
+            char *value = get_var(var, scmd->elements[i] + 1);
+            if (value)
+                res[i] = strdup(value);
+            else
+                res[i] = strdup("");
+        }
         else
-            res[i] = strdup("");
+            res[i] = strdup(scmd->elements[i]);
     }
     return res;
 }
