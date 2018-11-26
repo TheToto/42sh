@@ -23,7 +23,12 @@
 
 int exec_case(struct ast_node_case *node, struct variables *var)
 {
-    char *str = get_var(var, node->value);
+    char *tmp = node->value;
+    char *str;
+    if (tmp[0] == '$')
+        str = get_var(var, tmp + 1);
+    else
+        str = "";
     if (str == NULL)
         str = "";
     for (size_t i = 0; i < node->size; i++)
