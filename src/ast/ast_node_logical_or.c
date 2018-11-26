@@ -1,3 +1,11 @@
+/**
+ * \file ast_node_logical_or.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of logical or
+ */
+
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
@@ -53,4 +61,3 @@ void print_ast_lor(struct ast_node_lor *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->right_child, num, fd);
 }
-

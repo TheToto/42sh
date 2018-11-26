@@ -1,3 +1,10 @@
+/**
+ *\file rule_input.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Input rule function
+ */
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,7 +64,7 @@ struct ast_node *rule_input(struct token_list **tok)
             destroy_ast(res);
             return NULL;
         }
-        return create_ast_node_semicolon(res, rule_input(tok));
+        return create_ast_node_semicolon(res, right_input);
     }
     warnx("Your input is malformed.");
     return NULL;

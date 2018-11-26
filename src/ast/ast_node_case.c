@@ -1,3 +1,13 @@
+/**
+ * \file ast_node_case.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of case
+ */
+
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include <err.h>
 #include "parser.h"
@@ -5,8 +15,7 @@
 #include "print.h"
 #include "ast_destroy.h"
 
-static struct ast_node_case *create_ast_node_case_intern(struct ast_node *exec,
-        struct ast_node_case *prev_case)
+static struct ast_node_case *create_ast_node_case_intern(char *value)
 {
     struct ast_node_case *new = malloc(sizeof(struct ast_node_case));
     if (!new)
@@ -18,24 +27,28 @@ static struct ast_node_case *create_ast_node_case_intern(struct ast_node *exec,
         warnx("cannot malloc array in create_ast_node_case");
         return NULL;
     }
-    new->values = arr;
+    struct ast_node **asts = malloc(8 * sizeof(struct ast_node*));
+    if (!asts)
+    {
+        free(new);
+        free(arr);
+        warnx("cannot malloc array in create_ast_node_case");
+        return NULL;
+    }
+    new->cases = arr;
+    new->nodes = asts;
     new->capacity = 8;
     new->size = 0;
-    new->exec = exec;
-    if (prev_case)
-        prev_case->next = new;
-    new->next = NULL;
+    new->value = value;
     return new;
 }
 
-struct ast_node *create_ast_node_case(struct ast_node *exec,
-        struct ast_node_case *prev_case)
+struct ast_node *create_ast_node_case(char *value)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node_case *under_node = create_ast_node_case_intern(exec,
-            prev_case);
+    struct ast_node_case *under_node = create_ast_node_case_intern(value);
 
     if (!under_node)
     {
@@ -47,60 +60,74 @@ struct ast_node *create_ast_node_case(struct ast_node *exec,
     return new;
 }
 
-void add_value_case(struct ast_node *node, char *value)
+void add_case_value(struct ast_node *node, char *value, struct ast_node *exec)
 {
-    if (!node || !value)
+    if (!node || !value || !exec)
     {
-        warnx("cannot do add_value_case: node or value is null");
-        return;
-    }
-    if (node->type != N_CASE)
-    {
-        warnx("cannot do add_value_case: node is not case");
+        warnx("cannot do add_value_case: exec or node or value is null");
         return;
     }
     struct ast_node_case *cur = node->son;
     if (cur->size == cur->capacity)
     {
-        char **new = realloc(cur->values, 2 * cur->capacity * sizeof(char*));
+        char **new = realloc(cur->cases, 2 * cur->capacity * sizeof(char*));
         if (!new)
         {
             warnx("cannot realloc in add_value_case");
             return;
         }
-        cur->values = new;
+        cur->cases = new;
+        struct ast_node **new2 = realloc(cur->nodes, 2 * cur->capacity
+                * sizeof(struct ast_node*));
+        if (!new)
+        {
+            warnx("cannot realloc in add_value_case");
+            return;
+        }
+        cur->nodes = new2;
         cur->capacity *= 2;
+
     }
-    cur->values[cur->size] = value;
+    cur->cases[cur->size] = strdup(value);
+    cur->nodes[cur->size] = exec;
     cur->size += 1;
+}
+
+static void destroy_case_null(struct ast_node_case *node,
+        struct ast_node *to_null)
+{
+    for (size_t i = 0; i < node->size; i++)
+    {
+        if (node->nodes[i] == to_null)
+        {
+            node->nodes[i] = NULL;
+        }
+    }
 }
 
 void destroy_ast_node_case(struct ast_node_case *node)
 {
-    if (node->next)
-        destroy_ast_node_case(node->next);
-    destroy_ast(node->exec);
-    free(node->values);
+    for (size_t i = 0; i < node->size; i++)
+    {
+        free(node->cases[i]);
+        destroy_ast(node->nodes[i]);
+        destroy_case_null(node, node->nodes[i]);
+    }
+    free(node->cases);
+    free(node->nodes);
     free(node);
 }
 
 void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"CASE: ", *num);
-    for (size_t i = 0; i < node->size; i++)
-        fprintf(fd, "%s", node->values[i]);
-    fprintf(fd, "\"];\n");
+    fprintf(fd, "%lu [label= \"CASE %s:\"]\n", *num, node->value);
 
     size_t save = *num;
 
-    if (node->next)
+    for (size_t i = 0; i < node->size; i++)
     {
         *num += 1;
-        fprintf(fd, "%lu -- %lu;\n", save, *num);
-        print_ast_case(node->next, num, fd);
+        fprintf(fd, "%lu -> %lu[label= \"%s\"];\n", save, *num, node->cases[i]);
+        print_ast_node(node->nodes[i], num, fd);
     }
-
-    *num += 1;
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
-    print_ast_node(node->exec, num, fd);
 }

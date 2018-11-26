@@ -1,3 +1,10 @@
+/**
+ *\file rule_funcdec.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Fonction declaration rule function
+ */
 #include <err.h>
 #include <stdio.h>
 
@@ -35,5 +42,8 @@ struct ast_node *rule_funcdec(struct token_list **tok)
         return NULL;
     }
     remove_new_line(tok);
-    return create_ast_node_fctdec(name_func, rule_shell_command(tok));
+    struct ast_node *body = rule_shell_command(tok);
+    if (!body)
+        return NULL;
+    return create_ast_node_fctdec(name_func, body);
 }

@@ -1,3 +1,11 @@
+/**
+ * \file ast_node_if.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of if
+ */
+
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
@@ -63,4 +71,3 @@ void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
         print_ast_node(node->e_false, num, fd);
     }
 }
-

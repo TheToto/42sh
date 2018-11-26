@@ -1,3 +1,13 @@
+/**
+ * \file ast_node_redirect.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of redirections
+ */
+
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
@@ -13,7 +23,7 @@ static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
         return NULL;
     new->fd = fd;
     new->io_number = io_number;
-    new->word = word;
+    new->word = strdup(word);
     new->type = type;
     new->node = node;
     return new;
@@ -39,13 +49,14 @@ struct ast_node *create_ast_node_redirect(int fd, enum redirect_type type,
 
 void destroy_ast_node_redirect(struct ast_node_redirect *node)
 {
+    free(node->word);
     destroy_ast(node->node);
     free(node);
 }
 
 void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"REDIR: %d (%d) %s\"];\n", *num, node->fd,
+    fprintf(fd, "%lu [label= \"REDIR: %d (%d) %s\"];\n", *num, node->io_number,
             node->type, node->word);
     size_t save = *num;
 
@@ -53,4 +64,3 @@ void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->node, num, fd);
 }
-

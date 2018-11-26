@@ -1,3 +1,11 @@
+/**
+ * \file ast_destroy.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief General management of destroy files
+ */
+
 #include <stdlib.h>
 #include "ast.h"
 #include "ast_destroy.h"

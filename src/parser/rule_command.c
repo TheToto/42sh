@@ -1,3 +1,10 @@
+/**
+ *\file rule_command.c
+ *\author thomas.lupin
+ *\version 0.5
+ *\date 22-11-2018
+ *\brief Command rule function
+ */
 #include <err.h>
 #include <stdio.h>
 
@@ -47,9 +54,4 @@ struct ast_node *rule_command(struct token_list **tok)
     }
     // HANDLE ERRORS HERE PLEASE
     return rule_simple_command(tok);
-
-    //
-    /// -> TODO : REDIRECTIONS FOR FUNCDEC AND SHELL COMMAND
-    //
-
 }

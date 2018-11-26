@@ -1,3 +1,10 @@
+/**
+ * \file ast_node_semicolon.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of semicolons (;)
+ */
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
@@ -53,4 +60,3 @@ void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num, FILE *fd)
     fprintf(fd, "%lu -> %lu;\n", save, *num);
     print_ast_node(node->right_child, num, fd);
 }
-

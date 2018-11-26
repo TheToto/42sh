@@ -11,31 +11,36 @@
 #include <err.h>
 #include <string.h>
 #include <stdio.h>
-#include "var.h"
+#include "env.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
-/**
- * @fn init_var
- * @brief Initialization of the array of variables
- * @details malloc the structure and malloc an array of an initial size of 8.
- * @return return the newly allocated structure
- */
 struct variables *init_var(void)
 {
     struct variables *new = malloc(sizeof(struct variables));
     if (!new)
     {
-        errx(1, "cannot malloc in init_var");
+        err(1, "cannot malloc in init_var");
         return NULL;
     }
     struct var **lib = calloc(8, sizeof(struct lib*));
     if (!lib)
     {
-        errx(1, "cannot malloc in init_var");
+        err(1, "cannot calloc in init_var");
+        free(new);
+        return NULL;
+    }
+    struct func **f_lib = calloc(8, sizeof(struct func*));
+    if (!lib)
+    {
+        err(1, "cannot calloc in init_var");
         free(new);
         return NULL;
     }
     new->lib = lib;
+    new->f_lib = f_lib;
+    new->f_size = 0;
+    new->f_capacity = 8;
     new->size = 0;
     new->capacity = 8;
     return new;
@@ -50,18 +55,6 @@ static void expand_var(struct variables *var)
     var->lib = new;
     var->capacity *= 2;
 }
-
-/**
- * @fn add_var
- * @brief Add a new variable to the array
- * @details Look if a variable with the same name already exist and replace its
- * value when appropriated. Otherwise, realloc if size too small and allocate
- * the definition at first available cell in the array.
- * @param var the pre-created array of definitions
- * @param name the name of the variable
- * @param value the value of the variable
- * @return return the newly allocated structure
- */
 
 void add_var(struct variables *var, char *name, char *value)
 {
@@ -97,11 +90,6 @@ void add_var(struct variables *var, char *name, char *value)
     var->lib[pos] = new;
 }
 
-
-/**
- * @fn destroy_var
- * @brief Destroy array of variables and all incorporated variables.
- */
 void destroy_var(struct variables *var)
 {
     if (!var)
@@ -118,14 +106,21 @@ void destroy_var(struct variables *var)
         free(cur);
     }
     free(var->lib);
+    struct func *next;
+    for (size_t i = 0; i < var->f_size; i++)
+    {
+        next = var->f_lib[i];
+        free(next->name);
+        if (next->type == DECLARED)
+            destroy_ast(next->value);
+        //else
+            //free(bultin)?
+        free(next);
+    }
+    free(var->f_lib);
     free(var);
 }
 
-/**
- * @fn get_var
- * @brief Look for the variable with name \a name in the array \var
- * @return NULL if not found, its value otherwise
- */
 char *get_var(struct variables *var, char *name)
 {
     if (!var || !name)
@@ -135,9 +130,13 @@ char *get_var(struct variables *var, char *name)
     }
     struct var *cur;
     size_t i = 0;
+    if (name[0] != '$') // if no $, return name
+        return name;
+    name++; // skip $
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
+        printf("DEBUG : %s %s\n", name, cur->name);
         if (strcmp(name, cur->name) == 0)
             break;
     }
@@ -146,10 +145,6 @@ char *get_var(struct variables *var, char *name)
     return cur->value;
 }
 
-/**
- * @fn assign_prefix
- * @brief Add the declararion to the array of variables
- */
 void assign_prefix(struct variables *var, char *prefix)
 {
     char name[256] =
@@ -161,30 +156,21 @@ void assign_prefix(struct variables *var, char *prefix)
         0
     };
     sscanf(prefix, "%[^=]=%s", name, value);
+    //fprintf(stderr, "Add var %s : %s\n", name, value);
     //recursive call here for further expansion
     add_var(var, name, value);
 }
 
-/**
- * @fn replace_var
- * @brief replace element by its new variable if a declaration was made
- */
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
 {
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     for (size_t i = 0; i < scmd->elt_size; i++)
     {
-        res[i] = strdup(scmd->elements[i]);
-        if (scmd->elements[i][0] == '$')
-        {
-            char *value = get_var(var, scmd->elements[i] + 1);
-            free(res[i]);
-            if (value)
-                res[i] = strdup(value);
-            else
-                res[i] = strdup("");
-        }
+        char *value = get_var(var, scmd->elements[i]);
+        if (value)
+            res[i] = strdup(value);
+        else
+            res[i] = strdup("");
     }
     return res;
 }
-

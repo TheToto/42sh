@@ -1,0 +1,36 @@
+.TH 42SH 1
+.SH NAME
+42sh \- the ultimate answering SHell
+.SH SYNOPSIS
+.B ./42sh
+[options]
+[command_string | file]
+
+.SH DESCRIPTION
+.B 42sh
+is a sh-compatible command language interpeter that executes command read from standard input or specified files.
+.SH OPTIONS
+.TP
+.BR \-c \ <command>
+If  the -c option is present, then commands are read from the first non-option argument command_string.
+.TP
+.BR [ \- \+]O \ [shopt_options]
+The option is handled by the feature will be available in version \'0.8\'.
+.TP
+.BR \-\-norc
+This option deactivates the ressource reader.
+.TP
+.BR \-\-ast\-print
+This option activates the AST printer. The output file is name \'ast.dot\'.
+.TP
+.BR \-\-version
+This options prints the current 42sh version on the standard output and exits
+
+.SH AUTHORS
+Arthur BUSUTTIL     (arthur.busuttil@epita.fr)
+
+Louis HOLLEVILLE    (louis.holleville@epita.fr)
+
+Sabrina MENG        (sabrina.meng@epita.fr)
+
+Thomas LUPIM        (thomas.lupin@epita.fr)
