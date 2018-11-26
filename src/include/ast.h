@@ -60,7 +60,7 @@ enum redirect_type
     R_LESSGREAT,          ///<Equivalent to '<>'
     R_DLESSDASH,          ///<Equivalent to '<<-'
     R_CLOBBER,            ///<Equivalent to '>|'
-    R_NONE
+    R_NONE                ///<Used for security
 };
 
 /// Construction of 'redirection' ast_node
@@ -135,20 +135,20 @@ struct ast_node_fctdec
 ///Enumeration of handled nodes
 enum node_type
 {
-    N_IF,
-    N_FOR,
-    N_WHILE,
-    N_CASE,
-    N_REDIRECT,
-    N_SCMD,
-    N_FCTDEC,
-    N_LOGICAL_AND,
-    N_LOGICAL_OR,
-    N_AMPERSAND,
-    N_SEMICOLON,
-    N_NOT,
-    N_PIPE,
-    N_NONE
+    N_IF,                   ///<Node for if statement
+    N_FOR,                  ///<Node for for loop
+    N_WHILE,                ///<Node for while loop
+    N_CASE,                 ///<Node for case statement
+    N_REDIRECT,             ///<Node for redirections
+    N_SCMD,                 ///<Node for simple commands
+    N_FCTDEC,               ///<Node for function declaration
+    N_LOGICAL_AND,          ///<Node for logical and
+    N_LOGICAL_OR,           ///<Node for logical or
+    N_AMPERSAND,            ///<Node for the & token
+    N_SEMICOLON,            ///<Node for the ; token
+    N_NOT,                  ///<Node for the ! token
+    N_PIPE,                 ///<Node for a pipe redirection
+    N_NONE                  ///<Node for security
 };
 
 ///Each ast node is composed by this truct and a pointer to its type

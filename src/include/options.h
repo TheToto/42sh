@@ -24,7 +24,7 @@ enum option
 ///Enumeration of the shopt variables
 enum shopt
 {
-    OTHER = 0,
+    OTHER = 0, ///< TODO : Documentation
     NO,
     ASTPRINT,
     DOTGLOB,

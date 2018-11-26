@@ -76,7 +76,7 @@ enum token_type
     ASSIGNMENT_WORD,    ///< [_a-zA-Z][_1-9a-zA-Z]*=.* 35
     NAME,               ///< [_a-zA-Z][_1-9a-zA-Z]*    36
     WORD_EXT,           ///< everithing between '"'    37
-    WORD,               ///< le reste                  38
+    WORD,               ///< everything else           38
     //END OF FILE
     END_OF_FILE,        ///< EOF       39
 };
