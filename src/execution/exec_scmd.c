@@ -67,11 +67,12 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     }
     else
     {
+        char *str;
         for (size_t i = 0; i < var->size; i++)
         {
             size_t len = strlen(var->lib[i]->name) + strlen(var->lib[i]->value)
                                 + 1;
-            char *str = calloc(len + 1, sizeof(char));
+            str = calloc(len + 1, sizeof(char));
             if (!str)
                 errx(1, "Calloc failed");
             strcat(str, var->lib[i]->name);
@@ -79,6 +80,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
             strcat(str, var->lib[i]->value);
             putenv(str);
         }
+        free(str);
     }
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);

@@ -35,7 +35,7 @@ static struct ast_node *apply_redir(struct token_list **tok,
 
 static int check_delim(enum token_type tok)
 {
-if (tok < 10 || tok == SEMICOLON || tok == DSEMICOLON
+    if (tok < 10 || tok == SEMICOLON || tok == DSEMICOLON
             || tok == PARENTHESIS_ON || tok == PARENTHESIS_OFF
             || tok == LOGICAL_AND || tok == LOGICAL_OR
             || tok == AMPERSAND || tok == END_OF_FILE
