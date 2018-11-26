@@ -194,7 +194,7 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
         int res = 0;
         for (; argv[i]; i++)
         {
-            printf("File to exec : %s\n", argv[i]);
+            //printf("File to exec : %s\n", argv[i]);
             struct variables *var = init_var();
             res = launch_file(argv[i], ast, var);
             destroy_var(var);

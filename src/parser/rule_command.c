@@ -22,7 +22,8 @@ static int check_redirect(enum token_type tok)
 struct ast_node *rule_command(struct token_list **tok)
 {
     //printf("Enter in command\n");
-    debug_token(tok);
+    //debug_token(tok);
+
     if (TOK_TYPE(tok) == BRACKET_ON
             || TOK_TYPE(tok) == PARENTHESIS_ON
             || TOK_TYPE(tok) == FOR

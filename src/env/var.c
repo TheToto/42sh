@@ -136,7 +136,7 @@ char *get_var(struct variables *var, char *name)
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
-        printf("DEBUG : %s %s\n", name, cur->name);
+        //printf("DEBUG : %s %s\n", name, cur->name);
         if (strcmp(name, cur->name) == 0)
             break;
     }

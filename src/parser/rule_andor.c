@@ -15,7 +15,8 @@
 struct ast_node *rule_andor(struct token_list **tok)
 {
     //printf("Enter in andor\n");
-    debug_token(tok);
+    //debug_token(tok);
+
     struct ast_node *left_pip = rule_pipeline(tok);
     if (!left_pip)
         return NULL;

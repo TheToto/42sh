@@ -100,7 +100,8 @@ static int rule_case_clause(struct token_list **tok,
 struct ast_node *rule_case(struct token_list **tok)
 {
     //printf("Enter in case\n");
-    debug_token(tok);
+    //debug_token(tok);
+
     if (TOK_TYPE(tok) != CASE)
     {
         warnx("Need a CASE keyword in a case statement");

@@ -120,7 +120,7 @@ int exec_main(char *str, int is_print, struct variables *library)
     if (is_print)
         makedot(ast, "ast.dot");
 
-    printf("\nExecution result:\n");
+    //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
     destroy_ast(ast);

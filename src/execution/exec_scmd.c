@@ -63,7 +63,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     if (scmd->elt_size > 0)
     {
         status = execute(expanded, status, var);
-        printf("%s return %d\n", *scmd->elements, status);
+        //printf("%s return %d\n", *scmd->elements, status);
     }
     else
     {
