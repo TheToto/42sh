@@ -36,13 +36,6 @@
 
 :files:
   :support:
-    - src/lexer.c;
-    - src/lexer_func.c;
-    - src/options.c;
-    - src/execution.c;
-    - src/env/var.c;
-    - src/readfile.c;
-    - src/ast/print_ast.c;
     - src/ast/ast_destroy.c;
     - src/ast/ast_node_ampersand.c;
     - src/ast/ast_node_case.c;
@@ -57,6 +50,19 @@
     - src/ast/ast_node_semicolon.c;
     - src/ast/ast_node_scmd.c;
     - src/ast/ast_node_while.c;
+    - src/ast/print_ast.c
+    - src/env/functions.c
+    - src/env/var.c;
+    - src/execution/exec_case.c
+    - src/execution/exec_fctdec.c
+    - src/execution/exec_logical.c
+    - src/execution/exec_pipe.c
+    - src/execution/exec_redirect.c
+    - src/execution/exec_scmd.c
+    - src/execution/execution.c;
+    - src/lexer/lexer.c;
+    - src/lexer/lexer_func.c;
+    - src/options.c;
     - src/parser/rule_andor.c;
     - src/parser/rule_case.c;
     - src/parser/rule_command.c;
@@ -73,6 +79,7 @@
     - src/parser/rule_simple_command.c;
     - src/parser/rule_while.c;
     - src/prompt.c
+    - src/readfile.c;
 
 :defines:
   # in order to add common defines:
