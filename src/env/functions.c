@@ -35,7 +35,7 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type)
     size_t pos = 0;
     struct func *cur = var->f_lib[pos];
     int found = 1;
-    for (; found && pos < var->size; pos++)
+    for (; found && pos < var->f_size; pos++)
     {
         if (strcmp(cur->name, name) == 0)
             found = 0;

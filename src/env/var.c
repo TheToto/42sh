@@ -167,7 +167,6 @@ char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
     for (size_t i = 0; i < scmd->elt_size; i++)
     {
         char *value = get_var(var, scmd->elements[i]);
-        printf("AFTER %s %ld\n", value, scmd->elt_size);
         if (value)
             res[i] = strdup(value);
         else
