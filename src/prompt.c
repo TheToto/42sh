@@ -1,6 +1,6 @@
 /**
  *\file prompt.c
- *\author thomas.lupin
+ *\author thomas.lupin sabrina.meng
  *\version 0.5
  *\date 22-11-2018
  *\brief Function to use the prompt
@@ -46,9 +46,9 @@ int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
     struct variables *library = init_var();
+    putenv("PS1=[42sh@pc]$ ");
     if (!norc)
         launchrc(is_print, library);
-    putenv("PS1=[42sh@pc]$ ");
     while (1)
     {
         char *buf = readline(getenv("PS1"));
