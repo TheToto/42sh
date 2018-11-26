@@ -43,10 +43,11 @@ while test $# -gt 0; do
                 exit 1;
             fi;;
         -l | --list)
-            printf "\nlist of categories:\n\t- ast\n\t- lexer\n\t- options\n\t- parser\n\n";;
+            printf $ANNONCE"\n  list of categories:\n\t  - ast\n\t  - lexer\n\t  - options\n\t  - parser\n\n"$DEFAULT;
+            exit 0;;
         -t | --timeout)
             shift
-            is_correct=$(echo $1 | /bin/grep -E "^[0-9](\.[0-9])?[0-9]*$")
+            is_correct=$(echo $1 | /bin/grep -E "^[0-9]*(\.[0-9])?[0-9]*$")
             if [ -n  "$is_correct" ]; then
                 timeout="$1""s"
             else
@@ -179,7 +180,7 @@ check_sanity () {
             * )
                 continue;;
         esac
-    done < tmp_sanity
+    done < /tmp/tmp_sanity
     return 1
 }
 
