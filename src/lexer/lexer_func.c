@@ -153,8 +153,6 @@ static enum token_type bin_op_and_default_token(char *val)
 
 enum token_type get_token_type(char *val)
 {
-    if (!fnmatch("*\"*", val, 0))
-        return WORD_EXT;
     int res = redirection_token(val);
     if (res == WORD)
         res = condition_and_case_token(val);

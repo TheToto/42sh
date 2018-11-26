@@ -180,31 +180,28 @@ static void get_next_word_token(char **str, struct token_list *tl)
     size_t i = 0;
     int found = 0;
     enum token_type type = WORD;
-    if (!fnmatch("*\"*", *str, 0))
+    for (; !found && i < strlen(*str); i++)
+    {
+        word[i] = (*str)[i];
+        type = get_token_type(word);
+        word[i + 1] = (*str)[i + 1];
+        enum token_type type_next = get_token_type(word);
+        char tmp[] =
+        {
+            (*str)[i + 1], 0
+        };
+        char *lstring[] =
+        {
+            tmp, *str, word
+        };
+        if (should_change(&type, type_next, lstring, &i))
+            found = 1;
+    }
+    if (!fnmatch("*\"*", *str, 0) && type != ASSIGNMENT_WORD)
     {
         strcpy(word, *str);
         type = WORD_EXT;
         i = strlen(*str);
-    }
-    else
-    {
-        for (; !found && i < strlen(*str); i++)
-        {
-            word[i] = (*str)[i];
-            type = get_token_type(word);
-            word[i + 1] = (*str)[i + 1];
-            enum token_type type_next = get_token_type(word);
-            char tmp[] =
-            {
-                (*str)[i + 1], 0
-            };
-            char *lstring[] =
-            {
-                tmp, *str, word
-            };
-            if (should_change(&type, type_next, lstring, &i))
-                found = 1;
-        }
     }
     *str += i;
     word[i] = 0;
