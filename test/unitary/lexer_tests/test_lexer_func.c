@@ -41,7 +41,7 @@ void test_quote_token(void)
     printf("-Testing: getting quotted word token-\n");
     printf("BEGINNING");
     enum token_type token = get_token_type("Iam\"quoted\"trustme");
-    TEST_ASSERT_EQUAL_INT(37, token);
+    TEST_ASSERT_EQUAL_INT(38, token);
     printf("END");
 }
 
