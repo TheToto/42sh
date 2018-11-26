@@ -31,6 +31,15 @@ static char *init_path(char *file)
     return histpath;
 }
 
+static void write_hist(char *file)
+{
+    struct stat buf;
+    if (!stat(file, &buf))
+        append_history(history_length, file);
+    else
+        write_history(file);
+}
+
 static void launchrc(int is_print, struct variables *var)
 {
     char *filerc = init_path("/.42shrc");
@@ -61,8 +70,8 @@ int show_prompt(int norc, int is_print)
         }
         exec_main(buf, is_print, library);
         free(buf);
-}
-    append_history(history_length, histpath);
+    }
+    write_hist(histpath);
     history_truncate_file(histpath, 500);
 
     destroy_var(library);
