@@ -107,11 +107,13 @@ char *get_var(struct variables *var, char *name)
     }
     struct var *cur;
     size_t i = 0;
-    if (name && name[0] != '$') // if no $, return name
+    if (name[0] != '$') // if no $, return name
         return name;
+    name++; // skip $
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
+        printf("DEBUG : %s %s\n", name, cur->name);
         if (strcmp(name, cur->name) == 0)
             break;
     }
@@ -131,6 +133,7 @@ void assign_prefix(struct variables *var, char *prefix)
         0
     };
     sscanf(prefix, "%[^=]=%s", name, value);
+    //fprintf(stderr, "Add var %s : %s\n", name, value);
     //recursive call here for further expansion
     add_var(var, name, value);
 }
@@ -140,16 +143,12 @@ char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     for (size_t i = 0; i < scmd->elt_size; i++)
     {
-        res[i] = strdup(scmd->elements[i]);
-        if (scmd->elements[i][0] == '$')
-        {
-            char *value = get_var(var, scmd->elements[i]);
-            free(res[i]);
-            if (value)
-                res[i] = strdup(value);
-            else
-                res[i] = strdup("");
-        }
+        char *value = get_var(var, scmd->elements[i]);
+        printf("AFTER %s %ld\n", value, scmd->elt_size);
+        if (value)
+            res[i] = strdup(value);
+        else
+            res[i] = strdup("");
     }
     return res;
 }
