@@ -11,25 +11,36 @@
 #include <err.h>
 #include <string.h>
 #include <stdio.h>
-#include "var.h"
+#include "env.h"
 #include "ast.h"
+#include "ast_destroy.h"
 
 struct variables *init_var(void)
 {
     struct variables *new = malloc(sizeof(struct variables));
     if (!new)
     {
-        errx(1, "cannot malloc in init_var");
+        err(1, "cannot malloc in init_var");
         return NULL;
     }
     struct var **lib = calloc(8, sizeof(struct lib*));
     if (!lib)
     {
-        errx(1, "cannot malloc in init_var");
+        err(1, "cannot calloc in init_var");
+        free(new);
+        return NULL;
+    }
+    struct func **f_lib = calloc(8, sizeof(struct func*));
+    if (!lib)
+    {
+        err(1, "cannot calloc in init_var");
         free(new);
         return NULL;
     }
     new->lib = lib;
+    new->f_lib = f_lib;
+    new->f_size = 0;
+    new->f_capacity = 8;
     new->size = 0;
     new->capacity = 8;
     return new;
@@ -95,6 +106,18 @@ void destroy_var(struct variables *var)
         free(cur);
     }
     free(var->lib);
+    struct func *next;
+    for (size_t i = 0; i < var->f_size; i++)
+    {
+        next = var->f_lib[i];
+        free(next->name);
+        if (next->type == DECLARED)
+            destroy_ast(next->value);
+        //else
+            //free(bultin)?
+        free(next);
+    }
+    free(var->f_lib);
     free(var);
 }
 

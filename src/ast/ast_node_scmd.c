@@ -1,3 +1,13 @@
+/**
+ * \file ast_node_scmd.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of scmd
+ */
+
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include <err.h>
 #include "parser.h"
@@ -33,12 +43,12 @@ struct ast_node *create_ast_node_scmd(void)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
-        return NULL;
+        err(1,"Malloc failed to allocate ast node scmd");
     struct ast_node_scmd *under_node = create_ast_node_scmd_intern();
     if (!under_node)
     {
         free(new);
-        return NULL;
+        err(1,"Malloc failed to allocate ast node scmd");
     }
     new->type = N_SCMD;
     new->son = under_node;
@@ -77,7 +87,7 @@ void add_prefix_scmd(struct ast_node *node, char *prefix)
             cur->prefix[i] = NULL;
         cur->pre_capacity -= 1;
     }
-    cur->prefix[cur->pre_size] = prefix;
+    cur->prefix[cur->pre_size] = strdup(prefix);
     cur->pre_size += 1;
 }
 
@@ -113,12 +123,16 @@ void add_element_scmd(struct ast_node *node, char *element)
             cur->elements[i] = NULL;
         cur->elt_capacity -= 1;
     }
-    cur->elements[cur->elt_size] = element;
+    cur->elements[cur->elt_size] = strdup(element);
     cur->elt_size += 1;
 }
 
 void destroy_ast_node_scmd(struct ast_node_scmd *node)
 {
+    for (size_t i = 0; i < node->elt_size; i++)
+        free(node->elements[i]);
+    for (size_t i = 0; i < node->pre_size; i++)
+        free(node->prefix[i]);
     free(node->elements);
     free(node->prefix);
     free(node);

@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <fnmatch.h>
 
-#include "var.h"
+#include "env.h"
 #include "options.h"
 #include "lexer.h"
 #include "print.h"
