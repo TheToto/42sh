@@ -54,6 +54,7 @@ static void launchrc(int is_print, struct variables *var)
 int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
+    read_history(histpath);
     struct variables *library = init_var();
     putenv("PS1=[42sh@pc]$ ");
     if (!norc)
