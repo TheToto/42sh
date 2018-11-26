@@ -63,7 +63,7 @@ struct ast_node *rule_input(struct token_list **tok)
             destroy_ast(res);
             return NULL;
         }
-        return create_ast_node_semicolon(res, rule_input(tok));
+        return create_ast_node_semicolon(res, right_input);
     }
     warnx("Your input is malformed.");
     return NULL;

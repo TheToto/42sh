@@ -30,7 +30,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     char **expanded = replace_var_scmd(var, scmd);
     if (scmd->elt_size > 0)
     {
-        void *func;
+        void *func = NULL;
         if ((func = get_func(var, expanded[0])))
             status = exec_node(func, var);
         else

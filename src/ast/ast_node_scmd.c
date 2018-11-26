@@ -41,12 +41,12 @@ struct ast_node *create_ast_node_scmd(void)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
-        return NULL;
+        err(1,"Malloc failed to allocate ast node scmd");
     struct ast_node_scmd *under_node = create_ast_node_scmd_intern();
     if (!under_node)
     {
         free(new);
-        return NULL;
+        err(1,"Malloc failed to allocate ast node scmd");
     }
     new->type = N_SCMD;
     new->son = under_node;
