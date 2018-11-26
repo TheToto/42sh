@@ -6,6 +6,8 @@
  * \brief Management of function declarations
  */
 
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"
@@ -18,7 +20,7 @@ static struct ast_node_fctdec *create_ast_node_fctdec_intern(char *name,
     struct ast_node_fctdec *new = malloc(sizeof(struct ast_node_fctdec));
     if (!new)
         return NULL;
-    new->name = name;
+    new->name = strdup(name);
     new->function = function;
     return new;
 }
@@ -45,6 +47,7 @@ void destroy_ast_node_fctdec(struct ast_node_fctdec *node)
 {
     if (!node)
         return;
+    free(node->name);
     destroy_ast(node->function);
     free(node);
 }

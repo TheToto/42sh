@@ -6,6 +6,8 @@
  * \brief Management of for
  */
 
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include <err.h>
 #include "parser.h"
@@ -78,12 +80,14 @@ void add_value_for(struct ast_node *node, char *value)
         cur->values = new;
         cur->capacity *= 2;
     }
-    cur->values[cur->size] = value;
+    cur->values[cur->size] = strdup(value);
     cur->size += 1;
 }
 
 void destroy_ast_node_for(struct ast_node_for *node)
 {
+    for (size_t i = 0; i < node->size; i++)
+        free(node->values[i]);
     destroy_ast(node->exec);
     free(node->values);
     free(node);
