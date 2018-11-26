@@ -1,3 +1,13 @@
+/**
+ * \file ast_node_case.c
+ * \author louis.holleville
+ * \version 0.3
+ * \date 14-11-2018
+ * \brief Management of case
+ */
+
+#define _DEFAULT_SOURCE
+#include <string.h>
 #include <stdlib.h>
 #include <err.h>
 #include "parser.h"
@@ -78,7 +88,7 @@ void add_case_value(struct ast_node *node, char *value, struct ast_node *exec)
         cur->capacity *= 2;
 
     }
-    cur->cases[cur->size] = value;
+    cur->cases[cur->size] = strdup(value);
     cur->nodes[cur->size] = exec;
     cur->size += 1;
 }
@@ -99,6 +109,7 @@ void destroy_ast_node_case(struct ast_node_case *node)
 {
     for (size_t i = 0; i < node->size; i++)
     {
+        free(node->cases[i]);
         destroy_ast(node->nodes[i]);
         destroy_case_null(node, node->nodes[i]);
     }

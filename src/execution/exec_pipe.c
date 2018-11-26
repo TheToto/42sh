@@ -15,7 +15,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 
-#include "var.h"
+#include "env.h"
 #include "ast.h"
 #include "execution.h"
 

@@ -13,51 +13,13 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "var.h"
+#include "env.h"
 #include "options.h"
 #include "lexer.h"
 #include "print.h"
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
-
-int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
-{
-    //if !builtin cmd
-    pid_t pid;
-    int status;
-    int error = 0;
-    for (size_t i = 0; i < scmd->pre_size; i++)
-        assign_prefix(var, scmd->prefix[i]);
-    char **expanded = replace_var_scmd(var, scmd);
-    if (scmd->elt_size > 0)
-    {
-        pid = fork();
-        if (pid < 0)
-            errx(1, "ERROR: Fork failed");
-        else if (pid == 0)
-        {
-            error = execvp(*expanded, expanded);
-            if (error < 0)
-            {
-                if (errno == ENOENT)
-                    err(127, "Exec %s failed", *expanded);
-                err(126, "Exec %s failed", *expanded);
-            }
-        }
-        else
-        {
-            while (waitpid(pid, &status, 0) != pid)
-                continue;
-        }
-        status = WEXITSTATUS(status);
-        printf("%s return %d\n", *scmd->elements, status);
-    }
-    for (size_t i = 0; i < scmd->elt_size + 1; i++)
-        free(expanded[i]);
-    free(expanded);
-    return status;
-}
 
 int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
@@ -124,6 +86,8 @@ int exec_node(struct ast_node *node, struct variables *var)
             return exec_pipe(node->son, var);
         case N_CASE:
             return exec_case(node->son, var);
+        case N_FCTDEC:
+            return exec_fctdec(node->son, var);
         case N_NONE:
             return 0;
         default:
