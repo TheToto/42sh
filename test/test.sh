@@ -147,7 +147,7 @@ while read line; do
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
               printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
-              printf "    "$RED"-------------------\n"
+              printf "    "\n$RED"-------------------\n"
               printf "    $line\n"
               printf "    -------------------\n\n"
               is_err=1;;
@@ -232,7 +232,7 @@ for file in $list_of_file; do
         printf $RED"      FAILED: Timeout\n\n"$DEFAULT
     elif [ -n "$diff_content" -o  ]; then
         FAILED="$(($FAILED + 1))"
-        pretty_printf_err res
+        pretty_printf_err /tmp/res
         printf "\n"
     else
         PASSED="$(($PASSED + 1))"
