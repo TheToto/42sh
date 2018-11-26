@@ -1,2 +1,7 @@
 build/
 *.o
+*.swp
+ceedling
+vendor
+doc/html
+doc/latex

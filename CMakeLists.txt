@@ -1,8 +1,16 @@
 cmake_minimum_required(VERSION 3.0)
 project (42sh)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -Wall -Wextra -std=c99 -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -Wextra -std=c99 -pedantic")
+set(CMAKE_C_STANDARD_LIBRARIES "-lreadline")
 include_directories(src/include)
-file(GLOB SOURCES "src/*.c")
+file(GLOB SOURCES
+        "src/*.c"
+        "src/env/*.c"
+        "src/parser/*.c"
+        "src/execution/*.c"
+        "src/lexer/*.c"
+        "src/ast/*.c")
 
 add_executable(42sh ${SOURCES})
+add_custom_target(check "../test/test.sh" "check")

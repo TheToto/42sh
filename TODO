@@ -1,0 +1,66 @@
+# LEXER
+* [x] Basic lexer
+* [~] Handle quotes (in progress)
+
+# PARSER
+* [x] Handle GRAMMAR
+* [x] Redirections
+* [x] Case statement
+* [x] Handle ls if (pb with if token)
+* [ ] Show prompt PS2 in if/while/...
+
+# TEST SUITE
+* [x] Set up ceedling
+* [ ] Advanced tests
+* [ ] Test suite options
+
+# DOC
+* [~] Set up Doxygen (in progress)
+
+# Option parser
+* [~] SHOPT
+* [x] Others
+
+# AST
+* [x] Create AST
+* [x] Print AST
+* [x] Destroy AST
+
+# CMAKE
+* [x] Main rule
+
+# Options
+* [x] 0.3 options
+* [~] shopt
+
+# Execution
+* [x] if statement
+* [x] var assignment
+* [x] while/until statement
+* [x] not statement
+* [x] Simple command
+* [x] Redirections
+* [x] Pipes
+* [ ] Split executions functions into different files
+* [ ] Handle expansion in redirections
+* [x] Case statement
+* [ ] Handle func declaration
+
+# Interactive mode
+* [x] Interactive mode
+* [x] History
+* [x] Ressource file reader
+
+# Built in
+* [~] exit (hardcoded)
+* [ ] cd
+* [ ] shopt
+* [ ] export
+* [ ] alias/unalias
+* [ ] echo
+* [ ] continue/break
+* [ ] source
+* [ ] history
+
+# RETURN VALUE
+* [ ] Fix wrong return value
