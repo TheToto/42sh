@@ -64,6 +64,8 @@ int exec_not(struct ast_node_not *n_not, struct variables *var)
 
 int exec_node(struct ast_node *node, struct variables *var)
 {
+    if (!node)
+        return 0; // For ampersand
     switch (node->type)
     {
         case N_SCMD:
