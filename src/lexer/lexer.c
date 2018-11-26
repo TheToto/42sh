@@ -140,7 +140,8 @@ static int should_change(enum token_type *type,
                     && tmp[0] != '=' && type_tmp != 36)))
                 || ((*type == WORD)
                     && (type_tmp < NAME && type_tmp != 33 && tmp[0] != '='))
-                || (*type == ASSIGNMENT_WORD && type_tmp < NAME))
+                || (*type == ASSIGNMENT_WORD && type_tmp < NAME
+                    && type_tmp != IO_NUMBER))
     {
         if ((*type == SEMICOLON && type_next == DSEMICOLON)
                 || (*type == AMPERSAND && type_next == LOGICAL_AND)
