@@ -238,7 +238,7 @@ for file in $list_of_file; do
         printf "\n"
     else
         PASSED="$(($PASSED + 1))"
-        printf $GREEN"      PASSED\n\n"
+        printf $GREEN"      PASSED\n"
     fi
 
     rm /tmp/tmp_r*
