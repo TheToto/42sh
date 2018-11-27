@@ -44,7 +44,7 @@ while test $# -gt 0; do
                 exit 1;
             fi;;
         -l | --list)
-            printf $ANNONCE"\n  list of categories:\n\t  - ast\n\t  - lexer\n\t  - options\n\t  - parser\n\n"$DEFAULT;
+            printf $ANNONCE"\n  list of categories:\n\t  - ast\n\t  - lexer\n\t  - option\n\t  - parser\n\n"$DEFAULT;
             exit 0;;
         -t | --timeout)
             shift
