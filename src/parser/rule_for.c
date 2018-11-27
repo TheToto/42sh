@@ -34,9 +34,11 @@ struct ast_node *rule_for(struct token_list **tok)
         return NULL;
     NEXT_TOK(tok);
     remove_new_line(tok);
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == IN)
     {
         NEXT_TOK(tok);
+        ask_ps2(tok);
         while (TOK_TYPE(tok) == WORD)
         {
             add_value_for(for_node, TOK_STR(tok));
@@ -51,7 +53,12 @@ struct ast_node *rule_for(struct token_list **tok)
         }
         NEXT_TOK(tok);
     }
+    /*
+    * else
+    *   Handle $1 $2 ...
+    */
     remove_new_line(tok);
+    ask_ps2(tok);
     struct ast_node *do_group = rule_do_group(tok);
     if (!do_group)
     {

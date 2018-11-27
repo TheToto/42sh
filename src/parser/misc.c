@@ -48,4 +48,5 @@ void ask_ps2(struct token_list **tok)
         struct token_list *lex_tok = show_ps2();
         *tok = lex_tok;
     }
+    debug_token(tok);
 }
