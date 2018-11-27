@@ -211,8 +211,8 @@ FAILED=0
 for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "$file" > /tmp/tmp_ref 2> /tmp/tmp_ref_err
-    timeout $timeout build/42sh "$file" > /tmp/tmp_def 2> /tmp/tmp_def_err
+    bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
+    timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err | cat -e > /tmp/tmp_def
 
     exit_status="$?"
     exit_status_sanity=1
