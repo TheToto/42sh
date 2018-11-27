@@ -2,10 +2,8 @@
  * \file options.h
  * \author sabrina.meng thomas.lupin
  * \version 0.5
- * \date 15-11-2018
- * \brief Options parsing
- * \details Parse the options with the format
- * [GNU long option] [option] script-file
+ * \date 27-11-2018
+ * Parse the options with the format [GNU long option] [option] script-file
  */
  #pragma once
 
@@ -24,16 +22,32 @@ enum option
 ///Enumeration of the shopt variables
 enum shopt
 {
-    OTHER = 0, ///< TODO : Documentation
-    NO,
-    ASTPRINT,
-    DOTGLOB,
-    EXP_ALIAS,
-    EXTGLOB,
-    NOCASEGLOB,
-    NULLGLOB,
-    SRCPATH,
-    XPGECHO,
+    OTHER = 0, ///<Not a shopt variable
+
+    NO,///<No arguments given to shopt builtin
+
+    ASTPRINT,///<ast_print  Prints the AST
+
+    DOTGLOB,/**<dotglob  Bash includes filenames beginning with a ‘.’
+                         in the results of filename expansion.*/
+
+    EXP_ALIAS,///<expand_aliases  Aliases are expanded
+
+    EXTGLOB,///<extglob  The extended pattern matching features are enabled
+
+    NOCASEGLOB,/**<nocaseglob  Bash matches filenames in a case-insensitive
+                               fashion when performing filename expansion.*/
+
+    NULLGLOB,/**<nullglob  Bash allows filename patterns which match no files
+                           to expand to a null string, rather than themselves.
+                           */
+
+    SRCPATH,/**<sourcepath  The source builtin uses the value of PATH to find
+                            the directory containing the file supplied as
+                            an argument.*/
+
+    XPGECHO,/**<xpg_echo  The echo builtin expands backslash-escape sequences
+                          by default.*/
 };
 
 /**
