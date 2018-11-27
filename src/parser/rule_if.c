@@ -49,7 +49,6 @@ struct ast_node *rule_if(struct token_list **tok)
             return NULL;
         }
     }
-    ask_ps2(tok);
     if (TOK_TYPE(tok) != FI)
     {
         destroy_ast(e_true);

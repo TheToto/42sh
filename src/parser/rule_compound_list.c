@@ -15,7 +15,7 @@
 static int check_delim(enum token_type delim, enum token_type t)
 {
     if (delim == FI)
-        if (delim == ELSE || delim == ELIF)
+        if (t == ELSE || t == ELIF)
             return 1;
     if (delim == t)
         return 1;
