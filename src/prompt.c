@@ -47,7 +47,7 @@ static void launchrc(int is_print, struct variables *var)
     struct stat buf;
     if (!stat("/etc/42shrc", &buf))
         launch_file("/etc/42shrc", is_print, var);
-    else if (!stat(filerc, &buf))
+    if (!stat(filerc, &buf))
         launch_file(filerc, is_print, var);
     if (!get_var(var, "PS1"))
         add_var(var, "PS1", "[42sh@pc]$ ");
