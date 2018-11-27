@@ -167,7 +167,7 @@ rm tmp tmp_err
 ##############################################################################
 
 pretty_printf_err () {
-    printf $RED"      FAILED: differences between bash and 42sh\n        > 42sh\n        < bash\n\n"$DEFAULT
+    printf $RED"      FAILED: differences between bash and 42sh\n        < 42sh\n        > bash\n\n"$DEFAULT
     while read line; do
         printf $RED"      $line\n"$DEFAULT
     done < "$1"
