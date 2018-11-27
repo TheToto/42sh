@@ -124,7 +124,8 @@ struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
  * \param struct token_list **tok  The current token pointer
  * \return The ast node created by the rule
  */
-struct ast_node *rule_compound_list(struct token_list **tok);
+struct ast_node *rule_compound_list(struct token_list **tok,
+        enum token_type delim);
 
 /**
  * Follow the case rule from EPITA shell grammar
@@ -249,3 +250,9 @@ void remove_new_line(struct token_list **tok);
  * \param struct token_list **tok  The current token pointer
  */
 void debug_token(struct token_list **tok);
+
+/**
+ * Show PS2 if we can and if we need it.
+ * \param struct token_list **tok  The current token pointer
+ */
+void ask_ps2(struct token_list **tok);

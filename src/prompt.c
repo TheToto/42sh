@@ -21,6 +21,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "readfile.h"
+#include "shell.h"
 
 static char *init_path(char *file)
 {
@@ -51,6 +52,19 @@ static void launchrc(int is_print, struct variables *var)
     if (!get_var(var, "PS1"))
         add_var(var, "PS1", "[42sh@pc]$ ");
     free(filerc);
+}
+
+struct token_list *show_ps2(void)
+{
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ");
+    char *buf = readline(get_var(shell.var, "PS2"));
+    //if (buf && *buf)
+    //    add_history(buf);
+    lexer_destroy(shell.lexer);
+    struct lexer *l = lexer(buf);
+    free(buf);
+    return l->token_list;
 }
 
 int show_prompt(int norc, int is_print)

@@ -34,7 +34,7 @@ static struct ast_node_for *create_ast_node_for_intern(char *value,
     new->values = arr;
     new->size = 0;
     new->capacity = 8;
-    new->value = value;
+    new->value = strdup(value);
     new->exec = exec;
     return new;
 }
@@ -86,6 +86,7 @@ void add_value_for(struct ast_node *node, char *value)
 
 void destroy_ast_node_for(struct ast_node_for *node)
 {
+    free(node->value);
     for (size_t i = 0; i < node->size; i++)
         free(node->values[i]);
     destroy_ast(node->exec);

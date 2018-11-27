@@ -57,7 +57,7 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
     struct ast_node *exec = NULL;
     if (TOK_TYPE(tok) != DSEMICOLON)
     {
-        exec = rule_compound_list(tok);
+        exec = rule_compound_list(tok, DSEMICOLON);
         if (!exec)
         {
             destroy_ast(case_node);
