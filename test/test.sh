@@ -212,11 +212,15 @@ for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
-    timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err | cat -e > /tmp/tmp_def
+    build/42sh "$file" 2> /tmp/tmp_def_err | cat -e > /tmp/tmp_def
 
-    exit_status="$?"
+    exit_status=0
+    if [ $timeout != "10000d" ]; then
+        timeout $timeout build/42sh "$file" > /dev/null 2> /dev/null
+        exit_status="$?"
+    fi
+    
     exit_status_sanity=1
-
     if [ $sanity -eq 1 ]; then
         valgrind build/42sh "$file" 2> /tmp/tmp_sanity > /tmp/null
         check_sanity
