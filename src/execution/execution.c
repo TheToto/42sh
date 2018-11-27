@@ -20,6 +20,7 @@
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
+#include "shell.h"
 
 int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
@@ -107,12 +108,11 @@ int exec_main(char *str, int is_print, struct variables *library)
     //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
-    struct ast_node *ast = rule_input(&(l->token_list));
-    l->token_list = copy;
+    struct ast_node *ast = rule_input(&copy);
 
     if (!ast)
     {
-        lexer_destroy(l);
+        lexer_destroy(shell.lexer);
         warnx("Error in parsing");
         return 1;
     }
@@ -124,7 +124,7 @@ int exec_main(char *str, int is_print, struct variables *library)
     int res = exec_node(ast, library);
 
     destroy_ast(ast);
-    lexer_destroy(l);
+    lexer_destroy(shell.lexer);
 
     return res;
 }

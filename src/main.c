@@ -7,8 +7,16 @@
  */
 #include <stdio.h>
 #include <err.h>
+#include <shell.h>
 
 #include "options.h"
+
+struct shell shell =
+{
+    S_UNDEFINED,
+    NULL,
+    NULL
+};
 
 int main(int argc, char *argv[])
 {

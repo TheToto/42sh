@@ -249,3 +249,9 @@ void remove_new_line(struct token_list **tok);
  * \param struct token_list **tok  The current token pointer
  */
 void debug_token(struct token_list **tok);
+
+/**
+ * Show PS2 if we can and if we need it.
+ * \param struct token_list **tok  The current token pointer
+ */
+void ask_ps2(struct token_list **tok);

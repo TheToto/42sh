@@ -12,6 +12,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "shell.h"
 
 void lexer_destroy(struct lexer *l)
 {
@@ -26,6 +27,7 @@ void lexer_destroy(struct lexer *l)
         cur = tmp;
     }
     free(l);
+    shell.lexer = NULL;
 }
 
 /**
@@ -237,5 +239,6 @@ struct lexer *lexer(char *str)
             cur = cur->next;
     }
     set_tl(cur, NULL, END_OF_FILE);
+    shell.lexer = l;
     return l;
 }

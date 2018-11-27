@@ -14,6 +14,7 @@
 #include "env.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "shell.h"
 
 struct variables *init_var(void)
 {
@@ -43,6 +44,7 @@ struct variables *init_var(void)
     new->f_capacity = 8;
     new->size = 0;
     new->capacity = 8;
+    shell.var = new;
     return new;
 }
 
@@ -119,6 +121,7 @@ void destroy_var(struct variables *var)
     }
     free(var->f_lib);
     free(var);
+    shell.var = NULL;
 }
 
 char *get_var(struct variables *var, char *name)

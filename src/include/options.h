@@ -64,3 +64,9 @@ void options(char *argv[]);
  * \return Return last operation result
  */
 int show_prompt(int norc, int is_print);
+
+/**
+ * Show the PS2 prompt and return new lexer
+ * \return Return new token_list
+ */
+struct token_list *show_ps2(void);

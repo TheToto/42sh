@@ -18,6 +18,7 @@ struct ast_node *rule_if(struct token_list **tok)
     //debug_token(tok);
 
     NEXT_TOK(tok);
+    ask_ps2(tok);
     struct ast_node *condition = rule_compound_list(tok);
     if (!condition)
         return NULL;

@@ -23,6 +23,7 @@
 #include "print.h"
 #include "execution.h"
 #include "ast_destroy.h"
+#include "shell.h"
 #include "env.h"
 #include "readfile.h"
 
@@ -170,6 +171,7 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
         warnx("Invalid arguments for -c option");
         errx(1, "Usage: -c <command>");
     }
+    shell.type = S_OPTION;
     struct variables *library = init_var();
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
@@ -182,15 +184,18 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     {
         if (isatty(STDIN_FILENO))
         {
+            shell.type = S_PROMPT;
             exit(show_prompt(norc, ast));
         }
         else
         {
+            shell.type = S_INPUT;
             exit(launch_pipe(ast));
         }
     }
     else
     {
+        shell.type = S_FILE;
         int res = 0;
         for (; argv[i]; i++)
         {
