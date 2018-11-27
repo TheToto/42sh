@@ -195,36 +195,36 @@ int exec_redirect(struct ast_node_redirect *n, struct variables *var)
 {
     switch (n->type)
     {
-        case R_LESS:
-            return less(n, var);
-            break;
-        case R_GREAT:
-            return great(n, var);
-            break;
-        case R_DLESS:
-            return dless(n, var);
-            break;
-        case R_DGREAT:
-            return dgreat(n, var);
-            break;
-        case R_LESSAND:
-            return lessand(n, var);
-            break;
-        case R_GREATAND:
-            return greatand(n, var);
-            break;
-        case R_LESSGREAT:
-            return lessgreat(n, var);
-            break;
-        case R_DLESSDASH:
-            return dlessdash(n, var);
-            break;
-        case R_CLOBBER:
-            return great(n, var);
-            break;
-        default:
-            errx(1, "No fall to switch redirect");
-            break;
+    case R_LESS:
+        return less(n, var);
+        break;
+    case R_GREAT:
+        return great(n, var);
+        break;
+    case R_DLESS:
+        return dless(n, var);
+        break;
+    case R_DGREAT:
+        return dgreat(n, var);
+        break;
+    case R_LESSAND:
+        return lessand(n, var);
+        break;
+    case R_GREATAND:
+        return greatand(n, var);
+        break;
+    case R_LESSGREAT:
+        return lessgreat(n, var);
+        break;
+    case R_DLESSDASH:
+        return dlessdash(n, var);
+        break;
+    case R_CLOBBER:
+        return great(n, var);
+        break;
+    default:
+        errx(1, "No fall to switch redirect");
+        break;
     }
     return 0;
 }

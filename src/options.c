@@ -1,12 +1,10 @@
 /**
- * \file options.c
- * \author sabrina.meng
- * \version 0.3
- * \date 15-11-2018
- * \brief Options parsing
- * \details Parse the options with the format
- *[GNU long option] [option] script-file
- */
+* \file options.c
+* \author sabrina.meng thomas.lupin
+* \version 0.5
+* \date 27-11-2018
+* Parse the options with the format [GNU long option] [option] script-file
+*/
 
 #define _POSIX_C_SOURCE
 #define _DEFAULT_SOURCE
@@ -26,12 +24,6 @@
 #include "env.h"
 #include "readfile.h"
 
-/**
- *\fn get_section
- *\brief Check if it is long option, option or script-file
- *\param char *arg  The argument to check
- *\return Return a size_t representing the section
- */
 static size_t get_section(char *arg)
 {
     if (arg[0] == '-')
@@ -85,29 +77,21 @@ enum shopt get_shopt(char *arg)
     return OTHER;
 }
 
-/**
- *\fn err_shopt
- *\brief Prints an error message on stderr for the [+]O option
- */
 static void err_shopt(void)
 {
-    warnx("Invalid arguments for [-+]O option");
-    warnx("Usage: [-+]O shopt_variable");
-    errx(1, "Shopt variables:\n\
-            \tast_print\n\
-            \tdotglob\n\
-            \texpand_aliases\n\
-            \textglob\n\
-            \tnocaseglob\n\
-            \tnullglob\n\
-            \tsourcepath\n\
-            \txpg_echo");
+    errx(1, "Invalid arguments for [-+]O option\n\
+      Usage: [-+]O shopt_variable\n\
+      Shopt variables:\n\
+            ast_print\n\
+            dotglob\n\
+            expand_aliases\n\
+            extglob\n\
+            nocaseglob\n\
+            nullglob\n\
+            sourcepath\n\
+            xpg_echo");
 }
 
-/**
- *\fn print_shopt_minus
- *\brief Prints the same output as bash with the -O option
- */
 static void print_shopt_minus(void)
 {
     printf("ast_print         off\n");
@@ -121,10 +105,6 @@ static void print_shopt_minus(void)
     exit(0);
 }
 
-/**
- *\fn print_shopt_plus
- *\brief Prints the same output as bash with the +O option
- */
 static void print_shopt_plus(void)
 {
     printf("shopt -u ast_print\n");
@@ -181,13 +161,9 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     if (!argv[i])
     {
         if (isatty(STDIN_FILENO))
-        {
             exit(show_prompt(norc, ast));
-        }
         else
-        {
             exit(launch_pipe(ast));
-        }
     }
     else
     {
@@ -228,7 +204,7 @@ void options(char *argv[])
         {
             if (!section)
             {
-                printf("Version 0.3\n");
+                printf("Version 0.5\n");
                 exit(0);
             }
         }
