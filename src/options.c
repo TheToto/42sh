@@ -161,13 +161,9 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     if (!argv[i])
     {
         if (isatty(STDIN_FILENO))
-        {
             exit(show_prompt(norc, ast));
-        }
         else
-        {
             exit(launch_pipe(ast));
-        }
     }
     else
     {
@@ -208,7 +204,7 @@ void options(char *argv[])
         {
             if (!section)
             {
-                printf("Version 0.3\n");
+                printf("Version 0.5\n");
                 exit(0);
             }
         }
