@@ -1,10 +1,10 @@
 /**
- * \file options.h
- * \author sabrina.meng thomas.lupin
- * \version 0.5
- * \date 27-11-2018
- * Parse the options with the format [GNU long option] [option] script-file
- */
+* \file options.h
+* \author sabrina.meng thomas.lupin
+* \version 0.5
+* \date 27-11-2018
+* Parse the options with the format [GNU long option] [option] script-file
+*/
  #pragma once
 
 ///Enumeration of the different options
@@ -51,30 +51,30 @@ enum shopt
 };
 
 /**
- * Get the option type according to the enum option of the header
- * \param char *opt  The option to check
- * \return Return an enum value according to the option
- */
+* Get the option type according to the enum option of the header
+* \param char *opt  The option to check
+* \return Return an enum value according to the option
+*/
 enum option get_option(char *opt);
 
 /**
- * Get the shopt variable according to the enum shopt of the header
- * \param char *arg  The shopt variable to check
- * \return Return an enum value according to the shopt variable
- */
+* Get the shopt variable according to the enum shopt of the header
+* \param char *arg  The shopt variable to check
+* \return Return an enum value according to the shopt variable
+*/
 enum shopt get_shopt(char *arg);
 
 /**
- * Do actions according to each options
- * \param char *argv[]   The command line to parse
- * \return The return value depends on the options
- */
+* Do actions according to each options
+* \param char *argv[]   The command line to parse
+* \return The return value depends on the options
+*/
 void options(char *argv[]);
 
 /**
- * Show the prompt in a infinite loop
- * \param int norc boolean to load .rc files
- * \param int is_print boolean to print ast
- * \return Return last operation result
- */
+* Show the prompt in a infinite loop
+* \param int norc boolean to load .rc files
+* \param int is_print boolean to print ast
+* \return Return last operation result
+*/
 int show_prompt(int norc, int is_print);
