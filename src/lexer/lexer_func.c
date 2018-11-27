@@ -10,13 +10,6 @@
 #include "lexer.h"
 #include "parser.h"
 
-/**
- * \fn enum token_type redirection_token (char *val)
- * \brief Test if val correspond to a redirection.
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val if it is a redirection, WORD else.
- */
 static enum token_type redirection_token(char *val)
 {
     if (!strcmp(val, "<"))
@@ -42,14 +35,6 @@ static enum token_type redirection_token(char *val)
     return WORD;
 }
 
-/**
- * \fn enum token_type condition_and_case_token (char *val)
- * \brief Test if val correspond to a condition or a case element.
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val if it is a condition
- * or a case element, WORD else.
- */
 static enum token_type condition_and_case_token(char *val)
 {
     if (!strcmp(val, "if"))
@@ -73,13 +58,6 @@ static enum token_type condition_and_case_token(char *val)
     return WORD;
 }
 
-/**
- * \fn enum token_type loop_token (char *val)
- * \brief Test if val correspond to a loop element or not.
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val if it is a loop element, WORD else.
- */
 static enum token_type loop_token(char *val)
 {
     if (!strcmp(val, "while"))
@@ -99,15 +77,6 @@ static enum token_type loop_token(char *val)
     return WORD;
 }
 
-/**
- * \fn enum token_type special_token (char *val)
- * \brief Test if val correspond to a one of following words or not:
- * "in", "{", "}", "(", ")".
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val if matching with
- * one of previous element, WORD else.
- */
 static enum token_type special_token(char *val)
 {
     if (!strcmp(val, "in"))
@@ -123,15 +92,6 @@ static enum token_type special_token(char *val)
     return WORD;
 }
 
-/**
- * \fn enum token_type bin_op_and_default_token (char *val)
- * \brief Test if val correspond to a binary operator
- * or one of following token or not:
- * IO_NUMBER, NEW_LINE, ASSIGNMENT_WORD, NAME.
- *
- * \param val Pointer to the string we want to check.
- * \return The token corresponding to val if it matching, WORD else.
- */
 static enum token_type bin_op_and_default_token(char *val)
 {
     if (!strcmp(val, "&&"))

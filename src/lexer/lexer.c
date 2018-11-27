@@ -28,12 +28,6 @@ void lexer_destroy(struct lexer *l)
     free(l);
 }
 
-/**
- * \fn struct lexer *init_lexer (void)
- * \brief Initialize a lexer.
- *
- * \return A pointer to a lexer initialized.
- */
 static struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
@@ -49,14 +43,6 @@ static struct lexer *init_lexer(void)
     return l;
 }
 
-/**
- * \fn void set_tl (struct token_list *tl, char *str)
- * \brief Initialize a token_list with according to str.
- *
- * \param tl The token_list we want to initialize.
- * \param str The string used to initialize the token_list.
- * \return NOTHING.
- */
 static void set_tl(struct token_list *tl, char *str,
     enum token_type tok)
 {
@@ -67,15 +53,6 @@ static void set_tl(struct token_list *tl, char *str,
     tl->next = NULL;
 }
 
-/**
- * \fn char *get_next_str (char **beg)
- * \brief Find the next string to check. It also modify the string
- * at <beg> address to skip the found word. It pass comments too.
- *
- * \param beg The address of the complete string in wich we search
- * the candidate.
- * \return A string containing a valid candidate to correspond to a token.
- */
 static char *get_next_str(char **beg)
 {
     if (!beg || !*beg || !**beg)
@@ -113,18 +90,6 @@ static char *get_next_str(char **beg)
     return res;
 }
 
-/**
- * \fn int should_change (struct enum token_type *type,
- * struct token_type *type_next, char **lstring, size_t *i)
- * \brief Determine if it is valid token or not.
- *
- * \param type The token type of the current word.
- * \param type_next The token type of yhe current plus the next character.
- * \param lstring Contains the next character in string format, the string
- * we are working on and the current word.
- * \param i It is the index in the string of the last character of the word.
- * \return If the current position mark a changement of token.
- */
 static int should_change(enum token_type *type,
     enum token_type type_next, char **lstring, size_t *i)
 {
@@ -165,15 +130,6 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
-/**
- * \fn void get_next_word_token (char **str, struct token_list *tl)
- * \brief Find the next word corresponding to a token in a string.
- *
- * \param str The string in which we are working.
- * \param tl The token_list in which we put the founded word
- * and it's associated token.
- * \return NOTHING.
- */
 static void get_next_word_token(char **str, struct token_list *tl)
 {
     char *word = calloc(1, strlen(*str) + 1);
