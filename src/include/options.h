@@ -1,9 +1,9 @@
 /**
 * \file options.h
+* Parse the options with the format [GNU long option] [option] script-file
 * \author sabrina.meng thomas.lupin
 * \version 0.5
 * \date 27-11-2018
-* Parse the options with the format [GNU long option] [option] script-file
 */
  #pragma once
 
@@ -67,7 +67,6 @@ enum shopt get_shopt(char *arg);
 /**
 * Do actions according to each options
 * \param char *argv[]   The command line to parse
-* \return The return value depends on the options
 */
 void options(char *argv[]);
 
