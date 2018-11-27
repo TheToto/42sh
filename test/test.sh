@@ -5,6 +5,7 @@ RED="\033[1;31m"
 YELLOW="\033[1;33m"
 ANNONCE="\033[38;5;37m"
 DEFAULT="\033[1;39m"
+RESET="\033[0;39m"
 
 ##############################################################################
 #                               OPTION PARSING                               #
@@ -39,7 +40,7 @@ while test $# -gt 0; do
                 shift
             done
             if test "$1" != ";"; then
-                printf $RED"\nERROR: category list should finish with '\;'\n\n"
+                printf $RED"\nERROR: category list should finish with \'\;\'\n\n"
                 exit 1;
             fi;;
         -l | --list)
@@ -76,7 +77,7 @@ is_in () {
 #                                  COMPIL'                                   #
 ##############################################################################
 
-printf $ANNONCE"---------"$DEFAULT"\n"
+printf $DEFAULT$ANNONCE"---------"$DEFAULT"\n"
 printf $YELLOW"  BEGIN"$DEFAULT"\n"
 printf $ANNONCE"---------"$DEFAULT"\n\n"
 
@@ -231,7 +232,7 @@ for file in $list_of_file; do
     elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED: Timeout\n\n"$DEFAULT
-    elif [ -n "$diff_content" -o  ]; then
+    elif [ -n "$diff_content" ]; then
         FAILED="$(($FAILED + 1))"
         pretty_printf_err /tmp/res
         printf "\n"
@@ -255,4 +256,5 @@ printf $RED"      FAILED:  $FAILED\n\n"$DEFAULT
 
 printf $ANNONCE"-------"$DEFAULT"\n"
 printf $YELLOW"  END"$DEFAULT"\n"
-printf $ANNONCE"-------"$DEFAULT"\n\n"
+printf $ANNONCE"-------"$RESET"\n\n"
+
