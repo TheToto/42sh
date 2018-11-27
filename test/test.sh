@@ -149,7 +149,7 @@ while read line; do
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
               printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
-              printf "    "\n$RED"-------------------\n"
+              printf "    \n"$RED"-------------------\n"
               printf "    $line\n"
               printf "    -------------------\n\n"
               is_err=1;;

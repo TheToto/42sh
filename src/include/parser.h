@@ -71,10 +71,10 @@ enum token_type
     AMPERSAND,          ///< &         31
     NOT,                ///< !         32
     //DEFAULT
-    IO_NUMBER,          ///< [1-9]+                    33
+    IO_NUMBER,          ///< [0-9]+                    33
     NEW_LINE,           ///< \n                        34
-    ASSIGNMENT_WORD,    ///< [_a-zA-Z][_1-9a-zA-Z]*=.* 35
-    NAME,               ///< [_a-zA-Z][_1-9a-zA-Z]*    36
+    ASSIGNMENT_WORD,    ///< [_a-zA-Z][_0-9a-zA-Z]*=.* 35
+    NAME,               ///< [_a-zA-Z][_0-9a-zA-Z]*    36
     WORD_EXT,           ///< everithing between '"'    37
     WORD,               ///< everything else           38
     //END OF FILE
