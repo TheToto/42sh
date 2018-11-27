@@ -26,7 +26,7 @@ struct ast_node *rule_list(struct token_list **tok)
         NEXT_TOK(tok);
         if (TOK_TYPE(tok) == NEW_LINE || TOK_TYPE(tok) == END_OF_FILE)
         {
-            if(save == AMPERSAND)
+            if (save == AMPERSAND)
                 return create_ast_node_ampersand(left_andor, NULL);
             return left_andor;
         }

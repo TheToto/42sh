@@ -25,7 +25,7 @@ int launch_file(char *path, int is_print, struct variables *var)
     fseek(f, 0L, SEEK_SET);
     char *buffer = calloc(numbytes + 1, sizeof(char));
 
-    if(buffer == NULL)
+    if (buffer == NULL)
         err(1, "Failed to malloc buffer");
 
     fread(buffer, sizeof(char), numbytes, f);

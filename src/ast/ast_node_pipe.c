@@ -19,7 +19,7 @@ static struct ast_node_pipe *create_ast_node_pipe_int(struct ast_node *ls,
     if (!new)
         return NULL;
     new->ls = ls;
-    new->rs= rs;
+    new->rs = rs;
     return new;
 }
 
