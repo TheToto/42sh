@@ -84,6 +84,7 @@ enum token_type
 ///Linked list for lexer token
 struct token_list
 {
+    char *str_origin; ///< address of the word in the original string
     char *str; ///< (OPTIONNAL) data coming with the token
     enum token_type type; ///<type of the token
     struct token_list *next; ///<pointer to the next token in the list

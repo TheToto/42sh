@@ -131,7 +131,7 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
-    char *line;
+    char *line = NULL;
     if (shell.type == S_PROMPT)
     {
         do

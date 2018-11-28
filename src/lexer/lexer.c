@@ -46,16 +46,17 @@ static struct lexer *init_lexer(void)
 }
 
 static void set_tl(struct token_list *tl, char *str,
-    enum token_type tok)
+    enum token_type tok, char *origin)
 {
+    tl->str_origin = origin;
     tl->str = str;
     if (tok == NAME)
         tok = WORD;
     tl->type = tok;
     tl->next = NULL;
 }
-//si commence par #skip jusqu'a \n sinon read
-static char *get_next_str(char **beg)
+
+static char *get_next_str(char **beg, char **ptr)
 {
     if (!beg || !*beg || !**beg)
         return NULL;
@@ -67,6 +68,7 @@ static char *get_next_str(char **beg)
         for (; **beg && **beg != '\n'; (*beg)++)
             continue;
     }
+    *ptr = *beg;
     char *cur = *beg;
     for (; *cur && *cur != ' ' && *cur != '\t'
             && *cur != '\"'; cur++)
@@ -133,7 +135,7 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
-static void get_next_word_token(char **str, struct token_list *tl)
+static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
     size_t i = 0;
@@ -161,9 +163,9 @@ static void get_next_word_token(char **str, struct token_list *tl)
         strcpy(word, *str);
         type = WORD_EXT;
     }
-    *str += i;
     word[i] = 0;
-    set_tl(tl, word, type);
+    set_tl(tl, word, type, ptr);
+    *str += i;
 }
 
 struct lexer *lexer(char *str)
@@ -172,15 +174,17 @@ struct lexer *lexer(char *str)
     if (!l)
         return NULL;
     struct token_list *cur = l->token_list;
-    char *val = get_next_str(&str);
-    for (; val && !*val;free(val), val = get_next_str(&str))
+    char *ptr = str;
+    char *val = get_next_str(&str, &ptr);
+    for (; val && !*val;free(val), val = get_next_str(&str, &ptr))
         continue;
     while (val)
     {
         char *save = val;
         while (*val)
         {
-            get_next_word_token(&val, cur);
+            get_next_word_token(&val, cur, ptr);
+            ptr += strlen(cur->str);
             cur->next = calloc(1, sizeof(*cur->next));
             if (!cur->next)
             {
@@ -191,11 +195,11 @@ struct lexer *lexer(char *str)
                 cur = cur->next;
         }
         free(save);
-        val = get_next_str(&str);
+        val = get_next_str(&str, &ptr);
         if (cur->next)
             cur = cur->next;
     }
-    set_tl(cur, NULL, END_OF_FILE);
+    set_tl(cur, NULL, END_OF_FILE, NULL);
     shell.lexer = l;
     return l;
 }
