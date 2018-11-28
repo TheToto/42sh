@@ -124,7 +124,7 @@ static int lessgreat(struct ast_node_redirect *n, struct variables *var)
 
 static int dless(struct ast_node_redirect *n, struct variables *var)
 {
-    n->fd = open(".", O_TMPFILE | O_RDWR, 00644);
+    n->fd = open("/tmp", O_TMPFILE | O_RDWR, 00644);
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
@@ -152,7 +152,7 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
 
 static int dlessdash(struct ast_node_redirect *n, struct variables *var)
 {
-    n->fd = open(".", O_TMPFILE | O_RDWR, 00644);
+    n->fd = open("/tmp", O_TMPFILE | O_RDWR, 00644);
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
@@ -161,7 +161,7 @@ static int dlessdash(struct ast_node_redirect *n, struct variables *var)
     do
     {
         offset = 0;
-        line = readline("> ");
+        line = readline(get_var(var, "PS2"));
         for (; line[offset] == '\t' || line[offset] == ' '; offset++);
 
         if (strcmp(line + offset, n->word) == 0)
