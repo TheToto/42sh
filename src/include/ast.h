@@ -70,6 +70,9 @@ struct ast_node_redirect
     enum redirect_type type; ///<redirection type (see \a enum \a redirect_type)
     int io_number;           ///<redirected stream
     char *word;              ///<name of the File Descriptor
+    char **words;            ///<array of words if heredoc
+    size_t size;             ///<current occupied size of the array
+    size_t capacity;         ///<capacity of the array of words
     struct ast_node *node;   ///<what will be redirected. Must be pre-created
 };
 
@@ -204,6 +207,14 @@ struct ast_node *create_ast_node_lor(struct ast_node *left_child,
 struct ast_node *create_ast_node_redirect(int fd,
         enum redirect_type type, int io_number, char *word,
         struct ast_node *node);
+
+/**
+ * Add the \a word string to the element array in node
+ * @param node pre-created ast_node(redirect) being target of adding
+ * @param word string to add. Must not be empty.
+ * @return void, changement being done internally
+ */
+void add_value_for(struct ast_node *node, char *word);
 
 /**
  * Create 'while' ast_node

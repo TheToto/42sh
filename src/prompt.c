@@ -51,13 +51,13 @@ static void launchrc(int is_print, struct variables *var)
         launch_file(filerc, is_print, var);
     if (!get_var(var, "PS1"))
         add_var(var, "PS1", "[42sh@pc]$ ");
+    if (!get_var(var, "PS2"))
+        add_var(var, "PS2", "> ");
     free(filerc);
 }
 
 struct token_list *show_ps2(void)
 {
-    if (!get_var(shell.var, "PS2"))
-        add_var(shell.var, "PS2", "> ");
     char *buf = readline(get_var(shell.var, "PS2"));
     //if (buf && *buf)
     //    add_history(buf);

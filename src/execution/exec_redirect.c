@@ -23,6 +23,9 @@
 #include "env.h"
 #include "execution.h"
 #include "ast.h"
+#include "shell.h"
+
+struct shell shell;
 
 static int less(struct ast_node_redirect *n, struct variables *var)
 {
@@ -129,18 +132,41 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
         err(1, "cannot open temp doc for heredocs");
 
     char *line;
-    do
+    if (shell.type == S_PROMPT)
     {
-        line = readline("> ");
-        if (strcmp(line, n->word) == 0)
+        do
         {
+            line = readline(get_var(var, "PS2"));
+            if (strcmp(line, n->word) == 0)
+            {
+                free(line);
+                break;
+            }
+            dprintf(n->fd, "%s\n", line);
             free(line);
-            break;
         }
-        dprintf(n->fd, "%s\n", line);
-        free(line);
+        while (1);
     }
-    while (1);
+    else if (shell.type == S_FILE)
+    {
+        size_t m = 0;
+        ssize_t res = 1;
+        while ((res = getline(&line, &m, stdin)) > 0)
+        {
+            printf("coucou");
+            if (strcmp(line, n->word) == 0)
+            {
+                free(line);
+                break;
+            }
+            dprintf(n->fd, "%s\n", line);
+            free(line);
+        }
+        if (res == -1)
+            err(1, "getline in heredoc redirection failed");
+    }
+    else
+        errx(1, "Unknown shell prompt mode");
     lseek(n->fd, 0, SEEK_SET);
     int save = dup(0);
     dup2(n->fd, 0);
