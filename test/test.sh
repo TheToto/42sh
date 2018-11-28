@@ -98,7 +98,7 @@ make -B > /dev/null 2> /dev/null
 did_it_works="$(find . -name 42sh)"
 
 echo $did_it_works
-if [ -n $did_it_works ]; then
+if test -z $did_it_works; then
     printf $RED"    ERROR: Error while compiling: you may try to compile before running test-suite\n\n"$RESET
     exit 1
 fi
