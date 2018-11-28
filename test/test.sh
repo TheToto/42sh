@@ -17,7 +17,7 @@ if test "$1" = "check"; then
 fi
 
 list_of_category="ast_tests lexer_tests parser_tests option_tests"
-timeout="1"
+timeout="10000d"
 sanity=0
 
 while test $# -gt 0; do
@@ -210,7 +210,7 @@ FAILED=0
 
 for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
-    printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
+    printf $DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
     timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err > /tmp/tmp
 
