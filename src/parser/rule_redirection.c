@@ -5,6 +5,7 @@
  *\date 22-11-2018
  *\brief Redirection rule function
  */
+#define _GNU_SOURCE
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>
@@ -69,11 +70,24 @@ static int set_default_io(struct token_list **tok)
     }
 }
 
+int rule_heredoc(struct token_list **tok, struct ast_node *redir, char *word)
+{
+    if (shell.type == S_PROMPT)
+        return 1;
+    while (!(!strcmp(TOK_STR(tok), word) && TOK_NEXT_TYPE(tok) == NEW_LINE))
+    {
+        while (TOK_TYPE(tok) != NEW_LINE)
+        {
+            add_elt_heredoc(redir, TOK_STR(tok);
+        }
+        NEXT_TOK(tok);
+    }
+    return 1;
+}
+
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
-    //printf("Enter in redirection\n");
-    //debug_token(tok);
     int fd = -1;
     int io = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
@@ -108,5 +122,12 @@ struct ast_node *rule_redirection(struct token_list **tok,
     }
     char *dest = TOK_STR(tok);
     NEXT_TOK(tok);
-    return create_ast_node_redirect(fd, r_type, io, dest, child);
+    struct ast_node *redir = create_ast_node_redirect(fd, r_type, io,
+            dest, child);
+    if (!rule_heredoc(tok, redir, dest))
+    {
+        destroy_ast(redir);
+        return NULL;
+    }
+    return redir;
 }
