@@ -13,10 +13,10 @@
 #include <stdio.h>
 #include <err.h>
 #include <stdlib.h>
-#include <err.h>
 #include <unistd.h>
 
 #include "options.h"
+#include "shopt.h"
 #include "lexer.h"
 #include "print.h"
 #include "execution.h"
@@ -55,69 +55,7 @@ enum option get_option(char *opt)
     return NONE;
 }
 
-enum shopt get_shopt(char *arg)
-{
-    if (!arg)
-        return NO;
-    if (!strcmp(arg, "ast_print"))
-        return ASTPRINT;
-    if (!strcmp(arg, "dotglob"))
-        return DOTGLOB;
-    if (!strcmp(arg, "expand_aliases"))
-        return EXP_ALIAS;
-    if (!strcmp(arg, "extglob"))
-        return EXTGLOB;
-    if (!strcmp(arg, "nocaseglob"))
-        return NOCASEGLOB;
-    if (!strcmp(arg, "nullglob"))
-        return NULLGLOB;
-    if (!strcmp(arg, "sourcepath"))
-        return SRCPATH;
-    if (!strcmp(arg, "xpg_echo"))
-        return XPGECHO;
-    return OTHER;
-}
 
-static void err_shopt(void)
-{
-    errx(1, "Invalid arguments for [-+]O option\n\
-      Usage: [-+]O shopt_variable\n\
-      Shopt variables:\n\
-            ast_print\n\
-            dotglob\n\
-            expand_aliases\n\
-            extglob\n\
-            nocaseglob\n\
-            nullglob\n\
-            sourcepath\n\
-            xpg_echo");
-}
-
-static void print_shopt_minus(void)
-{
-    printf("ast_print         off\n");
-    printf("dotglob           off\n");
-    printf("expand_aliasases  off\n");
-    printf("extglob           off\n");
-    printf("nocaseglob        off\n");
-    printf("nullglob          off\n");
-    printf("sourcepath        on\n");
-    printf("xpg_echo          off\n");
-    exit(0);
-}
-
-static void print_shopt_plus(void)
-{
-    printf("shopt -u ast_print\n");
-    printf("shopt -u dotglob\n");
-    printf("shopt -u expand_aliases\n");
-    printf("shopt -u extglob\n");
-    printf("shopt -u nocaseglob\n");
-    printf("shopt -u nullglob\n");
-    printf("shopt -s sourcepath\n");
-    printf("shopt -u xpg_echo\n");
-    exit(0);
-}
 
 static int check_ast_print(char **argv)
 {
@@ -129,16 +67,15 @@ static int check_ast_print(char **argv)
     return 0;
 }
 
-static void exec_shopt(char **argv, size_t *i, size_t section, enum option opt)
+static void exec_shopt(char **argv, size_t i, size_t section, enum option opt)
 {
     if (section == 1)
     {
-        (*i)++;
-        enum shopt shopt = get_shopt(argv[*i]);
+        enum shopt shopt = get_shopt(argv[i + 1]);
         if (shopt == OTHER)
             err_shopt();
         if (shopt == NO && opt == SHOPT_MINUS)
-            print_shopt_minus();
+            print_shopt(0);
         if (shopt == NO && opt == SHOPT_PLUS)
             print_shopt_plus();
     }
@@ -206,7 +143,7 @@ void options(char *argv[])
         else if (opt == CMD || opt == AST)
             continue;
         else if (opt == SHOPT_MINUS || opt == SHOPT_PLUS)
-            exec_shopt(argv, &i, section, opt);
+            exec_shopt(argv, i, section, opt);
         else if (opt == NORC)
             norc = 1;
         else if (opt == VERSION)
