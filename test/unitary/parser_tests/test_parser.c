@@ -4,6 +4,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
+struct shell *shell;
 
 void setUp(void)
 {
@@ -24,5 +25,5 @@ void test_parser(void)
     l->token_list = copy;
     destroy_ast(ast);
     lexer_destroy(l);
-    printf("END");
+    printf("END\n");
 }

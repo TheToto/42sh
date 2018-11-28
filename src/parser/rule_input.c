@@ -16,7 +16,7 @@
 
 struct ast_node *rule_input(struct token_list **tok)
 {
-    debug_token(tok);
+    //debug_token(tok);
 
     remove_new_line(tok);
     if (TOK_TYPE(tok) == NEW_LINE || TOK_TYPE(tok) == END_OF_FILE)

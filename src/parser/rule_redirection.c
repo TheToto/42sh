@@ -73,7 +73,7 @@ struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
     //printf("Enter in redirection\n");
-    debug_token(tok);
+    //debug_token(tok);
     int fd = -1;
     int io = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
