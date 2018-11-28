@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "options.h"
 
+struct shell *shell;
+
 void setUp(void)
 {
 }

@@ -62,6 +62,7 @@
     - src/execution/execution.c;
     - src/lexer/lexer.c;
     - src/lexer/lexer_func.c;
+    - src/parser/misc.c
     - src/options.c;
     - src/parser/rule_andor.c;
     - src/parser/rule_case.c;

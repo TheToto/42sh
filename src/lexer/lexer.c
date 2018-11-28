@@ -54,7 +54,7 @@ static void set_tl(struct token_list *tl, char *str,
     tl->type = tok;
     tl->next = NULL;
 }
-
+//si commence par #skip jusqu'a \n sinon read
 static char *get_next_str(char **beg)
 {
     if (!beg || !*beg || !**beg)
@@ -62,26 +62,26 @@ static char *get_next_str(char **beg)
     size_t len = 0;
     for (; **beg && (**beg == ' ' || **beg == '\t'); (*beg)++)
         continue;
+    if (**beg == '#')
+    {
+        for (; **beg && **beg != '\n'; (*beg)++)
+            continue;
+    }
     char *cur = *beg;
     for (; *cur && *cur != ' ' && *cur != '\t'
-            && *cur != '\"' && *cur != '#'; cur++)
+            && *cur != '\"'; cur++)
         len += 1;
     if (*cur == '\"')
     {
-        for (cur += 1, len += 1; *cur && *cur != '\"' && *cur != '#'; cur++)
+        for (cur += 1, len += 1; *cur && *cur != '\"'; cur++)
             len += 1;
-        for (; *cur && *cur != ' ' && *cur != '\t' && *cur != '#'; cur++)
+        for (; *cur && *cur != ' ' && *cur != '\t'; cur++)
             len += 1;
     }
     char *res = calloc(1, len + 1);
     if (res)
     {
         strncpy(res, *beg, len);
-        if (*cur == '#')
-        {
-            for (; *cur && *cur != '\n'; cur++)
-                len += 1;
-        }
         if (!strlen(*beg))
         {
             free(res);
