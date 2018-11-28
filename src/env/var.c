@@ -167,18 +167,19 @@ void assign_prefix(struct variables *var, char *prefix)
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
 {
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
-    for (size_t i = 0; i < scmd->elt_size; i++)
+    size_t j = 0;
+    for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
         if (scmd->elements[i][0] == '$')
         {
             char *value = get_var(var, scmd->elements[i] + 1);
             if (value)
-                res[i] = strdup(value);
+                res[j] = strdup(value);
             else
-                res[i] = strdup("");
+                j--;
         }
         else
-            res[i] = strdup(scmd->elements[i]);
+            res[j] = strdup(scmd->elements[i]);
     }
     return res;
 }
