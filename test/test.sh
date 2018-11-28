@@ -26,21 +26,21 @@ while test $# -gt 0; do
             list_of_category=""
             shift
             if test "$1" = ";"; then
-                printf $RED"\nERROR: no category: one category at least should be tested\n\n"$DEFAULT
+                printf $RED"\nERROR: no category: one category at least should be tested\n\n"$RESET
                 exit 1
             fi
             while test $# -gt 0 -a "$1" != ";"; do
                 case $1 in
                     ast | lexer | parser | option);;
                     * )
-                        printf $RED"\nERROR: invalid category: $1\n\n"$DEFAULT
+                        printf $RED"\nERROR: invalid category: $1\n\n"$RESET
                         exit 1;;
                 esac
                 list_of_category="$list_of_category $1""_tests"
                 shift
             done
             if test "$1" != ";"; then
-                printf $RED"\nERROR: category list should finish with \'\;\'\n\n"
+                printf $RED"\nERROR: category list should finish with \'\;\'\n\n"$RESET
                 exit 1;
             fi;;
         -l | --list)
@@ -52,13 +52,13 @@ while test $# -gt 0; do
             if [ -n  "$is_correct" ]; then
                 timeout="$1""s"
             else
-                printf $RED"\nERROR: Invalid time: $1\n\n"$DEFAULT
+                printf $RED"\nERROR: Invalid time: $1\n\n"$RESET
                 exit 1
             fi;;
         -s | --sanity)
             sanity=1;;
         * )
-            printf $RED"\nERROR: invalid option: $1\n\n"$DEFAULT
+            printf $RED"\nERROR: invalid option: $1\n\n"$RESET
             exit 1;;
     esac
     shift
@@ -94,6 +94,14 @@ make clean
 printf $ANNONCE"    Building ...\n"
 
 make -B > /dev/null 2> /dev/null
+
+did_it_works="$(find . -name 42sh)"
+
+echo $did_it_works
+if [ -n $did_it_works ]; then
+    printf $RED"    ERROR: Error while compiling: you may try to compile before running test-suite\n\n"$RESET
+    exit 1
+fi
 
 printf $ANNONCE"    COMPLETE!\n"$DEFAULT
 
