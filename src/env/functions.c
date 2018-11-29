@@ -1,10 +1,10 @@
 /**
- * @file functions.c
- * @author louis.holleville
- * @date 25-11-2018
- * @version 0.5
- * Management of functions declaration and builtins
- */
+* @file functions.c
+* @author louis.holleville
+* @date 25-11-2018
+* @version 0.5
+* Management of functions declaration and builtins
+*/
 
 #define _DEFAULT_SOURCE
 #include <stdlib.h>

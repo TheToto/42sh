@@ -1,10 +1,10 @@
 /**
- *\file prompt.c
- *\author thomas.lupin sabrina.meng
- *\version 0.5
- *\date 22-11-2018
- *\brief Function to use the prompt
- */
+*\file prompt.c
+*\author thomas.lupin sabrina.meng
+*\version 0.5
+*\date 22-11-2018
+*\brief Function to use the prompt
+*/
 
 #define _XOPEN_SOURCE
 

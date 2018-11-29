@@ -1,10 +1,10 @@
 /**
- *\file rule_list.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief List rule function
- */
+*\file rule_list.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief List rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_list(struct token_list **tok)
 {
-    //printf("Enter in list\n");
-    //debug_token(tok);
-
     struct ast_node *left_andor = rule_andor(tok);
     if (!left_andor)
         return NULL;

@@ -1,10 +1,10 @@
 /**
- *\file rulecompound_list.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Compound list rule function
- */
+*\file rulecompound_list.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Compound list rule function
+*/
 #include <err.h>
 #include <stdio.h>
 

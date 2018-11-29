@@ -1,10 +1,10 @@
 /**
- * @file exec_redirect.c
- * @author louis.holleville
- * @version 0.5
- * @date 22-11-2018
- * @brief execution of the pipe
- */
+* @file exec_redirect.c
+* @author louis.holleville
+* @version 0.5
+* @date 22-11-2018
+* @brief execution of the pipe
+*/
 
 #define _GNU_SOURCE
 #include <unistd.h>

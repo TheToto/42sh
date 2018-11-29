@@ -1,10 +1,10 @@
 /**
- * @file exec_scmd.c
- * @author thomas.lupin louis.holleville sabrina.meng
- * @version 0.5
- * @date 25-11-2018
- * execution of scmd
- */
+* @file exec_scmd.c
+* @author thomas.lupin louis.holleville sabrina.meng
+* @version 0.5
+* @date 25-11-2018
+* execution of scmd
+*/
 
 #include <sys/types.h>
 #include <unistd.h>

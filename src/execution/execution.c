@@ -1,10 +1,10 @@
 /**
- *\file execution.c
- *\author sabrina.meng thomas.lupin
- *\version 0.3
- *\date 15-11-2018
- *\brief Execution of the AST
- */
+*\file execution.c
+*\author sabrina.meng thomas.lupin
+*\version 0.3
+*\date 15-11-2018
+*\brief Execution of the AST
+*/
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>

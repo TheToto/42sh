@@ -1,10 +1,10 @@
 /**
- * \file var.c
- * \author louis.holleville
- * \version 0.3
- * \date 16-11-2018
- * \brief Management of shell variables
- */
+* \file var.c
+* \author louis.holleville
+* \version 0.3
+* \date 16-11-2018
+* \brief Management of shell variables
+*/
 
 #define _DEFAULT_SOURCE
 #include <stdlib.h>

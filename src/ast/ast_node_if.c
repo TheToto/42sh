@@ -1,10 +1,10 @@
 /**
- * \file ast_node_if.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of if
- */
+* \file ast_node_if.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of if
+*/
 
 #include <stdlib.h>
 #include "parser.h"

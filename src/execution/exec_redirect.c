@@ -1,10 +1,10 @@
 /**
- * @file exec_redirect.c
- * @author louis.holleville
- * @version 0.5
- * @date 20-11-2018
- * @brief execution of the redirections
- */
+* @file exec_redirect.c
+* @author louis.holleville
+* @version 0.5
+* @date 20-11-2018
+* @brief execution of the redirections
+*/
 
 #define _DEFAULT_SOURCE
 #define _GNU_SOURCE

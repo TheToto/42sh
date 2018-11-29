@@ -1,10 +1,10 @@
 /**
- *\file rule_if.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief If rule function
- */
+*\file rule_if.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief If rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_if(struct token_list **tok)
 {
-    //printf("Enter in if\n");
-    //debug_token(tok);
-
     NEXT_TOK(tok);
     ask_ps2(tok);
     struct ast_node *condition = rule_compound_list(tok, THEN);

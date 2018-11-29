@@ -1,11 +1,11 @@
 /**
- * \file lexer.c
- * \brief Contain all function to create or destroy
- * a pointer to a lexer structure
- * according to a given string.
- * \author Arthur Busuttil
- * \version 0.5
- */
+* \file lexer.c
+* \brief Contain all function to create or destroy
+* a pointer to a lexer structure
+* according to a given string.
+* \author Arthur Busuttil
+* \version 0.5
+*/
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>

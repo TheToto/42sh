@@ -1,10 +1,10 @@
 /**
- * \file ast_node_for.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of for
- */
+* \file ast_node_for.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of for
+*/
 
 #define _DEFAULT_SOURCE
 #include <string.h>

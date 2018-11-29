@@ -1,10 +1,10 @@
 /**
- *\file misc.c
- *\author thomas.lupin
- *\version 0.5
- *\date 28-11-2018
- *\brief Some misc functions
- */
+*\file misc.c
+*\author thomas.lupin
+*\version 0.5
+*\date 28-11-2018
+*\brief Some misc functions
+*/
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,9 +32,6 @@ void debug_token(struct token_list **tok)
 
 void remove_new_line(struct token_list **tok)
 {
-    //printf("Enter in newline\n");
-    //debug_token(tok);
-
     while (TOK_TYPE(tok) == NEW_LINE)
         NEXT_TOK(tok);
 }
@@ -48,5 +45,4 @@ void ask_ps2(struct token_list **tok)
         struct token_list *lex_tok = show_ps2();
         *tok = lex_tok;
     }
-    //debug_token(tok);
 }

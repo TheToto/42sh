@@ -1,10 +1,10 @@
 /**
- *\file rule_case.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Case rule function
- */
+*\file rule_case.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Case rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -99,9 +99,6 @@ static int rule_case_clause(struct token_list **tok,
 
 struct ast_node *rule_case(struct token_list **tok)
 {
-    //printf("Enter in case\n");
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) != CASE)
     {
         warnx("Need a CASE keyword in a case statement");

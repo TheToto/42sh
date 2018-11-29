@@ -1,10 +1,10 @@
 /**
- * \file ast.h
- * \author louis.holleville thomas.lupin
- * \version 0.5
- * \date 14-11-2018
- * \brief Header of AST nodes
- */
+* \file ast.h
+* \author louis.holleville thomas.lupin
+* \version 0.5
+* \date 14-11-2018
+* \brief Header of AST nodes
+*/
 
 #pragma once
 
@@ -36,9 +36,9 @@ struct ast_node_while
 };
 
 /**
- * @brief Construction of 'case' ast_node
- * @details This constructor can be called casses and nodes set to NULL.
- */
+* @brief Construction of 'case' ast_node
+* @details This constructor can be called casses and nodes set to NULL.
+*/
 struct ast_node_case
 {
     char *value;                ///<value to compare to \a cases
@@ -162,158 +162,158 @@ struct ast_node
 };
 
 /**
- * Create the '&' ast_node
- * @param left_child    Left operand, must be a pre-created ast node
- * @param right_child   Right operand, must be a pre-created ast node
- * @return newly created ast_node and its type
- */
+* Create the '&' ast_node
+* @param left_child    Left operand, must be a pre-created ast node
+* @param right_child   Right operand, must be a pre-created ast node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_ampersand(struct ast_node *left_child,
         struct ast_node *right_child);
 
 /**
- *Create the 'for' ast_node
- * @param values    list of strings to iterate over
- * @param value     string currently being iterated
- * @param exec operation to apply to each \a value. Must be a pre-created node
- * @return newly created ast_node and its type
- */
+*Create the 'for' ast_node
+* @param values    list of strings to iterate over
+* @param value     string currently being iterated
+* @param exec operation to apply to each \a value. Must be a pre-created node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_for(char *value, struct ast_node *exec);
 
 /**
- * Add the \a value string to the element array in node
- * @param node pre-created ast_node(for) being target of adding
- * @param value string to add. Must not be empty.
- * @return void, changement being done internally
- */
+* Add the \a value string to the element array in node
+* @param node pre-created ast_node(for) being target of adding
+* @param value string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_value_for(struct ast_node *node, char *value);
 
 /**
- * Create '||' ast_node (logical or)
- * @param left_child    Left operand, must be an pre-created ast node
- * @param right_child   Right operand, must be an pre-created ast node
- * @return newly created ast_node and its type
- */
+* Create '||' ast_node (logical or)
+* @param left_child    Left operand, must be an pre-created ast node
+* @param right_child   Right operand, must be an pre-created ast node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_lor(struct ast_node *left_child,
         struct ast_node *right_child);
 
 /**
- * Create 'redirection' ast_node
- * @param fd        File Descriptor where stream is redirected
- * @param type      Type of redirection (cf \a enum \a redirect_type)
- * @param io_number Redirected stream
- * @param word      Name of the File Descriptor where stream is redirected
- * @return newly created ast_node and its type
- */
+* Create 'redirection' ast_node
+* @param fd        File Descriptor where stream is redirected
+* @param type      Type of redirection (cf \a enum \a redirect_type)
+* @param io_number Redirected stream
+* @param word      Name of the File Descriptor where stream is redirected
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_redirect(int fd,
         enum redirect_type type, int io_number, char *word,
         struct ast_node *node);
 
 /**
- * Add the \a word string to the element array in node
- * @param node pre-created ast_node(redirect) being target of adding
- * @param word string to add. Must not be empty.
- * @return void, changement being done internally
- */
+* Add the \a word string to the element array in node
+* @param node pre-created ast_node(redirect) being target of adding
+* @param word string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_value_for(struct ast_node *node, char *word);
 
 /**
- * Create 'while' ast_node
- * @param condition     ast node pre-created asserting the while loop
- * @param exec          ast node pre-created executed for each iteration
- * @return newly created ast_node and its type
- */
+* Create 'while' ast_node
+* @param condition     ast node pre-created asserting the while loop
+* @param exec          ast node pre-created executed for each iteration
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_while(struct ast_node *condition, struct
         ast_node *exec);
 
 /**
- * @brief Create 'case' ast_node
- * @param value      string to compare is case
- * @return newly created ast_node and its type
- */
+* @brief Create 'case' ast_node
+* @param value      string to compare is case
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_case(char *value);
 
 /**
- * Add the \a value string to the element array in node
- * @param node pre-created ast_node(case) being target of adding
- * @param value string to add. Must not be empty.
- * @return void, changement being done internally
- */
+* Add the \a value string to the element array in node
+* @param node pre-created ast_node(case) being target of adding
+* @param value string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_case_value(struct ast_node *node, char *value, struct ast_node *exec);
 
 /**
- * Create 'if' ast_node
- * @param e_true    ast node pre-created to be executed if condition
- * @param e_false   ast node pre-created to be executed if ! condition
- * @param condition ast node pre-created to be evaluated
- * @return newly created ast_node and its type
- */
+* Create 'if' ast_node
+* @param e_true    ast node pre-created to be executed if condition
+* @param e_false   ast node pre-created to be executed if ! condition
+* @param condition ast node pre-created to be evaluated
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_if(struct ast_node *e_true,
         struct ast_node *e_false, struct ast_node *condition);
 
 /**
- * Create '!' ast_node (bang)
- * @param child rest of the expresionn to negate. Must be pre-created
- * @return newly created ast_node and its type
- */
+* Create '!' ast_node (bang)
+* @param child rest of the expresionn to negate. Must be pre-created
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_not(struct ast_node *child);
 
 /**
- * Create 'simple_command' ast_node
- * @details The type node initialized contains two arrays of strings
- * (prefix and elements) having an initial capacity of 8.
- * @return newly created ast_node and its type
- */
+* Create 'simple_command' ast_node
+* @details The type node initialized contains two arrays of strings
+* (prefix and elements) having an initial capacity of 8.
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_scmd(void);
 
 /**
- * Add the \a prefix string to the prefix array in node
- * @param node pre-created ast_node(scmd) being target of adding
- * @param prefix string to add. Must not be empty.
- * @return void, changement being done internally
- */
+* Add the \a prefix string to the prefix array in node
+* @param node pre-created ast_node(scmd) being target of adding
+* @param prefix string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_prefix_scmd(struct ast_node *node, char *prefix);
 
 /**
- * Add the \a element string to the element array in node
- * @param node pre-created ast_node(scmd) being target of adding
- * @param element string to add. Must not be empty.
- * @return void, changement being done internally
- */
+* Add the \a element string to the element array in node
+* @param node pre-created ast_node(scmd) being target of adding
+* @param element string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_element_scmd(struct ast_node *node, char *element);
 
 /**
- * Create 'Function_declaration' ast_node
- * @param name      name of the declared function (optionnal)
- * @param function  rest of the function. Must be pre-created
- * @return newly created ast_node and its type
- */
+* Create 'Function_declaration' ast_node
+* @param name      name of the declared function (optionnal)
+* @param function  rest of the function. Must be pre-created
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_fctdec(char *name,
         struct ast_node *function);
 
 /**
- * Create '&&' ast_node (logical AND)
- * @param left_child    Left operand, must be an pre-created ast node
- * @param right_child   Right operand, must be an pre-created ast node
- * @return newly created ast_node and its type
- */
+* Create '&&' ast_node (logical AND)
+* @param left_child    Left operand, must be an pre-created ast node
+* @param right_child   Right operand, must be an pre-created ast node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_land(struct ast_node *left_child,
         struct ast_node *right_child);
 
 /**
- * Create '|' ast_node (pipe)
- * @param left_child    Left operand, must be an pre-created ast node
- * @param right_child   Right operand, must be an pre-created ast node
- * @return newly created ast_node and its type
- */
+* Create '|' ast_node (pipe)
+* @param left_child    Left operand, must be an pre-created ast node
+* @param right_child   Right operand, must be an pre-created ast node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_pipe(struct ast_node *ls,
         struct ast_node *rs);
 
 /**
- * Create ';' ast_node (SEMICOLON)
- * @param left_child    Left operand, must be an pre-created ast node
- * @param right_child   Right operand, must be an pre-created ast node
- * @return newly created ast_node and its type
- */
+* Create ';' ast_node (SEMICOLON)
+* @param left_child    Left operand, must be an pre-created ast node
+* @param right_child   Right operand, must be an pre-created ast node
+* @return newly created ast_node and its type
+*/
 struct ast_node *create_ast_node_semicolon(struct ast_node *left_child,
         struct ast_node *right_child);
 void add_elt_heredoc(struct ast_node *node, char *word);

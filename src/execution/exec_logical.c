@@ -1,10 +1,10 @@
 /**
- * @file exec_logical.c
- * @author thomas.lupin
- * @version 0.5
- * @date 25-11-2018
- * execution of logical and + logical or
- */
+* @file exec_logical.c
+* @author thomas.lupin
+* @version 0.5
+* @date 25-11-2018
+* execution of logical and + logical or
+*/
 
 #include <sys/types.h>
 #include <unistd.h>

@@ -1,10 +1,10 @@
 /**
- *\file exec_case.c
- *\author thomas.lupin
- *\version 0.5
- *\date 23-11-2018
- *\brief Execution of the case node
- */
+*\file exec_case.c
+*\author thomas.lupin
+*\version 0.5
+*\date 23-11-2018
+*\brief Execution of the case node
+*/
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>

@@ -1,10 +1,10 @@
 /**
- *\file rule_shell_command.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Shell command rule function
- */
+*\file rule_shell_command.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Shell command rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_shell_command(struct token_list **tok)
 {
-    //printf("Enter in shell command\n");
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) == IF)
         return rule_if(tok);
     if (TOK_TYPE(tok) == FOR)

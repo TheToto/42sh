@@ -1,10 +1,10 @@
 /**
- *\file rule_funcdec.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Fonction declaration rule function
- */
+*\file rule_funcdec.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Fonction declaration rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_funcdec(struct token_list **tok)
 {
-    //printf("Enter in funcdec\n");
-    //debug_token(tok);
-
     char *name_func;
     if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
         NEXT_TOK(tok);

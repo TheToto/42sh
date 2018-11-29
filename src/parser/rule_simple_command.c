@@ -1,10 +1,10 @@
 /**
- *\file rule_simple_command.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Simple command rule function
- */
+*\file rule_simple_command.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Simple command rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -46,9 +46,6 @@ static int check_delim(enum token_type tok)
 
 struct ast_node *rule_simple_command(struct token_list **tok)
 {
-    //printf("Enter in simple command\n");
-    //debug_token(tok);
-
     struct ast_node *ast_command = create_ast_node_scmd();
     struct ast_node *res = ast_command;
     if (!ast_command)
@@ -72,11 +69,6 @@ struct ast_node *rule_simple_command(struct token_list **tok)
 struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res)
 {
-    //printf("Enter in prefix\n");
-    //debug_token(tok);
-
-    /// TODO -> RULE  REDIRECTION IF ITS A REDIR
-
     res = apply_redir(tok, res);
     if (!res)
         return NULL;
@@ -94,11 +86,6 @@ struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
 struct ast_node *rule_element(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res)
 {
-    //printf("Enter in element\n");
-    //debug_token(tok);
-
-    /// TODO -> RULE REDIRECTION IF ITS A REDIR
-
     res = apply_redir(tok, res);
     if (!res)
         return NULL;

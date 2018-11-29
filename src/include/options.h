@@ -5,7 +5,7 @@
 * \version 0.5
 * \date 27-11-2018
 */
- #pragma once
+#pragma once
 
 ///Enumeration of the different options
 enum option
@@ -79,7 +79,7 @@ void options(char *argv[]);
 int show_prompt(int norc, int is_print);
 
 /**
- * Show the PS2 prompt and return new lexer
- * \return Return new token_list
- */
+* Show the PS2 prompt and return new lexer
+* \return Return new token_list
+*/
 struct token_list *show_ps2(void);

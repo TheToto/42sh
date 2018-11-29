@@ -1,10 +1,10 @@
 /**
- * \file ast_node_redirect.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of redirections
- */
+* \file ast_node_redirect.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of redirections
+*/
 
 #define _DEFAULT_SOURCE
 #include <string.h>

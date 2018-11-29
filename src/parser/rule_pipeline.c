@@ -1,10 +1,10 @@
 /**
- *\file rule_pipeline.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Pipeline rule function
- */
+*\file rule_pipeline.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Pipeline rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_pipeline(struct token_list **tok)
 {
-    //printf("Enter in pipeline\n");
-    //debug_token(tok);
-
     short not = 0;
     if (TOK_TYPE(tok) == NOT)
     {
