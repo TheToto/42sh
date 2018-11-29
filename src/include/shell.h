@@ -14,6 +14,7 @@ struct shell
     enum shell_type type;
     struct lexer *lexer;
     struct variables *var;
+    int *shopt_states;
 };
 
 extern struct shell shell;

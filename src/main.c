@@ -15,6 +15,7 @@ struct shell shell =
 {
     S_UNDEFINED,
     NULL,
+    NULL,
     NULL
 };
 
