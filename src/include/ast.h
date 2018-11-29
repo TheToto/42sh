@@ -316,3 +316,4 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
  */
 struct ast_node *create_ast_node_semicolon(struct ast_node *left_child,
         struct ast_node *right_child);
+void add_elt_heredoc(struct ast_node *node, char *word);

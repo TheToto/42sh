@@ -96,14 +96,11 @@ static int compute_lines_heredoc(struct token_list **tok,
         char *nextLine = strchr(curLine, '\n');
         if (nextLine)
             *nextLine = '\0';
-        debug_token(tok);
         if (skip_token_line(tok) == 0)
             return 0;
-        printf("curLine=[%s]\n", curLine);
         if (!strcmp(curLine, word))
             break;
         add_elt_heredoc(redir, curLine);
-        debug_token(tok);
         if (nextLine)
             *nextLine = '\n';
         curLine = nextLine ? (nextLine+1) : NULL;
@@ -116,11 +113,24 @@ static int compute_lines_heredoc(struct token_list **tok,
     return 1;
 }
 
+static void free_token_list(struct token_list *tok)
+{
+    if (tok->str)
+        free(tok->str);
+    free(tok);
+}
+
 static void free_save(struct token_list **tok, struct token_list *save_free)
 {
     struct token_list *free_until = *tok;
+    struct token_list *tok_free = save_free->next;
     save_free->next = free_until;
-    // MEMORY LEAKS OK
+    while (tok_free != free_until)
+    {
+        struct token_list *tmp = tok_free->next;
+        free_token_list(tok_free);
+        tok_free = tmp;
+    }
 }
 
 static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
