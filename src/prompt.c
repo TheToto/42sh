@@ -55,8 +55,6 @@ static void launchrc(int is_print, struct variables *var)
 struct token_list *show_ps2(void)
 {
     char *buf = readline(get_var(shell.var, "PS2"));
-    //if (buf && *buf)
-    //    add_history(buf);
     lexer_destroy(shell.lexer);
     struct lexer *l = lexer(buf);
     free(buf);

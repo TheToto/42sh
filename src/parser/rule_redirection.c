@@ -5,14 +5,19 @@
  *\date 22-11-2018
  *\brief Redirection rule function
  */
+#define _GNU_SOURCE
 #include <err.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <readline/readline.h>
 
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "shell.h"
+#include "env.h"
 
 static enum redirect_type translate_redirect(enum token_type tok)
 {
@@ -69,11 +74,108 @@ static int set_default_io(struct token_list **tok)
     }
 }
 
+static int skip_token_line(struct token_list **tok)
+{
+    while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
+        NEXT_TOK(tok);
+    if (TOK_TYPE(tok) == END_OF_FILE)
+    {
+        warnx("End of heredoc missing");
+        return 0;
+    }
+    NEXT_TOK(tok);
+    return 1;
+}
+
+static int compute_lines_heredoc(struct token_list **tok,
+        struct ast_node *redir, char *word)
+{
+    char *beg = (*tok)->str_origin;
+
+    char *curLine = beg;
+    while (curLine)
+    {
+        char *nextLine = strchr(curLine, '\n');
+        if (nextLine)
+            *nextLine = '\0';
+        if (skip_token_line(tok) == 0)
+            return 0;
+        if (!strcmp(curLine, word))
+            break;
+        add_elt_heredoc(redir, curLine);
+        if (nextLine)
+            *nextLine = '\n';
+        curLine = nextLine ? (nextLine+1) : NULL;
+    }
+    if (curLine == NULL)
+    {
+        warnx("End of heredoc is missing");
+        return 0;
+    }
+    return 1;
+}
+
+static void free_token_list(struct token_list *tok)
+{
+    if (tok->str)
+        free(tok->str);
+    free(tok);
+}
+
+static void free_save(struct token_list **tok, struct token_list *save_free)
+{
+    struct token_list *free_until = *tok;
+    struct token_list *tok_free = save_free->next;
+    save_free->next = free_until;
+    while (tok_free != free_until)
+    {
+        struct token_list *tmp = tok_free->next;
+        free_token_list(tok_free);
+        tok_free = tmp;
+    }
+}
+
+static int heredoc_prompt(struct ast_node *redir, char *word)
+{
+    while (1)
+    {
+        char *buf = readline(get_var(shell.var, "PS2"));
+        if (!strcmp(word, buf))
+        {
+            free(buf);
+            return 1;
+        }
+        add_elt_heredoc(redir, buf);
+        free(buf);
+    }
+    return 0;
+}
+
+static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
+        char *word)
+{
+    if (shell.type == S_PROMPT)
+        return heredoc_prompt(redir, word);
+    struct token_list *save = *tok;
+    while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
+        NEXT_TOK(tok);
+    if (TOK_TYPE(tok) == END_OF_FILE)
+    {
+        warnx("Heredoc missing");
+        return 0;
+    }
+    struct token_list *save_free = *tok;
+    NEXT_TOK(tok); // Skip \n
+    if (compute_lines_heredoc(tok, redir, word) == 0)
+        return 0;
+    free_save(tok, save_free);
+    *tok = save;
+    return 1;
+}
+
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
-    //printf("Enter in redirection\n");
-    //debug_token(tok);
     int fd = -1;
     int io = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
@@ -108,5 +210,15 @@ struct ast_node *rule_redirection(struct token_list **tok,
     }
     char *dest = TOK_STR(tok);
     NEXT_TOK(tok);
-    return create_ast_node_redirect(fd, r_type, io, dest, child);
+    struct ast_node *redir = create_ast_node_redirect(fd, r_type, io,
+            dest, child);
+    if (r_type == R_DLESS || r_type == R_DLESSDASH)
+    {
+        if (!rule_heredoc(tok, redir, dest))
+        {
+            destroy_ast(redir);
+            return NULL;
+        }
+    }
+    return redir;
 }
