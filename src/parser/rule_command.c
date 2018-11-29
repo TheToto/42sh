@@ -19,6 +19,28 @@ static int check_redirect(enum token_type tok)
     return 0;
 }
 
+static struct ast_node *fix_redir_funcdec(struct ast_node *redir)
+{
+    if (redir->type != N_REDIRECT)
+        return redir;
+    struct ast_node *save = redir;
+    struct ast_node_redirect *tmp = redir->son;
+    while (tmp->node->type == N_REDIRECT)
+    {
+        tmp = tmp->node->son;
+    }
+    if (tmp->node->type != N_FCTDEC)
+    {
+        warnx("Weird behavior in parsing funcdec");
+        return save;
+    }
+    struct ast_node *ret = tmp->node;
+    struct ast_node_fctdec *fct = ret->son;
+    tmp->node = fct->function;
+    fct->function = redir;
+    return ret;
+}
+
 struct ast_node *rule_command(struct token_list **tok)
 {
     //printf("Enter in command\n");
@@ -51,8 +73,7 @@ struct ast_node *rule_command(struct token_list **tok)
             if (!res)
                 return NULL;
         }
-        return res;
+        return fix_redir_funcdec(res);
     }
-    // HANDLE ERRORS HERE PLEASE
     return rule_simple_command(tok);
 }
