@@ -11,11 +11,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <readline/readline.h>
 
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+#include "env.h"
 
 static enum redirect_type translate_redirect(enum token_type tok)
 {
@@ -133,11 +135,26 @@ static void free_save(struct token_list **tok, struct token_list *save_free)
     }
 }
 
+static int heredoc_prompt(struct ast_node *redir, char *word)
+{
+    while (1)
+    {
+        char *buf = readline(get_var(shell.var, "PS2"));
+        if (!strcmp(word, buf))
+        {
+            free(buf);
+            return 1;
+        }
+        add_elt_heredoc(redir, buf);
+    }
+    return 0;
+}
+
 static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
         char *word)
 {
     if (shell.type == S_PROMPT)
-        return 1;
+        return heredoc_prompt(redir, word);
     struct token_list *save = *tok;
     while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
         NEXT_TOK(tok);
