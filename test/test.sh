@@ -304,12 +304,12 @@ for file in $list_of_file; do
     diff_content="$(cat /tmp/res)"
     if [ $exit_status_sanity -eq 0 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED"$DEFAULT": $TEST\n"
-        printf $RED"        Leaks\n\n"$DEFAULT
+        printf $RED"      FAILED"$DEFAULT": $TEST"
+        printf $RED"        Leaks\n"$DEFAULT
     elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED"$DEFAULT": $TEST\n"
-        printf $RED"        Timeout\n\n"$DEFAULT
+        printf $RED"      FAILED"$DEFAULT": $TEST"
+        printf $RED"        Timeout\n"$DEFAULT
     elif [ -n "$diff_content" ]; then
         FAILED="$(($FAILED + 1))"
         pretty_printf_err /tmp/res
@@ -317,7 +317,7 @@ for file in $list_of_file; do
     elif [ $exit_status -ne $exit_status_ref ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED"$DEFAULT": $TEST\n"
-        printf $RED"        Invalid return value: expected $exit_status_ref got $exit_status\n\n"
+        printf $RED"        Invalid return value: expected $exit_status_ref got $exit_status\n"
         pretty_printf_stderr "$(cat /tmp/tmp_def_err)" "$(cat /tmp/tmp_ref_err)"
     else
         PASSED="$(($PASSED + 1))"
