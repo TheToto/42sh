@@ -7,15 +7,18 @@
 * [x] Redirections
 * [x] Case statement
 * [x] Handle ls if (pb with if token)
-* [ ] Show prompt PS2 in if/while/...
+* [x] Show prompt PS2 in if/while/...
+* [x] Handling heredoc from file & interactive
 
 # TEST SUITE
 * [x] Set up ceedling
-* [ ] Advanced tests
-* [ ] Test suite options
+* [x] Advanced tests
+* [x] Test suite options
+* [x] Setup timeout
 
 # DOC
-* [~] Set up Doxygen (in progress)
+* [x] Set up Doxygen
+* [x] Write manual
 
 # Option parser
 * [~] SHOPT
@@ -28,6 +31,8 @@
 
 # CMAKE
 * [x] Main rule
+* [x] Make check
+* [x] Make clean
 
 # Options
 * [x] 0.3 options
@@ -41,10 +46,13 @@
 * [x] Simple command
 * [x] Redirections
 * [x] Pipes
-* [ ] Split executions functions into different files
+* [x] Split executions functions into different files
 * [ ] Handle expansion in redirections
+* [x] Handle redirections in declaration of functions
 * [x] Case statement
-* [ ] Handle func declaration
+* [x] Handle func declaration
+* [x] Handle parameters
+* [x] Handle positionnal parameters
 
 # Interactive mode
 * [x] Interactive mode
@@ -60,7 +68,7 @@
 * [ ] echo
 * [ ] continue/break
 * [ ] source
-* [ ] history
+* [x] history
 
 # RETURN VALUE
-* [ ] Fix wrong return value
+* [~] Fix wrong return value

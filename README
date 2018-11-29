@@ -1,5 +1,5 @@
 # Project 42sh by louis.holleville, thomas.lupin, arthur.busuttil, sabrina.meng
-## Version 0.3
+## Version 0.5
 
 The purpose of this project is to program a shell that have the same
 behavior as the bash --posix.
@@ -29,10 +29,8 @@ OPTIONS
         and exits.
 
 COMMANDS
-    - "if <condition>; then <command>; fi"
-    - "while <condition>; do <command>; done"
-    - "until <condition>; do <command>; done"
-    - "for var in <variables>; do <command>; done"
+    To have an overview about the possibilities of 42sh, please, refer to the manual. The manual can be read by typing from the root directory of the projet: 
+        man -l doc/42sh.1
 
 TEST SUITE
     We used ceedling for the test suite.
