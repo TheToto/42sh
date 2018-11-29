@@ -19,13 +19,29 @@
 #include "parser.h"
 #include "ast_destroy.h"
 
+static void add_params(char **expanded, struct variables *var)
+{
+    for (int i = 1; expanded[i] != NULL; i++)
+    {
+        char *buf = calloc(50, sizeof(char));
+        if (!buf)
+            err(1, "Malloc failed in add_params");
+        sprintf(buf, "%d", i);
+        add_var(var, buf, expanded[i]);
+        free(buf);
+    }
+}
+
 static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
     void *func = NULL;
     if ((func = get_func(var, expanded[0])))
+    {
+        add_params(expanded, var);
         status = exec_node(func, var);
+    }
     else
     {
         pid = fork();
