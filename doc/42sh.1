@@ -162,6 +162,80 @@ Similar to while, except that the execution is done until
 \fIlist1\fR
 exit 0
 
+.SS Function Definitions
+A function is a set of instructions that will be expanded at the call of the keyword of this function. Functions can be defined as follows:
+
+[function]
+\fIname\fR
+[()] [{]
+\fIcompound-command\fR
+[}]
+
+This defines the function
+\fIname\fR.
+Using the reserved word function make the use of the parentheses optionnal.
+Use of brackets is optionnal but using one force you to use its opposite.
+Defining a function with a name previously used will cause the elder function to be replaced by the new one.
+
+.SH COMMENTS
+In non-interactive shell or in interactive shell (shopt not set yet), using a '#' will cause the rest of the words in the line to be ignored by the interpretor.
+
+.SH QUOTING
+Quoting is not implemented yet.
+
+.SH PARAMETERS
+For value assignements, see DEFINITION.
+
+.SS Positional parameters
+Not handled yet.
+
+.SS Special parameters
+Not handled yet.
+
+.SS Shell variables
+The following variables are set by the shell at the beginning of its execution:
+.TP
+.BR PS1
+The value of this parameter is expanded and used as the prompt for the primary prompt string. Its default value is "[42sh@pc]$ ".
+.TP
+.BR PS2
+This parameter is used instead of the PS1 in the secondary prompting. Its default value is "> ".
+
+.SH EXPANSION
+If a word as a special meaning, before the execution of the instructions, the shell will go throught all the words and replace the ones with a special meaning by their real value. 
+The only type of expansion handled until now is the variables expansion.
+
+.SH REDIRECTION
+Before the execution of a command, its input and outputs may be redirected using dedicated notation. The differents types of redirections are:
+
+.TP
+.BR Redirecting\ input
+This kind of redirection cause the file designed by
+\fIword\fR
+to be used as input (or to be opened for reading for 
+\fIn\fR
+if precised. Format is:
+
+        [\fIn\fR]<\fIword\fR
+
+.TP
+.BR Redirecting\ output
+This kind of redirection cause the ouput (or the file descriptor 
+\fIn\fR
+if precised) to be redirected in the file designed by
+\fIword\fR.
+If the file already exists, its content would be overwritten, otherwise, the file will be created. The format is:
+
+        [\fIn\fR]>\fIword\fR
+.TP
+.BR Appending\ redirected\ output
+This kind of redirection cause the output (or the file descriptor 
+\fIn\fR
+if precised) to be redirected into the file designed by
+\fIword\fR.
+If the file already exists, the output would be append to the end of the file. Otherwise, the file would be created. The format is:
+
+        [\fIn\fR]>>\fIword\fR
 
 .SH AUTHORS
 Arthur BUSUTTIL     (arthur.busuttil@epita.fr)
