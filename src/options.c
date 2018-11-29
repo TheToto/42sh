@@ -60,6 +60,8 @@ enum option get_option(char *opt)
 
 static int check_ast_print(char **argv)
 {
+    if (shell.shopt_states[ASTPRINT - 2])
+        return 1;
     for (size_t i = 1; argv[i]; i++)
     {
         if (!strcmp(argv[i], "--ast-print"))
@@ -132,9 +134,10 @@ void options(char *argv[])
 {
     size_t section = 0;
     size_t i = 1;
+    shell.shopt_states = init_shoptlist();
     int ast = check_ast_print(argv);
     int norc = 0;
-    shell.shopt_states = init_shoptlist();
+
     for (; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);

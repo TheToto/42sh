@@ -46,7 +46,7 @@ static enum builtin get_builtin(char *str)
 int exec_builtin(char *str)
 {
     char *cmd = strdup(str);
-    char *tmp = strtok(str, " ");
+    char *tmp = strtok(cmd, " ");
     enum builtin builtin = get_builtin(tmp);
     if (builtin == ANY)
         return -1;
@@ -57,7 +57,7 @@ int exec_builtin(char *str)
     case CD:
         break;
     case SHOPT:
-        if (shopt_exec(cmd) && shell.type != S_PROMPT)
+        if (shopt_exec(str) && shell.type != S_PROMPT)
             exit(1);
     case EXPORT:
         break;
