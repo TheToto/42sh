@@ -73,6 +73,24 @@ is_in () {
     return 1
 }
 
+pretty_printf_dash () {
+    nb="$(echo $1 | wc -m)"
+    while [ $nb -gt 1 ]; do
+        printf $ANNONCE"-"$DEFAULT
+        nb="$(($nb - 1))"
+    done
+}
+
+pretty_printf_category () {
+    dir_name="$(echo $1 | cut -f 3 -d / | sed -e 's/_/ /g' | sed 's/.*/\U&/')"
+    printf $ANNONCE"\n    " #---------"
+    pretty_printf_dash "$dir_name"
+    printf $DEFAULT"\n    $dir_name\n"
+    printf $ANNONCE"    " #---------"
+    pretty_printf_dash "$dir_name"
+    printf "\n\n"$DEFAULT
+}
+
 ##############################################################################
 #                                  COMPIL'                                   #
 ##############################################################################
@@ -134,6 +152,7 @@ printf $YELLOW"  UNITARY TESTS"$DEFAULT"\n"
 printf $ANNONCE"  -------------"$DEFAULT"\n\n"
 
 is_err=0
+current_dir_test=""
 
 while read line; do
     if [ $is_err -eq 1 ]; then
@@ -153,6 +172,11 @@ while read line; do
     *BEGINNING* )
               printf "      "$RED"FAILED"$DEFAULT"\n";;
     *-Testing:*   )
+              test_dir="$(echo "$line" | cut -f 1 -d : | cut -f 3 -d /)"
+              if [ "$test_dir" != "$current_dir_test" ]; then
+                current_dir_test="$test_dir"
+                pretty_printf_category "$line"
+              fi
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
               printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
@@ -172,14 +196,6 @@ rm tmp tmp_err
 ##############################################################################
 #                                  GLOBAL                                    #
 ##############################################################################
-
-pretty_printf_dash () {
-    nb="$(echo $1 | wc -m)"
-    while [ $nb -gt 1 ]; do
-        printf $ANNONCE"-"$DEFAULT
-        nb="$(($nb - 1))"
-    done
-}
 
 pretty_printf_err () {
     printf $RED"      FAILED: differences between bash and 42sh\n        < 42sh\n        > bash\n\n"$DEFAULT
@@ -226,13 +242,7 @@ FAILED=0
 
 for file in $list_of_file; do
     if [ -d $file ]; then
-        dir_name="$(echo $file | cut -f 3 -d / | sed -e 's/_/ /g' | sed 's/.*/\U&/')"
-        printf $ANNONCE"\n    " #---------"
-        pretty_printf_dash "$dir_name"
-        printf $DEFAULT"\n    $dir_name\n"
-        printf $ANNONCE"    " #---------"
-        pretty_printf_dash "$dir_name"
-        printf "\n\n"$DEFAULT
+        pretty_printf_category "$file"
         continue
     fi
     TESTED="$(($TESTED + 1))"
