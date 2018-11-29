@@ -128,6 +128,11 @@ cd ..
 #                                  UNITARY                                   #
 ##############################################################################
 
+TESTED_U=""
+PASSED_U=""
+FAILED_U=""
+IGNORED_U=""
+
 list_of_dir="$(ls test/unitary)"
 
 list_of_file=""
@@ -184,10 +189,18 @@ while read line; do
               printf "    $line\n"
               printf "    -------------------\n\n"
               is_err=1;;
-    TESTED* ) printf "\n    "$YELLOW"$line"$DEFAULT"\n\n";;
-    PASSED* ) printf "    "$GREEN"$line"$DEFAULT"\n";;
-    FAILED* ) printf "    "$RED"$line"$DEFAULT"\n";;
-    IGNORED*) printf "    "$DEFAULT"$line"$DEFAULT"\n";;
+    TESTED* ) printf $ANNONCE"    -------"$DEFAULT"\n"
+              printf $YELLOW"    RESULTS"$DEFAULT"\n"
+              printf $ANNONCE"    -------"$DEFAULT"\n\n"
+
+              TESTED_U="      "$YELLOW"$line"$DEFAULT"\n\n"
+              printf "$TESTED_U";;
+    PASSED* ) PASSED_U="      "$GREEN"$line"$DEFAULT"\n"
+              printf "$PASSED_U";;
+    FAILED* ) FAILED_U="      "$RED"$line"$DEFAULT"\n"
+              printf "$FAILED_U";;
+    IGNORED*) IGNORED_U="      "$DEFAULT"$line"$DEFAULT"\n"
+              printf "$IGNORED_U";;
     *       )
     esac
 done < tmp
@@ -202,6 +215,24 @@ pretty_printf_err () {
     while read line; do
         printf $RED"      $line\n"$DEFAULT
     done < "$1"
+}
+
+pretty_printf_stderr () {
+    printf $RED"      STDERR DEF:\n"$DEFAULT
+    echo "$1" > /tmp/stderr_tmp
+    while read line; do
+        printf $RED"      *   $line\n"$DEFAULT
+    done < /tmp/stderr_tmp
+    printf "\n"
+    
+    printf $RED"      STDERR REF:\n"$DEFAULT
+    echo "$2" > /tmp/stderr_tmp
+    while read line; do
+        printf $RED"      *   $line\n"$DEFAULT
+    done < /tmp/stderr_tmp
+    printf "\n"
+    
+    rm /tmp/stderr_tmp
 }
 
 check_sanity () {
@@ -247,9 +278,12 @@ for file in $list_of_file; do
     fi
     TESTED="$(($TESTED + 1))"
     printf $DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
+    bash "$file" 2> /tmp/tmp_ref_err > /tmp/tmp 
     exit_status_ref="$?"
 
+    cat -e /tmp/tmp > /tmp/tmp_ref
+    rm /tmp/tmp
+    
     timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err > /tmp/tmp
     exit_status="$?"
 
@@ -278,7 +312,8 @@ for file in $list_of_file; do
         printf "\n"
     elif [ $exit_status -ne $exit_status_ref ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: invalid return value: expected $exit_status_ref got $exit_status\n\n"$DEFAULT
+        printf $RED"      FAILED: invalid return value: expected $exit_status_ref got $exit_status\n\n"
+        pretty_printf_stderr "$(cat /tmp/tmp_def_err)" "$(cat /tmp/tmp_ref_err)"
     else
         PASSED="$(($PASSED + 1))"
         printf $GREEN"      PASSED\n"
@@ -289,9 +324,25 @@ for file in $list_of_file; do
     rm /tmp/res
 done
 
-printf $ANNONCE"    ----------------"$DEFAULT"\n"
-printf $YELLOW"    RESULTS (GLOBAL)"$DEFAULT"\n"
-printf $ANNONCE"    ----------------"$DEFAULT"\n\n"
+printf $ANNONCE"    -------"$DEFAULT"\n"
+printf $YELLOW"    RESULTS"$DEFAULT"\n"
+printf $ANNONCE"    -------"$DEFAULT"\n\n"
+
+printf $YELLOW"      TESTED:  $TESTED\n\n"$DEFAULT
+printf $GREEN"      PASSED:  $PASSED\n"$DEFAULT
+printf $RED"      FAILED:  $FAILED\n\n"$DEFAULT
+
+printf $ANNONCE"  -------"$DEFAULT"\n"
+printf $YELLOW"  SUMMARY"$DEFAULT"\n"
+printf $ANNONCE"  -------"$DEFAULT"\n\n"
+
+printf $DEFAULT"    -UNITARY-\n\n"
+
+printf "$TESTED_U"
+printf "$PASSED_U"
+printf "$FAILED_U"
+
+printf $DEFAULT"\n    -GLOBAL-\n\n"
 
 printf $YELLOW"      TESTED:  $TESTED\n\n"$DEFAULT
 printf $GREEN"      PASSED:  $PASSED\n"$DEFAULT
@@ -300,4 +351,3 @@ printf $RED"      FAILED:  $FAILED\n\n"$DEFAULT
 printf $ANNONCE"-------"$DEFAULT"\n"
 printf $YELLOW"  END"$DEFAULT"\n"
 printf $ANNONCE"-------"$RESET"\n\n"
-

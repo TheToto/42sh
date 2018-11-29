@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cat scripts/path.sh
+cat test/scripts/lexer_tests/path.sh
