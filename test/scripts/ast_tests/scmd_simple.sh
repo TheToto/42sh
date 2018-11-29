@@ -1,3 +1,3 @@
 ls | cat
 echo test
-tree
+pwd

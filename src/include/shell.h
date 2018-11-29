@@ -30,6 +30,8 @@ struct shell
     enum shell_type type;   ///<Shell type enum
     struct lexer *lexer;    ///<Current lexer
     struct variables *var;  ///<Current var library
+    struct ast_node *ast;   ///<Current ast
+    char *buf;              ///<Current buffer
 };
 
 ///Shell global struct

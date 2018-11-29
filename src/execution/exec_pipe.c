@@ -37,7 +37,7 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
         close(fildes[1]);
         dup2(fildes[0], STDIN_FILENO);
         res = exec_node(n->rs, var);
-        _exit(res);
+        exit(res);
         break;
     default:
         pid2 = fork();
@@ -51,7 +51,7 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
             dup2(fildes[1], STDOUT_FILENO);
             res = exec_node(n->ls, var);
             close(fildes[1]);
-            _exit(res);
+            exit(res);
             break;
         default:
             break;

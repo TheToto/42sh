@@ -109,6 +109,7 @@ int exec_main(char *str, int is_print, struct variables *library)
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&copy);
+    shell.ast = ast;
 
     if (!ast)
     {
@@ -123,6 +124,7 @@ int exec_main(char *str, int is_print, struct variables *library)
     //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
+    shell.ast = NULL;
     destroy_ast(ast);
     lexer_destroy(shell.lexer);
 
