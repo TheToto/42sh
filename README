@@ -29,7 +29,9 @@ OPTIONS
         and exits.
 
 COMMANDS
-    To have an overview about the possibilities of 42sh, please, refer to the manual. The manual can be read by typing from the root directory of the projet: 
+    To have an overview about the possibilities of 42sh, please, refer to the
+    manual. The manual can be read by typing from the root directory
+    of the projet:
         man -l doc/42sh.1
 
 TEST SUITE
