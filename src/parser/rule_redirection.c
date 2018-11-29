@@ -211,10 +211,13 @@ struct ast_node *rule_redirection(struct token_list **tok,
     NEXT_TOK(tok);
     struct ast_node *redir = create_ast_node_redirect(fd, r_type, io,
             dest, child);
-    if (!rule_heredoc(tok, redir, dest))
+    if (r_type == R_DLESS || r_type == R_DLESSDASH)
     {
-        destroy_ast(redir);
-        return NULL;
+        if (!rule_heredoc(tok, redir, dest))
+        {
+            destroy_ast(redir);
+            return NULL;
+        }
     }
     return redir;
 }
