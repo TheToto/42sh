@@ -23,6 +23,9 @@
 #include "env.h"
 #include "execution.h"
 #include "ast.h"
+#include "shell.h"
+
+struct shell shell;
 
 static int less(struct ast_node_redirect *n, struct variables *var)
 {
@@ -128,19 +131,29 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
-    char *line;
-    do
+    char *line = NULL;
+    if (shell.type == S_PROMPT)
     {
-        line = readline("> ");
-        if (strcmp(line, n->word) == 0)
+        do
         {
+            line = readline(get_var(var, "PS2"));
+            if (strcmp(line, n->word) == 0)
+            {
+                free(line);
+                break;
+            }
+            dprintf(n->fd, "%s\n", line);
             free(line);
-            break;
         }
-        dprintf(n->fd, "%s\n", line);
-        free(line);
+        while (1);
     }
-    while (1);
+    else if (shell.type == S_FILE)
+    {
+        for (size_t i = 0; i < n->size; i++)
+            dprintf(n->fd, "%s\n", line);
+    }
+    else
+        errx(1, "Unknown shell prompt mode");
     lseek(n->fd, 0, SEEK_SET);
     int save = dup(0);
     dup2(n->fd, 0);
@@ -195,36 +208,36 @@ int exec_redirect(struct ast_node_redirect *n, struct variables *var)
 {
     switch (n->type)
     {
-    case R_LESS:
-        return less(n, var);
-        break;
-    case R_GREAT:
-        return great(n, var);
-        break;
-    case R_DLESS:
-        return dless(n, var);
-        break;
-    case R_DGREAT:
-        return dgreat(n, var);
-        break;
-    case R_LESSAND:
-        return lessand(n, var);
-        break;
-    case R_GREATAND:
-        return greatand(n, var);
-        break;
-    case R_LESSGREAT:
-        return lessgreat(n, var);
-        break;
-    case R_DLESSDASH:
-        return dlessdash(n, var);
-        break;
-    case R_CLOBBER:
-        return great(n, var);
-        break;
-    default:
-        errx(1, "No fall to switch redirect");
-        break;
+        case R_LESS:
+            return less(n, var);
+            break;
+        case R_GREAT:
+            return great(n, var);
+            break;
+        case R_DLESS:
+            return dless(n, var);
+            break;
+        case R_DGREAT:
+            return dgreat(n, var);
+            break;
+        case R_LESSAND:
+            return lessand(n, var);
+            break;
+        case R_GREATAND:
+            return greatand(n, var);
+            break;
+        case R_LESSGREAT:
+            return lessgreat(n, var);
+            break;
+        case R_DLESSDASH:
+            return dlessdash(n, var);
+            break;
+        case R_CLOBBER:
+            return great(n, var);
+            break;
+        default:
+            errx(1, "No fall to switch redirect");
+            break;
     }
     return 0;
 }

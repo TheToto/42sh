@@ -97,8 +97,7 @@ make -B > /dev/null 2> /dev/null
 
 did_it_works="$(find . -name 42sh)"
 
-echo $did_it_works
-if [ -n $did_it_works ]; then
+if test -z $did_it_works; then
     printf $RED"    ERROR: Error while compiling: you may try to compile before running test-suite\n\n"$RESET
     exit 1
 fi
@@ -157,7 +156,7 @@ while read line; do
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
               printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
-              printf "    \n"$RED"-------------------\n"
+              printf "\n    "$RED"-------------------\n"
               printf "    $line\n"
               printf "    -------------------\n\n"
               is_err=1;;
@@ -220,8 +219,9 @@ for file in $list_of_file; do
     TESTED="$(($TESTED + 1))"
     printf $DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
-    timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err > /tmp/tmp
+    exit_status_ref="$?"
 
+    timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err > /tmp/tmp
     exit_status="$?"
 
     cat -e /tmp/tmp > /tmp/tmp_def
@@ -247,6 +247,9 @@ for file in $list_of_file; do
         FAILED="$(($FAILED + 1))"
         pretty_printf_err /tmp/res
         printf "\n"
+    elif [ $exit_status -ne $exit_status_ref ]; then
+        FAILED="$(($FAILED + 1))"
+        printf $RED"      FAILED: invalid return value: expected $exit_status_ref got $exit_status\n\n"$DEFAULT
     else
         PASSED="$(($PASSED + 1))"
         printf $GREEN"      PASSED\n"
