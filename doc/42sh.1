@@ -54,7 +54,7 @@ Moreover, commands are executed simulteanously.
 
 .SS Lists
 A list is a sequence of one or mroe pipelines separated by the operators:
-.TP
+.TPnoti
 .BR ;
 This operator specifies that commands will be executed one by one from the left to the right independantly of their exit status.
 .TP
@@ -67,6 +67,100 @@ This operator is the logical operator AND. If the exit status of the command at 
 .BR ||
 This operator is the logical operator OR. If the exit status of the command at the left of the operator is not 0, then the command at the right of the operator is executed and the exit status will be the one of the right command. Otherwise, the right command is not executed and the exit status is the one of the left command.
 
+.SS Compound command
+.TP
+.BR list
+A list is executed in the 42sh environnement. Variables assigments and builtin commands modification do not persist after the command completes. See list.
+.TP
+.BR list;
+This is known as a group and is composed by lists. Commands persists between list but do not persist after the last command complete.
+
+.TP
+.BR ((expression))
+Arithmetic expressions are not handled yet.
+
+.TP
+.BR test (expression)
+Testing expression give the exit status of the expressions inside depending of the operators used, these are:
+
+(expression): returns the value of the expression
+
+! expression: returns true is expression is false.
+
+expression1 && expression2: returns true if both expressions are true.
+
+expression 1 || expression2: returns true if at least one expression is true.
+
+.TP
+\fBfor\fR 
+\fIname\fR 
+[ in [ [ word ... ] ; ] ] do 
+\fIlist\fR
+; done
+
+For each member of the list of words, 
+\fIlist\fR
+is executed and
+\fIname\fR
+is assigned to the value of the current word.
+.TP
+\fBcase\fR
+\fIword\fR
+in [ [(] 
+\fIpattern\fR
+[ | 
+\fIpattern\fR
+] ... ) 
+\fIlist\fR
+;; ] ... esac
+
+A case command try first to expand word and then try to match each pattern with. Only the 
+\fIlist\fR
+of the matching pattern will be executed.
+.TP
+\fBif\fR
+\fIlist\fR;
+then
+\fIlist\fR; 
+[ elif
+\fIlist\fR;
+then
+\fIlist\fR; 
+] ... [ else
+\fIlist\fR;
+] fi
+
+The if
+\fIlist\fR
+is executed. If the exit status is 0, then the matching
+\fIlist\fR
+is executed. Otherwise, each
+\fIlist\fR
+are tested until one exit 0 or the last one exit.
+.TP
+\fBwhile\fR
+\fIlist1\fR;
+do
+\fIlist2\fR;
+done
+
+The
+\fIlist1\fR
+is constanstly executed until its exit status is not 0.
+For each successful (exit status 0) execution, the
+\fIlist2\fR
+is executed.
+
+.TP
+\fBuntil\fR
+\fIlist1\fR;
+do
+\fIlist2\fR;
+done
+
+Similar to while, except that the execution is done until
+\fIlist1\fR
+exit 0
 
 
 .SH AUTHORS
