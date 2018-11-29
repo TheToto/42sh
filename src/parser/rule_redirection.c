@@ -146,6 +146,7 @@ static int heredoc_prompt(struct ast_node *redir, char *word)
             return 1;
         }
         add_elt_heredoc(redir, buf);
+        free(buf);
     }
     return 0;
 }
