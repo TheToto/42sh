@@ -173,6 +173,14 @@ rm tmp tmp_err
 #                                  GLOBAL                                    #
 ##############################################################################
 
+pretty_printf_dash () {
+    nb="$(echo $1 | wc -m)"
+    while [ $nb -gt 1 ]; do
+        printf $ANNONCE"-"$DEFAULT
+        nb="$(($nb - 1))"
+    done
+}
+
 pretty_printf_err () {
     printf $RED"      FAILED: differences between bash and 42sh\n        < 42sh\n        > bash\n\n"$DEFAULT
     while read line; do
@@ -201,6 +209,7 @@ for dir in $list_of_dir; do
     is_asked=$?
     if [ $is_asked -eq 0 ]; then
         dir_path="test/scripts/$dir"
+        list_of_file="$list_of_file"" $dir_path"
         for file in $(ls "$dir_path"); do
             list_of_file="$list_of_file"" $dir_path""/$file"
         done
@@ -216,6 +225,16 @@ PASSED=0
 FAILED=0
 
 for file in $list_of_file; do
+    if [ -d $file ]; then
+        dir_name="$(echo $file | cut -f 3 -d / | sed -e 's/_/ /g' | sed 's/.*/\U&/')"
+        printf $ANNONCE"\n    " #---------"
+        pretty_printf_dash "$dir_name"
+        printf $DEFAULT"\n    $dir_name\n"
+        printf $ANNONCE"    " #---------"
+        pretty_printf_dash "$dir_name"
+        printf "\n\n"$DEFAULT
+        continue
+    fi
     TESTED="$(($TESTED + 1))"
     printf $DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" 2> /tmp/tmp_ref_err | cat -e > /tmp/tmp_ref
