@@ -1,10 +1,10 @@
 /**
- *\file rule_for.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief For rule function
- */
+*\file rule_for.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief For rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_for(struct token_list **tok)
 {
-    //printf("Enter in for\n");
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) != FOR)
     {
         warnx("Need FOR at begin of for");
@@ -34,9 +31,11 @@ struct ast_node *rule_for(struct token_list **tok)
         return NULL;
     NEXT_TOK(tok);
     remove_new_line(tok);
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == IN)
     {
         NEXT_TOK(tok);
+        ask_ps2(tok);
         while (TOK_TYPE(tok) == WORD)
         {
             add_value_for(for_node, TOK_STR(tok));
@@ -51,7 +50,9 @@ struct ast_node *rule_for(struct token_list **tok)
         }
         NEXT_TOK(tok);
     }
+
     remove_new_line(tok);
+    ask_ps2(tok);
     struct ast_node *do_group = rule_do_group(tok);
     if (!do_group)
     {

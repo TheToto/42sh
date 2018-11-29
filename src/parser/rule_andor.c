@@ -1,10 +1,10 @@
 /**
- *\file rule_andor.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Andor rule function
- */
+*\file rule_andor.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Andor rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_andor(struct token_list **tok)
 {
-    //printf("Enter in andor\n");
-    //debug_token(tok);
-
     struct ast_node *left_pip = rule_pipeline(tok);
     if (!left_pip)
         return NULL;

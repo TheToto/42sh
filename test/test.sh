@@ -5,6 +5,7 @@ RED="\033[1;31m"
 YELLOW="\033[1;33m"
 ANNONCE="\033[38;5;37m"
 DEFAULT="\033[1;39m"
+RESET="\033[0;39m"
 
 ##############################################################################
 #                               OPTION PARSING                               #
@@ -25,25 +26,25 @@ while test $# -gt 0; do
             list_of_category=""
             shift
             if test "$1" = ";"; then
-                printf $RED"\nERROR: no category: one category at least should be tested\n\n"$DEFAULT
+                printf $RED"\nERROR: no category: one category at least should be tested\n\n"$RESET
                 exit 1
             fi
             while test $# -gt 0 -a "$1" != ";"; do
                 case $1 in
                     ast | lexer | parser | option);;
                     * )
-                        printf $RED"\nERROR: invalid category: $1\n\n"$DEFAULT
+                        printf $RED"\nERROR: invalid category: $1\n\n"$RESET
                         exit 1;;
                 esac
                 list_of_category="$list_of_category $1""_tests"
                 shift
             done
             if test "$1" != ";"; then
-                printf $RED"\nERROR: category list should finish with '\;'\n\n"
+                printf $RED"\nERROR: category list should finish with \'\;\'\n\n"$RESET
                 exit 1;
             fi;;
         -l | --list)
-            printf $ANNONCE"\n  list of categories:\n\t  - ast\n\t  - lexer\n\t  - options\n\t  - parser\n\n"$DEFAULT;
+            printf $ANNONCE"\n  list of categories:\n\t  - ast\n\t  - lexer\n\t  - option\n\t  - parser\n\n"$DEFAULT;
             exit 0;;
         -t | --timeout)
             shift
@@ -51,13 +52,13 @@ while test $# -gt 0; do
             if [ -n  "$is_correct" ]; then
                 timeout="$1""s"
             else
-                printf $RED"\nERROR: Invalid time: $1\n\n"$DEFAULT
+                printf $RED"\nERROR: Invalid time: $1\n\n"$RESET
                 exit 1
             fi;;
         -s | --sanity)
             sanity=1;;
         * )
-            printf $RED"\nERROR: invalid option: $1\n\n"$DEFAULT
+            printf $RED"\nERROR: invalid option: $1\n\n"$RESET
             exit 1;;
     esac
     shift
@@ -72,11 +73,29 @@ is_in () {
     return 1
 }
 
+pretty_printf_dash () {
+    nb="$(echo $1 | wc -m)"
+    while [ $nb -gt 1 ]; do
+        printf $ANNONCE"-"$DEFAULT
+        nb="$(($nb - 1))"
+    done
+}
+
+pretty_printf_category () {
+    dir_name="$(echo $1 | cut -f 3 -d / | sed -e 's/_/ /g' | sed 's/.*/\U&/')"
+    printf $ANNONCE"\n    " #---------"
+    pretty_printf_dash "$dir_name"
+    printf $DEFAULT"\n    $dir_name\n"
+    printf $ANNONCE"    " #---------"
+    pretty_printf_dash "$dir_name"
+    printf "\n\n"$DEFAULT
+}
+
 ##############################################################################
 #                                  COMPIL'                                   #
 ##############################################################################
 
-printf $ANNONCE"---------"$DEFAULT"\n"
+printf $DEFAULT$ANNONCE"---------"$DEFAULT"\n"
 printf $YELLOW"  BEGIN"$DEFAULT"\n"
 printf $ANNONCE"---------"$DEFAULT"\n\n"
 
@@ -94,6 +113,13 @@ printf $ANNONCE"    Building ...\n"
 
 make -B > /dev/null 2> /dev/null
 
+did_it_works="$(find . -name 42sh)"
+
+if test -z $did_it_works; then
+    printf $RED"    ERROR: Error while compiling: you may try to compile before running test-suite\n\n"$RESET
+    exit 1
+fi
+
 printf $ANNONCE"    COMPLETE!\n"$DEFAULT
 
 cd ..
@@ -101,6 +127,11 @@ cd ..
 ##############################################################################
 #                                  UNITARY                                   #
 ##############################################################################
+
+TESTED_U=""
+PASSED_U=""
+FAILED_U=""
+IGNORED_U=""
 
 list_of_dir="$(ls test/unitary)"
 
@@ -126,6 +157,8 @@ printf $YELLOW"  UNITARY TESTS"$DEFAULT"\n"
 printf $ANNONCE"  -------------"$DEFAULT"\n\n"
 
 is_err=0
+current_dir_test=""
+TEST=""
 
 while read line; do
     if [ $is_err -eq 1 ]; then
@@ -141,21 +174,34 @@ while read line; do
 
     case $line in
     *BEGINNINGEND*)
-              printf "      "$GREEN"PASSED"$DEFAULT"\n";;
+              printf "      "$GREEN"PASSED"$DEFAULT": $TEST"$DEFAULT"";;
     *BEGINNING* )
-              printf "      "$RED"FAILED"$DEFAULT"\n";;
+              printf "      "$RED"FAILED"$DEFAULT": $TEST"$DEFAULT"";;
     *-Testing:*   )
+              test_dir="$(echo "$line" | cut -f 1 -d : | cut -f 3 -d /)"
+              if [ "$test_dir" != "$current_dir_test" ]; then
+                current_dir_test="$test_dir"
+                pretty_printf_category "$line"
+              fi
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
-              printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
+              TEST=$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
-              printf "    "\n$RED"-------------------\n"
+              printf "\n    "$RED"-------------------\n"
               printf "    $line\n"
               printf "    -------------------\n\n"
               is_err=1;;
-    TESTED* ) printf "\n    "$YELLOW"$line"$DEFAULT"\n\n";;
-    PASSED* ) printf "    "$GREEN"$line"$DEFAULT"\n";;
-    FAILED* ) printf "    "$RED"$line"$DEFAULT"\n";;
-    IGNORED*) printf "    "$DEFAULT"$line"$DEFAULT"\n";;
+    TESTED* ) printf $ANNONCE"    -------"$DEFAULT"\n"
+              printf $YELLOW"    RESULTS"$DEFAULT"\n"
+              printf $ANNONCE"    -------"$DEFAULT"\n\n"
+
+              TESTED_U="      "$YELLOW"$line"$DEFAULT"\n\n"
+              printf "$TESTED_U";;
+    PASSED* ) PASSED_U="      "$GREEN"$line"$DEFAULT"\n"
+              printf "$PASSED_U";;
+    FAILED* ) FAILED_U="      "$RED"$line"$DEFAULT"\n"
+              printf "$FAILED_U";;
+    IGNORED*) IGNORED_U="      "$DEFAULT"$line"$DEFAULT"\n"
+              printf "$IGNORED_U";;
     *       )
     esac
 done < tmp
@@ -166,10 +212,29 @@ rm tmp tmp_err
 ##############################################################################
 
 pretty_printf_err () {
-    printf $RED"      FAILED: differences between bash and 42sh\n\n"$DEFAULT
+    printf $RED"      FAILED"$DEFAULT": $TEST\n"
+    printf $RED"        differences between bash and 42sh\n          < 42sh\n          > bash\n\n"$DEFAULT
     while read line; do
-        printf $RED"      $line\n"$DEFAULT
+        printf $RED"        $line\n"$DEFAULT
     done < "$1"
+}
+
+pretty_printf_stderr () {
+    printf $RED"      STDERR DEF:\n"$DEFAULT
+    echo "$1" > /tmp/stderr_tmp
+    while read line; do
+        printf $RED"      *   $line\n"$DEFAULT
+    done < /tmp/stderr_tmp
+    printf "\n"
+    
+    printf $RED"      STDERR REF:\n"$DEFAULT
+    echo "$2" > /tmp/stderr_tmp
+    while read line; do
+        printf $RED"      *   $line\n"$DEFAULT
+    done < /tmp/stderr_tmp
+    printf "\n"
+    
+    rm /tmp/stderr_tmp
 }
 
 check_sanity () {
@@ -179,7 +244,7 @@ check_sanity () {
                 return 0;;
             * )
                 continue;;
-        esac
+       esac
     done < /tmp/tmp_sanity
     return 1
 }
@@ -193,6 +258,7 @@ for dir in $list_of_dir; do
     is_asked=$?
     if [ $is_asked -eq 0 ]; then
         dir_path="test/scripts/$dir"
+        list_of_file="$list_of_file"" $dir_path"
         for file in $(ls "$dir_path"); do
             list_of_file="$list_of_file"" $dir_path""/$file"
         done
@@ -208,16 +274,28 @@ PASSED=0
 FAILED=0
 
 for file in $list_of_file; do
+    if [ -d $file ]; then
+        pretty_printf_category "$file"
+        continue
+    fi
     TESTED="$(($TESTED + 1))"
-    printf "    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "$file" > /tmp/tmp_ref 2> /tmp/tmp_ref_err
-    timeout $timeout build/42sh "$file" > /tmp/tmp_def 2> /tmp/tmp_def_err
+    TEST=$DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
+    bash "$file" 2> /tmp/tmp_ref_err > /tmp/tmp 
+    exit_status_ref="$?"
 
+    cat -e /tmp/tmp > /tmp/tmp_ref
+    rm /tmp/tmp
+    
+    timeout $timeout build/42sh "$file" 2> /tmp/tmp_def_err > /tmp/tmp
     exit_status="$?"
-    exit_status_sanity=1
 
+    cat -e /tmp/tmp > /tmp/tmp_def
+    rm /tmp/tmp
+
+    exit_status_sanity=1
     if [ $sanity -eq 1 ]; then
-        valgrind build/42sh "$file" 2> /tmp/tmp_sanity > /tmp/null
+        res_sanity="$(valgrind build/42sh $file 2>&1)"
+        echo "$res_sanity" > /tmp/tmp_sanity
         check_sanity
         exit_status_sanity="$?"
         rm /tmp/tmp_sanity
@@ -227,17 +305,24 @@ for file in $list_of_file; do
     diff_content="$(cat /tmp/res)"
     if [ $exit_status_sanity -eq 0 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: Leaks\n\n"$DEFAULT
+        printf $RED"      FAILED"$DEFAULT": $TEST"
+        printf $RED"        Leaks\n"$DEFAULT
     elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: Timeout\n\n"$DEFAULT
-    elif [ -n "$diff_content" -o  ]; then
+        printf $RED"      FAILED"$DEFAULT": $TEST"
+        printf $RED"        Timeout\n"$DEFAULT
+    elif [ -n "$diff_content" ]; then
         FAILED="$(($FAILED + 1))"
         pretty_printf_err /tmp/res
         printf "\n"
+    elif [ $exit_status -ne $exit_status_ref ]; then
+        FAILED="$(($FAILED + 1))"
+        printf $RED"      FAILED"$DEFAULT": $TEST\n"
+        printf $RED"        Invalid return value: expected $exit_status_ref got $exit_status\n"
+        pretty_printf_stderr "$(cat /tmp/tmp_def_err)" "$(cat /tmp/tmp_ref_err)"
     else
         PASSED="$(($PASSED + 1))"
-        printf $GREEN"      PASSED\n\n"
+        printf $GREEN"      PASSED"$DEFAULT": $TEST"
     fi
 
     rm /tmp/tmp_r*
@@ -245,9 +330,25 @@ for file in $list_of_file; do
     rm /tmp/res
 done
 
-printf $ANNONCE"    ----------------"$DEFAULT"\n"
-printf $YELLOW"    RESULTS (GLOBAL)"$DEFAULT"\n"
-printf $ANNONCE"    ----------------"$DEFAULT"\n\n"
+printf $ANNONCE"    -------"$DEFAULT"\n"
+printf $YELLOW"    RESULTS"$DEFAULT"\n"
+printf $ANNONCE"    -------"$DEFAULT"\n\n"
+
+printf $YELLOW"      TESTED:  $TESTED\n\n"$DEFAULT
+printf $GREEN"      PASSED:  $PASSED\n"$DEFAULT
+printf $RED"      FAILED:  $FAILED\n\n"$DEFAULT
+
+printf $ANNONCE"  -------"$DEFAULT"\n"
+printf $YELLOW"  SUMMARY"$DEFAULT"\n"
+printf $ANNONCE"  -------"$DEFAULT"\n\n"
+
+printf $DEFAULT"    -UNITARY-\n\n"
+
+printf "$TESTED_U"
+printf "$PASSED_U"
+printf "$FAILED_U"
+
+printf $DEFAULT"\n    -GLOBAL-\n\n"
 
 printf $YELLOW"      TESTED:  $TESTED\n\n"$DEFAULT
 printf $GREEN"      PASSED:  $PASSED\n"$DEFAULT
@@ -255,4 +356,4 @@ printf $RED"      FAILED:  $FAILED\n\n"$DEFAULT
 
 printf $ANNONCE"-------"$DEFAULT"\n"
 printf $YELLOW"  END"$DEFAULT"\n"
-printf $ANNONCE"-------"$DEFAULT"\n\n"
+printf $ANNONCE"-------"$RESET"\n\n"

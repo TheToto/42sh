@@ -1,10 +1,10 @@
 /**
- *\file rule_pipe.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Pipe rule function
- */
+*\file rule_pipe.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Pipe rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,9 +14,6 @@
 
 struct ast_node *rule_pipe(struct token_list **tok)
 {
-    //printf("Enter in pipe\n");
-    //debug_token(tok);
-
     remove_new_line(tok);
     struct ast_node *left_command = rule_command(tok);
     if (!left_command)

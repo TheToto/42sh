@@ -1,10 +1,10 @@
 /**
- * \file ast_node_ampersand.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of ampersand(&)
- */
+* \file ast_node_ampersand.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of ampersand(&)
+*/
 
 #include <stdlib.h>
 #include "parser.h"

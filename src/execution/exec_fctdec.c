@@ -1,10 +1,10 @@
 /**
- * @file exec_fctdec.c
- * @author louis.holleville
- * @version 0.5
- * @date 25-11-2018
- * execution of functions declaration
- */
+* @file exec_fctdec.c
+* @author louis.holleville
+* @version 0.5
+* @date 25-11-2018
+* execution of functions declaration
+*/
 
 #include "ast.h"
 #include "env.h"

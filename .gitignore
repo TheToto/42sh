@@ -1,6 +1,7 @@
 build/
 *.o
 *.swp
+*.dot
 ceedling
 vendor
 doc/html

@@ -1,11 +1,11 @@
 /**
- * \file parser.h
- * \author thomas.lupin
- * \version 0.5
- * \date 22-11-2018
- *
- * \brief Header of all parsing functions
- */
+* \file parser.h
+* \author thomas.lupin
+* \version 0.5
+* \date 22-11-2018
+*
+* \brief Header of all parsing functions
+*/
 
 #pragma once
 
@@ -27,8 +27,8 @@
 #define NEXT_TOK_STR(Tok) ((*Tok)->next->str)
 
 /**
- * \brief Enum of lexer tokens
- */
+* \brief Enum of lexer tokens
+*/
 enum token_type
 {
     //REDIRECTION
@@ -71,10 +71,10 @@ enum token_type
     AMPERSAND,          ///< &         31
     NOT,                ///< !         32
     //DEFAULT
-    IO_NUMBER,          ///< [1-9]+                    33
+    IO_NUMBER,          ///< [0-9]+                    33
     NEW_LINE,           ///< \n                        34
-    ASSIGNMENT_WORD,    ///< [_a-zA-Z][_1-9a-zA-Z]*=.* 35
-    NAME,               ///< [_a-zA-Z][_1-9a-zA-Z]*    36
+    ASSIGNMENT_WORD,    ///< [_a-zA-Z][_0-9a-zA-Z]*=.* 35
+    NAME,               ///< [_a-zA-Z][_0-9a-zA-Z]*    36
     WORD_EXT,           ///< everithing between '"'    37
     WORD,               ///< everything else           38
     //END OF FILE
@@ -84,6 +84,7 @@ enum token_type
 ///Linked list for lexer token
 struct token_list
 {
+    char *str_origin; ///< address of the word in the original string
     char *str; ///< (OPTIONNAL) data coming with the token
     enum token_type type; ///<type of the token
     struct token_list *next; ///<pointer to the next token in the list
@@ -96,156 +97,163 @@ struct lexer
 };
 
 /**
- * Follow the redirection rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the redirection rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child);
 
 /**
- * Follow the element rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the element rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_element(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res);
 
 /**
- * Follow the prefix rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the prefix rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_prefix(struct ast_node *scmd, struct token_list **tok,
         struct ast_node *res);
 
 /**
- * Follow the compound list rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
-struct ast_node *rule_compound_list(struct token_list **tok);
+* Follow the compound list rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
+struct ast_node *rule_compound_list(struct token_list **tok,
+        enum token_type delim);
 
 /**
- * Follow the case rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the case rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_case(struct token_list **tok);
 
 /**
- * Follow the until rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the until rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_until(struct token_list **tok);
 
 /**
- * Follow the while rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the while rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_while(struct token_list **tok);
 
 /**
- * Follow the do group rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the do group rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_do_group(struct token_list **tok);
 
 /**
- * Follow the if rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the if rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_if(struct token_list **tok);
 
 /**
- * Follow the else clause rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the else clause rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_else_clause(struct token_list **tok);
 
 /**
- * Follow the for rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the for rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_for(struct token_list **tok);
 
 /**
- * Follow the simple command rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the simple command rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_simple_command(struct token_list **tok);
 
 /**
- * Follow the funcdec rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the funcdec rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_funcdec(struct token_list **tok);
 
 /**
- * Follow the shell command rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the shell command rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_shell_command(struct token_list **tok);
 
 /**
- * Follow the pipe rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the pipe rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_pipe(struct token_list **tok);
 
 /**
- * Follow the command rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the command rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_command(struct token_list **tok);
 
 /**
- * Follow the pipeline rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the pipeline rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_pipeline(struct token_list **tok);
 
 /**
- * Follow the andor rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the andor rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_andor(struct token_list **tok);
 
 /**
- * Follow the list rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the list rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_list(struct token_list **tok);
 
 /**
- * Follow the input rule from EPITA shell grammar
- * \param struct token_list **tok  The current token pointer
- * \return The ast node created by the rule
- */
+* Follow the input rule from EPITA shell grammar
+* \param struct token_list **tok  The current token pointer
+* \return The ast node created by the rule
+*/
 struct ast_node *rule_input(struct token_list **tok);
 
 /**
- * Remove all new lines tokens
- * \param struct token_list **tok  The current token pointer
- */
+* Remove all new lines tokens
+* \param struct token_list **tok  The current token pointer
+*/
 void remove_new_line(struct token_list **tok);
 
 /**
- * Print current token list in the terminal
- * \param struct token_list **tok  The current token pointer
- */
+* Print current token list in the terminal
+* \param struct token_list **tok  The current token pointer
+*/
 void debug_token(struct token_list **tok);
+
+/**
+* Show PS2 if we can and if we need it.
+* \param struct token_list **tok  The current token pointer
+*/
+void ask_ps2(struct token_list **tok);

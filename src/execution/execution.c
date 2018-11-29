@@ -1,10 +1,10 @@
 /**
- *\file execution.c
- *\author sabrina.meng thomas.lupin
- *\version 0.3
- *\date 15-11-2018
- *\brief Execution of the AST
- */
+*\file execution.c
+*\author sabrina.meng thomas.lupin
+*\version 0.3
+*\date 15-11-2018
+*\brief Execution of the AST
+*/
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>
@@ -20,6 +20,7 @@
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
+#include "shell.h"
 
 int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
@@ -68,36 +69,36 @@ int exec_node(struct ast_node *node, struct variables *var)
         return 0; // For ampersand
     switch (node->type)
     {
-        case N_SCMD:
-            return exec_scmd(node->son, var);
-        case N_IF:
-            return exec_if(node->son, var);
-        case N_WHILE:
-            return exec_while(node->son, var);
-        case N_FOR:
-            return exec_for(node->son, var);
-        case N_REDIRECT:
-            return exec_redirect(node->son, var);
-        case N_SEMICOLON:
-            return exec_semicolon(node->son, var);
-        case N_AMPERSAND:
-            return exec_semicolon(node->son, var);
-        case N_NOT:
-            return exec_not(node->son, var);
-        case N_PIPE:
-            return exec_pipe(node->son, var);
-        case N_CASE:
-            return exec_case(node->son, var);
-        case N_FCTDEC:
-            return exec_fctdec(node->son, var);
-        case N_LOGICAL_OR:
-            return exec_lor(node->son, var);
-        case N_LOGICAL_AND:
-            return exec_land(node->son, var);
-        case N_NONE:
-            return 0;
-        default:
-            break;
+    case N_SCMD:
+        return exec_scmd(node->son, var);
+    case N_IF:
+        return exec_if(node->son, var);
+    case N_WHILE:
+        return exec_while(node->son, var);
+    case N_FOR:
+        return exec_for(node->son, var);
+    case N_REDIRECT:
+        return exec_redirect(node->son, var);
+    case N_SEMICOLON:
+        return exec_semicolon(node->son, var);
+    case N_AMPERSAND:
+        return exec_semicolon(node->son, var);
+    case N_NOT:
+        return exec_not(node->son, var);
+    case N_PIPE:
+        return exec_pipe(node->son, var);
+    case N_CASE:
+        return exec_case(node->son, var);
+    case N_FCTDEC:
+        return exec_fctdec(node->son, var);
+    case N_LOGICAL_OR:
+        return exec_lor(node->son, var);
+    case N_LOGICAL_AND:
+        return exec_land(node->son, var);
+    case N_NONE:
+        return 0;
+    default:
+        break;
     }
     return 0;
 }
@@ -107,14 +108,14 @@ int exec_main(char *str, int is_print, struct variables *library)
     //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
-    struct ast_node *ast = rule_input(&(l->token_list));
-    l->token_list = copy;
+    struct ast_node *ast = rule_input(&copy);
+    shell.ast = ast;
 
     if (!ast)
     {
-        lexer_destroy(l);
+        lexer_destroy(shell.lexer);
         warnx("Error in parsing");
-        return 1;
+        return 2;
     }
 
     if (is_print)
@@ -123,8 +124,9 @@ int exec_main(char *str, int is_print, struct variables *library)
     //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
+    shell.ast = NULL;
     destroy_ast(ast);
-    lexer_destroy(l);
+    lexer_destroy(shell.lexer);
 
     return res;
 }

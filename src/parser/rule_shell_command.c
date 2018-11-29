@@ -1,10 +1,10 @@
 /**
- *\file rule_shell_command.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief Shell command rule function
- */
+*\file rule_shell_command.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief Shell command rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,10 +14,6 @@
 
 struct ast_node *rule_shell_command(struct token_list **tok)
 {
-    //printf("Enter in shell command\n");
-
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) == IF)
         return rule_if(tok);
     if (TOK_TYPE(tok) == FOR)
@@ -31,7 +27,7 @@ struct ast_node *rule_shell_command(struct token_list **tok)
     if (TOK_TYPE(tok) == BRACKET_ON)
     {
         NEXT_TOK(tok);
-        struct ast_node *res = rule_compound_list(tok);
+        struct ast_node *res = rule_compound_list(tok, BRACKET_OFF);
         if (!res)
             return NULL;
         if (TOK_TYPE(tok) != BRACKET_OFF)
@@ -46,7 +42,7 @@ struct ast_node *rule_shell_command(struct token_list **tok)
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
     {
         NEXT_TOK(tok);
-        struct ast_node *res = rule_compound_list(tok);
+        struct ast_node *res = rule_compound_list(tok, PARENTHESIS_OFF);
         if (!res)
             return NULL;
         if (TOK_TYPE(tok) != PARENTHESIS_OFF)

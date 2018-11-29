@@ -1,10 +1,10 @@
 /**
- *\file prompt.c
- *\author thomas.lupin sabrina.meng
- *\version 0.5
- *\date 22-11-2018
- *\brief Function to use the prompt
- */
+*\file prompt.c
+*\author thomas.lupin sabrina.meng
+*\version 0.5
+*\date 22-11-2018
+*\brief Function to use the prompt
+*/
 
 #define _XOPEN_SOURCE
 
@@ -21,6 +21,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "readfile.h"
+#include "shell.h"
 
 static char *init_path(char *file)
 {
@@ -46,11 +47,18 @@ static void launchrc(int is_print, struct variables *var)
     struct stat buf;
     if (!stat("/etc/42shrc", &buf))
         launch_file("/etc/42shrc", is_print, var);
-    else if (!stat(filerc, &buf))
+    if (!stat(filerc, &buf))
         launch_file(filerc, is_print, var);
-    if (!get_var(var, "PS1"))
-        add_var(var, "PS1", "[42sh@pc]$ ");
     free(filerc);
+}
+
+struct token_list *show_ps2(void)
+{
+    char *buf = readline(get_var(shell.var, "PS2"));
+    lexer_destroy(shell.lexer);
+    struct lexer *l = lexer(buf);
+    free(buf);
+    return l->token_list;
 }
 
 int show_prompt(int norc, int is_print)
@@ -58,6 +66,10 @@ int show_prompt(int norc, int is_print)
     char *histpath = init_path("/.42sh_history");
     read_history(histpath);
     struct variables *library = init_var();
+    if (!get_var(library, "PS1"))
+        add_var(library, "PS1", "[42sh@pc]$ ");
+    if (!get_var(library, "PS2"))
+        add_var(library, "PS2", "> ");
     if (!norc)
         launchrc(is_print, library);
     while (1)

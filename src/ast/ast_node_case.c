@@ -1,10 +1,10 @@
 /**
- * \file ast_node_case.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of case
- */
+* \file ast_node_case.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of case
+*/
 
 #define _DEFAULT_SOURCE
 #include <string.h>

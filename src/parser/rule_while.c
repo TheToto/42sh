@@ -1,10 +1,10 @@
 /**
- *\file rule_while.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief While rule function
- */
+*\file rule_while.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief While rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,10 +14,6 @@
 
 struct ast_node *rule_while(struct token_list **tok)
 {
-    //printf("Enter in while\n");
-
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) != WHILE)
     {
         warnx("No while at begining of while...");
@@ -25,9 +21,11 @@ struct ast_node *rule_while(struct token_list **tok)
     }
     NEXT_TOK(tok);
 
-    struct ast_node *condition = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *condition = rule_compound_list(tok, DO);
     if (!condition)
         return NULL;
+    ask_ps2(tok);
     if (TOK_TYPE(tok) != DO)
     {
         destroy_ast(condition);
@@ -46,17 +44,15 @@ struct ast_node *rule_while(struct token_list **tok)
 
 struct ast_node *rule_do_group(struct token_list **tok)
 {
-    //printf("Enter in do group\n");
-
-    //debug_token(tok);
-
     if (TOK_TYPE(tok) != DO)
     {
         warnx("Need a do in do group");
         return NULL;
     }
     NEXT_TOK(tok);
-    struct ast_node *do_group = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *do_group = rule_compound_list(tok, DONE);
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == DONE)
     {
         NEXT_TOK(tok);
@@ -69,8 +65,6 @@ struct ast_node *rule_do_group(struct token_list **tok)
 
 struct ast_node *rule_until(struct token_list **tok)
 {
-    //printf("Enter in until\n");
-    //debug_token(tok);
     if (TOK_TYPE(tok) != UNTIL)
     {
         warnx("No until at begining of until...");
@@ -78,7 +72,8 @@ struct ast_node *rule_until(struct token_list **tok)
     }
     NEXT_TOK(tok);
 
-    struct ast_node *condition = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *condition = rule_compound_list(tok, DO);
     if (!condition)
         return NULL;
 

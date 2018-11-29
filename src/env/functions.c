@@ -1,10 +1,10 @@
 /**
- * @file functions.c
- * @author louis.holleville
- * @date 25-11-2018
- * @version 0.5
- * Management of functions declaration and builtins
- */
+* @file functions.c
+* @author louis.holleville
+* @date 25-11-2018
+* @version 0.5
+* Management of functions declaration and builtins
+*/
 
 #define _DEFAULT_SOURCE
 #include <stdlib.h>
@@ -24,7 +24,7 @@ static void expand_f_lib(struct variables *var)
     var->f_lib = new;
     var->f_capacity *= 2;
 }
-
+#include <stdio.h>
 int add_func(struct variables *var, char *name, void *value, enum f_type type)
 {
     if (!var || !name || !value)
@@ -34,20 +34,23 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type)
     }
     size_t pos = 0;
     struct func *cur = var->f_lib[pos];
-    int found = 1;
-    for (; found && pos < var->f_size; pos++)
+    int found = 0;
+    for (; !found && pos < var->f_size; pos++)
     {
-        if (strcmp(cur->name, name) == 0)
-            found = 0;
         cur = var->f_lib[pos];
+        if (strcmp(cur->name, name) == 0)
+        {
+            found = 1;
+            break;
+        }
     }
 
-    if (!found)
+    if (found)
     {
         if (cur->type == DECLARED)
             destroy_ast(cur->value);
         //else
-            //free(builtin)?
+        //free(builtin)?
         cur->value = value;
         cur->type = type;
         return 0;

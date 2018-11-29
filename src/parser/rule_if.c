@@ -1,10 +1,10 @@
 /**
- *\file rule_if.c
- *\author thomas.lupin
- *\version 0.5
- *\date 22-11-2018
- *\brief If rule function
- */
+*\file rule_if.c
+*\author thomas.lupin
+*\version 0.5
+*\date 22-11-2018
+*\brief If rule function
+*/
 #include <err.h>
 #include <stdio.h>
 
@@ -14,13 +14,12 @@
 
 struct ast_node *rule_if(struct token_list **tok)
 {
-    //printf("Enter in if\n");
-    //debug_token(tok);
-
     NEXT_TOK(tok);
-    struct ast_node *condition = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *condition = rule_compound_list(tok, THEN);
     if (!condition)
         return NULL;
+    ask_ps2(tok);
     if (TOK_TYPE(tok) != THEN)
     {
         destroy_ast(condition);
@@ -28,13 +27,15 @@ struct ast_node *rule_if(struct token_list **tok)
         return NULL;
     }
     NEXT_TOK(tok);
-    struct ast_node *e_true = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *e_true = rule_compound_list(tok, FI);
     if (!e_true)
     {
         destroy_ast(condition);
         return NULL;
     }
     struct ast_node *e_false = NULL;
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
     {
         e_false = rule_else_clause(tok);
@@ -45,7 +46,6 @@ struct ast_node *rule_if(struct token_list **tok)
             return NULL;
         }
     }
-
     if (TOK_TYPE(tok) != FI)
     {
         destroy_ast(e_true);
@@ -63,7 +63,8 @@ struct ast_node *rule_else_clause(struct token_list **tok)
     if (TOK_TYPE(tok) == ELSE)
     {
         NEXT_TOK(tok); // skip ELSE
-        return rule_compound_list(tok);
+        ask_ps2(tok);
+        return rule_compound_list(tok, FI);
     }
     if (TOK_TYPE(tok) != ELIF)
     {
@@ -72,9 +73,11 @@ struct ast_node *rule_else_clause(struct token_list **tok)
     }
 
     NEXT_TOK(tok); // skip ELFI
-    struct ast_node *condition = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *condition = rule_compound_list(tok, THEN);
     if (!condition)
         return NULL;
+    ask_ps2(tok);
     if (TOK_TYPE(tok) != THEN)
     {
         destroy_ast(condition);
@@ -82,19 +85,15 @@ struct ast_node *rule_else_clause(struct token_list **tok)
         return NULL;
     }
     NEXT_TOK(tok); // skip THEN
-    struct ast_node *e_true = rule_compound_list(tok);
+    ask_ps2(tok);
+    struct ast_node *e_true = rule_compound_list(tok, FI);
     if (!e_true)
     {
         destroy_ast(condition);
         return NULL;
     }
     struct ast_node *e_false = NULL;
-    if (!e_false)
-    {
-        destroy_ast(e_true);
-        destroy_ast(condition);
-        return NULL;
-    }
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == ELIF || TOK_TYPE(tok) == ELSE)
     {
         e_false = rule_else_clause(tok);

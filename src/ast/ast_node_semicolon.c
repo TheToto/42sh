@@ -1,10 +1,10 @@
 /**
- * \file ast_node_semicolon.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of semicolons (;)
- */
+* \file ast_node_semicolon.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of semicolons (;)
+*/
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"

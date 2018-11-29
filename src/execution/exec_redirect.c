@@ -1,10 +1,10 @@
 /**
- * @file exec_redirect.c
- * @author louis.holleville
- * @version 0.5
- * @date 20-11-2018
- * @brief execution of the redirections
- */
+* @file exec_redirect.c
+* @author louis.holleville
+* @version 0.5
+* @date 20-11-2018
+* @brief execution of the redirections
+*/
 
 #define _DEFAULT_SOURCE
 #define _GNU_SOURCE
@@ -15,14 +15,15 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include <stdlib.h>
 #include <string.h>
 #include "parser.h"
 #include "env.h"
 #include "execution.h"
 #include "ast.h"
+#include "shell.h"
+
+struct shell shell;
 
 static int less(struct ast_node_redirect *n, struct variables *var)
 {
@@ -124,23 +125,13 @@ static int lessgreat(struct ast_node_redirect *n, struct variables *var)
 
 static int dless(struct ast_node_redirect *n, struct variables *var)
 {
-    n->fd = open(".", O_TMPFILE | O_RDWR, 00644);
+    n->fd = open("/tmp", O_TMPFILE | O_RDWR, 00644);
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
-    char *line;
-    do
-    {
-        line = readline("> ");
-        if (strcmp(line, n->word) == 0)
-        {
-            free(line);
-            break;
-        }
-        dprintf(n->fd, "%s\n", line);
-        free(line);
-    }
-    while (1);
+    for (size_t i = 0; i < n->size; i++)
+        dprintf(n->fd, "%s\n", n->words[i]);
+
     lseek(n->fd, 0, SEEK_SET);
     int save = dup(0);
     dup2(n->fd, 0);
@@ -152,34 +143,19 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
 
 static int dlessdash(struct ast_node_redirect *n, struct variables *var)
 {
-    n->fd = open(".", O_TMPFILE | O_RDWR, 00644);
+    n->fd = open("/tmp", O_TMPFILE | O_RDWR, 00644);
     if (n->fd == -1)
         err(1, "cannot open temp doc for heredocs");
 
-    char *line;
-    size_t offset;
-    do
-    {
-        offset = 0;
-        line = readline("> ");
-        for (; line[offset] == '\t' || line[offset] == ' '; offset++);
+    for (size_t i = 0; i < n->size; i++)
+        dprintf(n->fd, "%s\n", n->words[i]);
 
-        if (strcmp(line + offset, n->word) == 0)
-        {
-            free(line);
-            break;
-        }
-        dprintf(n->fd, "%s\n", line + offset);
-        free(line);
-    }
-    while (1);
     lseek(n->fd, 0, SEEK_SET);
     int save = dup(0);
     dup2(n->fd, 0);
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, 0);
-    //unlink("tmp.heredoc");
     return res;
 }
 

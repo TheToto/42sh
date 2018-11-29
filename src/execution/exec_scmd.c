@@ -1,10 +1,10 @@
 /**
- * @file exec_scmd.c
- * @author thomas.lupin louis.holleville sabrina.meng
- * @version 0.5
- * @date 25-11-2018
- * execution of scmd
- */
+* @file exec_scmd.c
+* @author thomas.lupin louis.holleville sabrina.meng
+* @version 0.5
+* @date 25-11-2018
+* execution of scmd
+*/
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -19,13 +19,45 @@
 #include "parser.h"
 #include "ast_destroy.h"
 
+static void add_params(char **expanded, struct variables *var)
+{
+    for (int i = 1; expanded[i] != NULL; i++)
+    {
+        char *buf = calloc(50, sizeof(char));
+        if (!buf)
+            err(1, "Malloc failed in add_params");
+        sprintf(buf, "%d", i);
+        add_var(var, buf, expanded[i]);
+        free(buf);
+    }
+}
+
+static void urgent_free(char **expanded)
+{
+    char exit_str[256] =
+    {
+        0
+    };
+    strncpy(exit_str, *expanded, 255);
+    for (size_t i = 0; expanded[i]; i++)
+        free(expanded[i]);
+    free(expanded);
+    if (errno == ENOENT)
+        err(127, "Exec %s failed", exit_str);
+    err(126, "Exec %s failed", exit_str);
+
+}
+
 static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
     void *func = NULL;
     if ((func = get_func(var, expanded[0])))
+    {
+        add_params(expanded, var);
         status = exec_node(func, var);
+    }
     else
     {
         pid = fork();
@@ -35,11 +67,7 @@ static int execute(char **expanded, int status, struct variables *var)
         {
             error = execvp(*expanded, expanded);
             if (error < 0)
-            {
-                if (errno == ENOENT)
-                    err(127, "Exec %s failed", *expanded);
-                err(126, "Exec %s failed", *expanded);
-            }
+                urgent_free(expanded);
         }
         else
         {
@@ -61,7 +89,6 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     if (scmd->elt_size > 0)
     {
         status = execute(expanded, status, var);
-        //printf("%s return %d\n", *scmd->elements, status);
     }
     for (size_t i = 0; i < scmd->elt_size + 1; i++)
         free(expanded[i]);

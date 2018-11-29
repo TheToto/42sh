@@ -1,17 +1,18 @@
 /**
- * \file lexer.c
- * \brief Contain all function to create or destroy
- * a pointer to a lexer structure
- * according to a given string.
- * \author Arthur Busuttil
- * \version 0.5
- */
+* \file lexer.c
+* \brief Contain all function to create or destroy
+* a pointer to a lexer structure
+* according to a given string.
+* \author Arthur Busuttil
+* \version 0.5
+*/
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>
 
 #include "lexer.h"
 #include "parser.h"
+#include "shell.h"
 
 void lexer_destroy(struct lexer *l)
 {
@@ -26,14 +27,9 @@ void lexer_destroy(struct lexer *l)
         cur = tmp;
     }
     free(l);
+    shell.lexer = NULL;
 }
 
-/**
- * \fn struct lexer *init_lexer (void)
- * \brief Initialize a lexer.
- *
- * \return A pointer to a lexer initialized.
- */
 static struct lexer *init_lexer(void)
 {
     struct lexer *l = NULL;
@@ -49,17 +45,10 @@ static struct lexer *init_lexer(void)
     return l;
 }
 
-/**
- * \fn void set_tl (struct token_list *tl, char *str)
- * \brief Initialize a token_list with according to str.
- *
- * \param tl The token_list we want to initialize.
- * \param str The string used to initialize the token_list.
- * \return NOTHING.
- */
 static void set_tl(struct token_list *tl, char *str,
-    enum token_type tok)
+    enum token_type tok, char *origin)
 {
+    tl->str_origin = origin;
     tl->str = str;
     if (tok == NAME)
         tok = WORD;
@@ -67,42 +56,34 @@ static void set_tl(struct token_list *tl, char *str,
     tl->next = NULL;
 }
 
-/**
- * \fn char *get_next_str (char **beg)
- * \brief Find the next string to check. It also modify the string
- * at <beg> address to skip the found word. It pass comments too.
- *
- * \param beg The address of the complete string in wich we search
- * the candidate.
- * \return A string containing a valid candidate to correspond to a token.
- */
-static char *get_next_str(char **beg)
+static char *get_next_str(char **beg, char **ptr)
 {
     if (!beg || !*beg || !**beg)
         return NULL;
     size_t len = 0;
     for (; **beg && (**beg == ' ' || **beg == '\t'); (*beg)++)
         continue;
+    if (**beg == '#')
+    {
+        for (; **beg && **beg != '\n'; (*beg)++)
+            continue;
+    }
+    *ptr = *beg;
     char *cur = *beg;
     for (; *cur && *cur != ' ' && *cur != '\t'
-            && *cur != '\"' && *cur != '#'; cur++)
+            && *cur != '\"'; cur++)
         len += 1;
     if (*cur == '\"')
     {
-        for (cur += 1, len += 1; *cur && *cur != '\"' && *cur != '#'; cur++)
+        for (cur += 1, len += 1; *cur && *cur != '\"'; cur++)
             len += 1;
-        for (; *cur && *cur != ' ' && *cur != '\t' && *cur != '#'; cur++)
+        for (; *cur && *cur != ' ' && *cur != '\t'; cur++)
             len += 1;
     }
     char *res = calloc(1, len + 1);
     if (res)
     {
         strncpy(res, *beg, len);
-        if (*cur == '#')
-        {
-            for (; *cur && *cur != '\n'; cur++)
-                len += 1;
-        }
         if (!strlen(*beg))
         {
             free(res);
@@ -113,18 +94,6 @@ static char *get_next_str(char **beg)
     return res;
 }
 
-/**
- * \fn int should_change (struct enum token_type *type,
- * struct token_type *type_next, char **lstring, size_t *i)
- * \brief Determine if it is valid token or not.
- *
- * \param type The token type of the current word.
- * \param type_next The token type of yhe current plus the next character.
- * \param lstring Contains the next character in string format, the string
- * we are working on and the current word.
- * \param i It is the index in the string of the last character of the word.
- * \return If the current position mark a changement of token.
- */
 static int should_change(enum token_type *type,
     enum token_type type_next, char **lstring, size_t *i)
 {
@@ -134,14 +103,15 @@ static int should_change(enum token_type *type,
     enum token_type type_tmp = get_token_type(tmp);
     if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
-    if (((*type != type_next)
-                && ((*type < 10 && *type > 22) || type_next == WORD)
+    if (type_tmp != NOT && (((*type != type_next)
+                && (*type < 10 || *type > 22 || type_tmp < 33
+                    || type_tmp == 34 || tmp == 0)
                 && (*type != NAME || (type_tmp != 38
                     && tmp[0] != '=' && type_tmp != 36)))
                 || ((*type == WORD)
                     && (type_tmp < NAME && type_tmp != 33 && tmp[0] != '='))
                 || (*type == ASSIGNMENT_WORD && type_tmp < NAME
-                    && type_tmp != IO_NUMBER))
+                    && type_tmp != IO_NUMBER)))
     {
         if ((*type == SEMICOLON && type_next == DSEMICOLON)
                 || (*type == AMPERSAND && type_next == LOGICAL_AND)
@@ -165,16 +135,7 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
-/**
- * \fn void get_next_word_token (char **str, struct token_list *tl)
- * \brief Find the next word corresponding to a token in a string.
- *
- * \param str The string in which we are working.
- * \param tl The token_list in which we put the founded word
- * and it's associated token.
- * \return NOTHING.
- */
-static void get_next_word_token(char **str, struct token_list *tl)
+static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
     size_t i = 0;
@@ -202,9 +163,9 @@ static void get_next_word_token(char **str, struct token_list *tl)
         strcpy(word, *str);
         type = WORD_EXT;
     }
-    *str += i;
     word[i] = 0;
-    set_tl(tl, word, type);
+    set_tl(tl, word, type, ptr);
+    *str += i;
 }
 
 struct lexer *lexer(char *str)
@@ -213,15 +174,17 @@ struct lexer *lexer(char *str)
     if (!l)
         return NULL;
     struct token_list *cur = l->token_list;
-    char *val = get_next_str(&str);
-    for (; val && !*val;free(val), val = get_next_str(&str))
+    char *ptr = str;
+    char *val = get_next_str(&str, &ptr);
+    for (; val && !*val;free(val), val = get_next_str(&str, &ptr))
         continue;
     while (val)
     {
         char *save = val;
         while (*val)
         {
-            get_next_word_token(&val, cur);
+            get_next_word_token(&val, cur, ptr);
+            ptr += strlen(cur->str);
             cur->next = calloc(1, sizeof(*cur->next));
             if (!cur->next)
             {
@@ -232,10 +195,11 @@ struct lexer *lexer(char *str)
                 cur = cur->next;
         }
         free(save);
-        val = get_next_str(&str);
+        val = get_next_str(&str, &ptr);
         if (cur->next)
             cur = cur->next;
     }
-    set_tl(cur, NULL, END_OF_FILE);
+    set_tl(cur, NULL, END_OF_FILE, NULL);
+    shell.lexer = l;
     return l;
 }

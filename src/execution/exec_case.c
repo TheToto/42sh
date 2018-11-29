@@ -1,10 +1,10 @@
 /**
- *\file exec_case.c
- *\author thomas.lupin
- *\version 0.5
- *\date 23-11-2018
- *\brief Execution of the case node
- */
+*\file exec_case.c
+*\author thomas.lupin
+*\version 0.5
+*\date 23-11-2018
+*\brief Execution of the case node
+*/
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>
@@ -24,13 +24,15 @@
 int exec_case(struct ast_node_case *node, struct variables *var)
 {
     char *tmp = node->value;
-    char *str;
+    char *str = NULL;
     if (tmp[0] == '$')
+    {
         str = get_var(var, tmp + 1);
+        if (str == NULL)
+            str = "";
+    }
     else
-        str = "";
-    if (str == NULL)
-        str = "";
+        str = tmp;
     for (size_t i = 0; i < node->size; i++)
     {
         if (!fnmatch(node->cases[i], str, 0))

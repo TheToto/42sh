@@ -1,10 +1,10 @@
 /**
- * \file ast_node_while.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of whiles
- */
+* \file ast_node_while.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of whiles
+*/
 
 #include <stdlib.h>
 #include "parser.h"
@@ -24,8 +24,8 @@ static struct ast_node_while *create_ast_node_while_int(struct ast_node *cond,
     return new;
 }
 
-struct ast_node *create_ast_node_while(struct ast_node *condition, struct
-        ast_node *exec)
+struct ast_node *create_ast_node_while(struct ast_node *condition,
+        struct ast_node *exec)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)

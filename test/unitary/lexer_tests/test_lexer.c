@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "lexer.h"
 
+struct shell *shell;
+
 void setUp(void)
 {
 }

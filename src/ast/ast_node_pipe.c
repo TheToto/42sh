@@ -1,10 +1,10 @@
 /**
- * \file ast_node_pipe.c
- * \author louis.holleville
- * \version 0.3
- * \date 14-11-2018
- * \brief Management of pipes
- */
+* \file ast_node_pipe.c
+* \author louis.holleville
+* \version 0.3
+* \date 14-11-2018
+* \brief Management of pipes
+*/
 
 #include <stdlib.h>
 #include "parser.h"
@@ -19,7 +19,7 @@ static struct ast_node_pipe *create_ast_node_pipe_int(struct ast_node *ls,
     if (!new)
         return NULL;
     new->ls = ls;
-    new->rs= rs;
+    new->rs = rs;
     return new;
 }
 

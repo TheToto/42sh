@@ -1,12 +1,10 @@
 /**
- * \file options.c
- * \author sabrina.meng
- * \version 0.3
- * \date 15-11-2018
- * \brief Options parsing
- * \details Parse the options with the format
- *[GNU long option] [option] script-file
- */
+* \file options.c
+* Parse the options with the format [GNU long option] [option] script-file
+* \authors sabrina.meng thomas.lupin
+* \version 0.5
+* \date 27-11-2018
+*/
 
 #define _POSIX_C_SOURCE
 #define _DEFAULT_SOURCE
@@ -23,15 +21,10 @@
 #include "print.h"
 #include "execution.h"
 #include "ast_destroy.h"
+#include "shell.h"
 #include "env.h"
 #include "readfile.h"
 
-/**
- *\fn get_section
- *\brief Check if it is long option, option or script-file
- *\param char *arg  The argument to check
- *\return Return a size_t representing the section
- */
 static size_t get_section(char *arg)
 {
     if (arg[0] == '-')
@@ -85,29 +78,21 @@ enum shopt get_shopt(char *arg)
     return OTHER;
 }
 
-/**
- *\fn err_shopt
- *\brief Prints an error message on stderr for the [+]O option
- */
 static void err_shopt(void)
 {
-    warnx("Invalid arguments for [-+]O option");
-    warnx("Usage: [-+]O shopt_variable");
-    errx(1, "Shopt variables:\n\
-            \tast_print\n\
-            \tdotglob\n\
-            \texpand_aliases\n\
-            \textglob\n\
-            \tnocaseglob\n\
-            \tnullglob\n\
-            \tsourcepath\n\
-            \txpg_echo");
+    errx(2, "Invalid arguments for [-+]O option\n\
+      Usage: [-+]O shopt_variable\n\
+      Shopt variables:\n\
+            ast_print\n\
+            dotglob\n\
+            expand_aliases\n\
+            extglob\n\
+            nocaseglob\n\
+            nullglob\n\
+            sourcepath\n\
+            xpg_echo");
 }
 
-/**
- *\fn print_shopt_minus
- *\brief Prints the same output as bash with the -O option
- */
 static void print_shopt_minus(void)
 {
     printf("ast_print         off\n");
@@ -121,10 +106,6 @@ static void print_shopt_minus(void)
     exit(0);
 }
 
-/**
- *\fn print_shopt_plus
- *\brief Prints the same output as bash with the +O option
- */
 static void print_shopt_plus(void)
 {
     printf("shopt -u ast_print\n");
@@ -167,9 +148,10 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
 {
     if (section == 1 && !(argv[++i] && argv[i][0] != '-'))
     {
-        warnx("Invalid arguments for -c option");
-        errx(1, "Usage: -c <command>");
+        errx(1, "Invalid arguments for -c option\n\
+          Usage: -c <command>");
     }
+    shell.type = S_OPTION;
     struct variables *library = init_var();
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
@@ -182,15 +164,18 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     {
         if (isatty(STDIN_FILENO))
         {
+            shell.type = S_PROMPT;
             exit(show_prompt(norc, ast));
         }
         else
         {
+            shell.type = S_INPUT;
             exit(launch_pipe(ast));
         }
     }
     else
     {
+        shell.type = S_FILE;
         int res = 0;
         for (; argv[i]; i++)
         {
@@ -228,7 +213,7 @@ void options(char *argv[])
         {
             if (!section)
             {
-                printf("Version 0.3\n");
+                printf("Version 0.5\n");
                 exit(0);
             }
         }

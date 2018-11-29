@@ -1,10 +1,10 @@
 /**
- * \file var.c
- * \author louis.holleville
- * \version 0.3
- * \date 16-11-2018
- * \brief Management of shell variables
- */
+* \file var.c
+* \author louis.holleville
+* \version 0.3
+* \date 16-11-2018
+* \brief Management of shell variables
+*/
 
 #define _DEFAULT_SOURCE
 #include <stdlib.h>
@@ -14,6 +14,7 @@
 #include "env.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "shell.h"
 
 struct variables *init_var(void)
 {
@@ -43,6 +44,7 @@ struct variables *init_var(void)
     new->f_capacity = 8;
     new->size = 0;
     new->capacity = 8;
+    shell.var = new;
     return new;
 }
 
@@ -119,6 +121,7 @@ void destroy_var(struct variables *var)
     }
     free(var->f_lib);
     free(var);
+    shell.var = NULL;
 }
 
 char *get_var(struct variables *var, char *name)
@@ -164,18 +167,19 @@ void assign_prefix(struct variables *var, char *prefix)
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
 {
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
-    for (size_t i = 0; i < scmd->elt_size; i++)
+    size_t j = 0;
+    for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
         if (scmd->elements[i][0] == '$')
         {
             char *value = get_var(var, scmd->elements[i] + 1);
             if (value)
-                res[i] = strdup(value);
+                res[j] = strdup(value);
             else
-                res[i] = strdup("");
+                j--;
         }
         else
-            res[i] = strdup(scmd->elements[i]);
+            res[j] = strdup(scmd->elements[i]);
     }
     return res;
 }
