@@ -80,7 +80,7 @@ enum shopt get_shopt(char *arg)
 
 static void err_shopt(void)
 {
-    errx(1, "Invalid arguments for [-+]O option\n\
+    errx(2, "Invalid arguments for [-+]O option\n\
       Usage: [-+]O shopt_variable\n\
       Shopt variables:\n\
             ast_print\n\
@@ -148,8 +148,8 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
 {
     if (section == 1 && !(argv[++i] && argv[i][0] != '-'))
     {
-        warnx("Invalid arguments for -c option");
-        errx(1, "Usage: -c <command>");
+        errx(1, "Invalid arguments for -c option\n\
+          Usage: -c <command>");
     }
     shell.type = S_OPTION;
     struct variables *library = init_var();
