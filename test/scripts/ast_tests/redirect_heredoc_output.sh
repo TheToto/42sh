@@ -1,9 +1,8 @@
-cat << end
+cat << end > file
 Hey
 Hallo
 Ola
 Bonjour
 end
->file
 cat file
 rm file
