@@ -24,6 +24,7 @@
 #include "shell.h"
 #include "env.h"
 #include "readfile.h"
+#include "builtins.h"
 
 static size_t get_section(char *arg)
 {
@@ -75,9 +76,9 @@ static void exec_shopt(char **argv, size_t i, size_t section, enum option opt)
         if (shopt == OTHER)
             err_shopt();
         if (shopt == NO && opt == SHOPT_MINUS)
-            print_shopt(0);
+            print_shopt(0, shopt);
         if (shopt == NO && opt == SHOPT_PLUS)
-            print_shopt_plus();
+            print_shopt_plus(shopt);
     }
 }
 
@@ -88,9 +89,11 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
         warnx("Invalid arguments for -c option");
         errx(1, "Usage: -c <command>");
     }
+    int res = 0;
     shell.type = S_OPTION;
     struct variables *library = init_var();
-    int res = exec_main(argv[i], ast, library);
+    if (exec_builtin(argv[i]) == -1)
+        res = exec_main(argv[i], ast, library);
     destroy_var(library);
     exit(res);
 }
@@ -131,6 +134,7 @@ void options(char *argv[])
     size_t i = 1;
     int ast = check_ast_print(argv);
     int norc = 0;
+    shell.shopt_states = init_shoptlist();
     for (; argv[i]; i++)
     {
         size_t sect = get_section(argv[i]);

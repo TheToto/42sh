@@ -22,6 +22,8 @@
 #include "ast_destroy.h"
 #include "readfile.h"
 #include "shell.h"
+#include "builtins.h"
+#include "shopt.h"
 
 static char *init_path(char *file)
 {
@@ -79,12 +81,8 @@ int show_prompt(int norc, int is_print)
         char *buf = readline(get_var(library, "PS1"));
         if (buf && *buf)
             add_history(buf);
-        if (!strcmp(buf, "exit"))
-        {
-            free(buf);
-            break;
-        }
-        exec_main(buf, is_print, library);
+        if (exec_builtin(buf) == -1)
+            exec_main(buf, is_print, library);
         free(buf);
     }
     write_hist(histpath);

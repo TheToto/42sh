@@ -40,12 +40,11 @@ enum shopt
                           by default.*/
 };
 
-///Struct of a shopt state whether it is set or unset
-struct shopt_state
-{
-    enum shopt shopt;///<The shopt variable
-    int set;///<1 for set and 0 for unset
-};
+/**
+* Initialize the list of shopt variables and their state
+* \return Return the shopt list
+*/
+int *init_shoptlist(void);
 
 /**
 * Get the shopt variable according to the enum shopt of the header
@@ -61,11 +60,20 @@ void err_shopt(void);
 
 /**
 * Prints the state of the shopt variables
-* \param int is_builtin Check if this function is used by the shopt builtin
+* \param int is_builtin  Check if this function is used by the shopt builtin
+* \param enum shopt shopt  The shopt variable if given
 */
-void print_shopt(int is_builtin);
+void print_shopt(int is_builtin, enum shopt shopt);
 
 /**
 * Prints the commands run to set the shopt variables to their default state
+* \param enum shopt shopt  The shopt variable if given
 */
-void print_shopt_plus(void);
+void print_shopt_plus(enum shopt shopt);
+
+/**
+* Execute the shopt builtin
+* \param char *str  The line command with the shopt builtin
+* \return Return 0 if no error, else return a value different from 0
+*/
+int shopt_exec(char *str);
