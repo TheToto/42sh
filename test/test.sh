@@ -244,7 +244,7 @@ check_sanity () {
                 return 0;;
             * )
                 continue;;
-        esac
+       esac
     done < /tmp/tmp_sanity
     return 1
 }
@@ -294,7 +294,8 @@ for file in $list_of_file; do
 
     exit_status_sanity=1
     if [ $sanity -eq 1 ]; then
-        valgrind build/42sh "$file" 2> /tmp/tmp_sanity > /tmp/null
+        res_sanity="$(valgrind build/42sh $file 2>&1)"
+        echo "$res_sanity" > /tmp/tmp_sanity
         check_sanity
         exit_status_sanity="$?"
         rm /tmp/tmp_sanity
