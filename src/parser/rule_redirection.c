@@ -10,10 +10,12 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "parser.h"
 #include "ast.h"
 #include "ast_destroy.h"
+#include "shell.h"
 
 static enum redirect_type translate_redirect(enum token_type tok)
 {
@@ -70,18 +72,76 @@ static int set_default_io(struct token_list **tok)
     }
 }
 
-int rule_heredoc(struct token_list **tok, struct ast_node *redir, char *word)
+static int skip_token_line(struct token_list **tok)
+{
+    while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
+        NEXT_TOK(tok);
+    if (TOK_TYPE(tok) == END_OF_FILE)
+    {
+        warnx("End of heredoc missing");
+        return 0;
+    }
+    NEXT_TOK(tok);
+    return 1;
+}
+
+static int compute_lines_heredoc(struct token_list **tok,
+        struct ast_node *redir, char *word)
+{
+    char *beg = (*tok)->str_origin;
+
+    char *curLine = beg;
+    while (curLine)
+    {
+        char *nextLine = strchr(curLine, '\n');
+        if (nextLine)
+            *nextLine = '\0';
+        debug_token(tok);
+        if (skip_token_line(tok) == 0)
+            return 0;
+        printf("curLine=[%s]\n", curLine);
+        if (!strcmp(curLine, word))
+            break;
+        add_elt_heredoc(redir, curLine);
+        debug_token(tok);
+        if (nextLine)
+            *nextLine = '\n';
+        curLine = nextLine ? (nextLine+1) : NULL;
+    }
+    if (curLine == NULL)
+    {
+        warnx("End of heredoc is missing");
+        return 0;
+    }
+    return 1;
+}
+
+static void free_save(struct token_list **tok, struct token_list *save_free)
+{
+    struct token_list *free_until = *tok;
+    save_free->next = free_until;
+    // MEMORY LEAKS OK
+}
+
+static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
+        char *word)
 {
     if (shell.type == S_PROMPT)
         return 1;
-    while (!(!strcmp(TOK_STR(tok), word) && TOK_NEXT_TYPE(tok) == NEW_LINE))
-    {
-        while (TOK_TYPE(tok) != NEW_LINE)
-        {
-            add_elt_heredoc(redir, TOK_STR(tok);
-        }
+    struct token_list *save = *tok;
+    while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
         NEXT_TOK(tok);
+    if (TOK_TYPE(tok) == END_OF_FILE)
+    {
+        warnx("Heredoc missing");
+        return 0;
     }
+    struct token_list *save_free = *tok;
+    NEXT_TOK(tok); // Skip \n
+    if (compute_lines_heredoc(tok, redir, word) == 0)
+        return 0;
+    free_save(tok, save_free);
+    *tok = save;
     return 1;
 }
 
