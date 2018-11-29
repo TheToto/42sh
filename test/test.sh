@@ -158,6 +158,7 @@ printf $ANNONCE"  -------------"$DEFAULT"\n\n"
 
 is_err=0
 current_dir_test=""
+TEST=""
 
 while read line; do
     if [ $is_err -eq 1 ]; then
@@ -173,9 +174,9 @@ while read line; do
 
     case $line in
     *BEGINNINGEND*)
-              printf "      "$GREEN"PASSED"$DEFAULT"\n";;
+              printf "      "$GREEN"PASSED"$DEFAULT": $TEST"$DEFAULT"";;
     *BEGINNING* )
-              printf "      "$RED"FAILED"$DEFAULT"\n";;
+              printf "      "$RED"FAILED"$DEFAULT": $TEST"$DEFAULT"";;
     *-Testing:*   )
               test_dir="$(echo "$line" | cut -f 1 -d : | cut -f 3 -d /)"
               if [ "$test_dir" != "$current_dir_test" ]; then
@@ -183,7 +184,7 @@ while read line; do
                 pretty_printf_category "$line"
               fi
               test_comment="$(echo "$line" | sed -r 's/.*\"([^\"]*)\".*/\1/g')"
-              printf "    "$YELLOW"$test_comment"$DEFAULT"\n";;
+              TEST=$YELLOW"$test_comment"$DEFAULT"\n";;
     "FAILED TEST"*)
               printf "\n    "$RED"-------------------\n"
               printf "    $line\n"
@@ -211,9 +212,10 @@ rm tmp tmp_err
 ##############################################################################
 
 pretty_printf_err () {
-    printf $RED"      FAILED: differences between bash and 42sh\n        < 42sh\n        > bash\n\n"$DEFAULT
+    printf $RED"      FAILED"$DEFAULT": $TEST\n"
+    printf $RED"        differences between bash and 42sh\n          < 42sh\n          > bash\n\n"$DEFAULT
     while read line; do
-        printf $RED"      $line\n"$DEFAULT
+        printf $RED"        $line\n"$DEFAULT
     done < "$1"
 }
 
@@ -277,7 +279,7 @@ for file in $list_of_file; do
         continue
     fi
     TESTED="$(($TESTED + 1))"
-    printf $DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
+    TEST=$DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
     bash "$file" 2> /tmp/tmp_ref_err > /tmp/tmp 
     exit_status_ref="$?"
 
@@ -302,21 +304,24 @@ for file in $list_of_file; do
     diff_content="$(cat /tmp/res)"
     if [ $exit_status_sanity -eq 0 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: Leaks\n\n"$DEFAULT
+        printf $RED"      FAILED"$DEFAULT": $TEST\n"
+        printf $RED"        Leaks\n\n"$DEFAULT
     elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: Timeout\n\n"$DEFAULT
+        printf $RED"      FAILED"$DEFAULT": $TEST\n"
+        printf $RED"        Timeout\n\n"$DEFAULT
     elif [ -n "$diff_content" ]; then
         FAILED="$(($FAILED + 1))"
         pretty_printf_err /tmp/res
         printf "\n"
     elif [ $exit_status -ne $exit_status_ref ]; then
         FAILED="$(($FAILED + 1))"
-        printf $RED"      FAILED: invalid return value: expected $exit_status_ref got $exit_status\n\n"
+        printf $RED"      FAILED"$DEFAULT": $TEST\n"
+        printf $RED"        Invalid return value: expected $exit_status_ref got $exit_status\n\n"
         pretty_printf_stderr "$(cat /tmp/tmp_def_err)" "$(cat /tmp/tmp_ref_err)"
     else
         PASSED="$(($PASSED + 1))"
-        printf $GREEN"      PASSED\n"
+        printf $GREEN"      PASSED"$DEFAULT": $TEST"
     fi
 
     rm /tmp/tmp_r*
