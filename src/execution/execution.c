@@ -114,7 +114,7 @@ int exec_main(char *str, int is_print, struct variables *library)
     {
         lexer_destroy(shell.lexer);
         warnx("Error in parsing");
-        return 1;
+        return 2;
     }
 
     if (is_print)
