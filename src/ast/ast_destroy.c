@@ -20,7 +20,7 @@ void destroy_ast(struct ast_node *root)
         destroy_ast_node_if(root->son);
         break;
     case N_FOR:
-         destroy_ast_node_for(root->son);
+        destroy_ast_node_for(root->son);
         break;
     case N_WHILE:
         destroy_ast_node_while(root->son);

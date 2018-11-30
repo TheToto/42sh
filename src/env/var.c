@@ -133,13 +133,10 @@ char *get_var(struct variables *var, char *name)
     }
     struct var *cur;
     size_t i = 0;
-//    if (name[0] != '$') // if no $, return name
-//        return name;
-//    name++; // skip $
+
     for (; i < var->size; i++)
     {
         cur = var->lib[i];
-        //printf("DEBUG : %s %s\n", name, cur->name);
         if (strcmp(name, cur->name) == 0)
             break;
     }
@@ -159,7 +156,6 @@ void assign_prefix(struct variables *var, char *prefix)
         0
     };
     sscanf(prefix, "%[^=]=%s", name, value);
-    //fprintf(stderr, "Add var %s : %s\n", name, value);
     //recursive call here for further expansion
     add_var(var, name, value);
 }
