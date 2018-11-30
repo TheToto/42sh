@@ -62,6 +62,7 @@ int exec_builtin(char **str)
         res = exec_exit(str);
         break;
     case CD:
+        res = changedir(str);
         break;
     case SHOPT:
         res = shopt_exec(str);

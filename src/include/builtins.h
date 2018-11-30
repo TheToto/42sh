@@ -7,6 +7,8 @@
 **/
 #pragma once
 
+#define PATH_MAX 4096
+
 ///Enumeration of the builtins
 enum builtin
 {
@@ -45,3 +47,10 @@ int exec_builtin(char **str);
  * of the last command
 **/
 int exec_exit(char **str);
+
+/**
+ * Execute the cd builtin
+ * \param char **str  The string to be parsed
+ * \return Return 1 in case of error, else 0
+**/
+int changedir(char **str);
