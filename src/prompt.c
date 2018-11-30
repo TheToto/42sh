@@ -81,8 +81,7 @@ int show_prompt(int norc, int is_print)
         char *buf = readline(get_var(library, "PS1"));
         if (buf && *buf)
             add_history(buf);
-        if (exec_builtin(buf) == -1)
-            exec_main(buf, is_print, library);
+        exec_main(buf, is_print, library);
         free(buf);
     }
     write_hist(histpath);

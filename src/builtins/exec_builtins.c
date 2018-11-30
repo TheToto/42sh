@@ -43,22 +43,18 @@ static enum builtin get_builtin(char *str)
     return ANY;
 }
 
-size_t get_args(char *str)
+size_t get_args(char **str)
 {
     size_t n = 0;
-    for (size_t i = 0; str[i]; i++)
-    {
-        if (str[i] == ' ')
-            n++;
-    }
-    return n;
+    for ( ; str[n]; n++)
+        continue;
+    return n - 1;
 }
 
-int exec_builtin(char *str)
+int exec_builtin(char **str)
 {
-    char *cmd = strdup(str);
-    char *tmp = strtok(cmd, " ");
-    enum builtin builtin = get_builtin(tmp);
+    char *cmd = *str;
+    enum builtin builtin = get_builtin(cmd);
     int res = -1;
     switch (builtin)
     {
@@ -87,8 +83,7 @@ int exec_builtin(char *str)
     case ANY:
         break;
     default:
-        errx(127, "%s : command not found", str);
+        errx(127, "%s : command not found", str[0]);
     }
-    free(cmd);
     return res;
 }

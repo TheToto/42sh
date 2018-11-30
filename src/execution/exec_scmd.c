@@ -18,14 +18,18 @@
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
+#include "builtins.h"
 
 static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
     void *func = NULL;
+    int res = exec_builtin(expanded);
     if ((func = get_func(var, expanded[0])))
         status = exec_node(func, var);
+    else if (res != -1)
+        return res;
     else
     {
         pid = fork();
@@ -53,7 +57,6 @@ static int execute(char **expanded, int status, struct variables *var)
 
 int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
 {
-    //if !builtin cmd
     int status = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);

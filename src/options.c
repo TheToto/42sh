@@ -94,8 +94,7 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
     int res = 0;
     shell.type = S_OPTION;
     struct variables *library = init_var();
-    if (exec_builtin(argv[i]) == -1)
-        res = exec_main(argv[i], ast, library);
+    res = exec_main(argv[i], ast, library);
     destroy_var(library);
     exit(res);
 }
