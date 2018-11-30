@@ -1,10 +1,10 @@
 /**
-* \file shopt.c
-* Execute the shopt builtin
-* \authors sabrina.meng
-* \version 0.8
-* \date 29-11-2018
-*/
+ * \file shopt.c
+ * Execute the shopt builtin
+ * \authors sabrina.meng
+ * \version 0.8
+ * \date 29-11-2018
+**/
 
 #include <string.h>
 #include <err.h>
