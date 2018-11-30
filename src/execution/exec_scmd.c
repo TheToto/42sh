@@ -18,6 +18,7 @@
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
+#include "quote_lexer.h"
 
 static void add_params(char **expanded, struct variables *var)
 {
@@ -85,13 +86,11 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     int status = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
-    char **expanded = replace_var_scmd(var, scmd);
+    for (size_t i = 0; i < scmd->elt_size; i++)
+        remove_quoting(&(scmd->elements[i]));
     if (scmd->elt_size > 0)
     {
-        status = execute(expanded, status, var);
+        status = execute(scmd->elements, status, var);
     }
-    for (size_t i = 0; i < scmd->elt_size + 1; i++)
-        free(expanded[i]);
-    free(expanded);
     return status;
 }
