@@ -14,12 +14,10 @@
 
 #include "builtins.h"
 
-int exec_exit(char *str)
+int exec_exit(char **str)
 {
     size_t n = get_args(str);
-    char *cmd = strdup(str);
-    char *arg = strtok(cmd, " ");
-    arg = strtok(NULL, " ");
+    char *arg = str[1];
     int val;
     if (!n)
         val = 0; //TO FIX : has to be the last command return value
@@ -31,10 +29,8 @@ int exec_exit(char *str)
         else if (n != 1)
         {
             warnx("exit : too many arguments");
-            free(cmd);
             return 0;
         }
     }
-    free(cmd);
     exit(val);
 }
