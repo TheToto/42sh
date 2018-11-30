@@ -73,7 +73,7 @@ void print_shopt_plus(enum shopt shopt);
 
 /**
 * Execute the shopt builtin
-* \param char *str  The line command with the shopt builtin
+* \param char **str  The line command with the shopt builtin
 * \return Return 0 if no error, else return a value different from 0
 */
-int shopt_exec(char *str);
+int shopt_exec(char **str);

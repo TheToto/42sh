@@ -8,7 +8,9 @@
 
 #include <string.h>
 #include <err.h>
+#include <stdio.h>
 
+#include "builtins.h"
 #include "shopt.h"
 #include "shell.h"
 
@@ -35,40 +37,70 @@ enum shopt get_shopt(char *arg)
     return OTHER;
 }
 
-int shopt_exec(char *str)
+static int is_option(char *opt)
 {
-    char *arg = strtok(str, " ");
-    arg = strtok(NULL, " ");
-    char *shopt = strtok(NULL, " ");
-    enum shopt i = get_shopt(shopt);
-    if (!arg)
-        print_shopt(1, i);
-    else if (i == OTHER)
-        err_shopt();
-    else if (!strcmp(arg, "-u"))
+    if (!opt)
+        return 0;
+    if (!strcmp(opt, "-u"))
+        return 1;
+    else if (!strcmp(opt, "-s"))
+        return 2;
+    else if (opt[0] == '-')
     {
-        if (i == NO)
+        warnx("Invalid shell option name");
+        return -1;
+    }
+    return 0;
+
+}
+
+static void shopt_option(int opt, enum shopt shopt)
+{
+    if (opt == 1)
+    {
+        if (shopt == NO)
         {
             for (size_t j = 0; j < NB_SHOPT; j++)
                 shell.shopt_states[j] = 0;
         }
         else
-            shell.shopt_states[i - 2] = 0;
+            shell.shopt_states[shopt - 2] = 0;
     }
-    else if (!strcmp(arg, "-s"))
+    else if (opt == 2)
     {
-        if (i == NO)
+        if (shopt == NO)
         {
             for (size_t j = 0; j < NB_SHOPT; j++)
                 shell.shopt_states[j] = 1;
         }
         else
-            shell.shopt_states[i - 2] = 1;
+            shell.shopt_states[shopt - 2] = 1;
     }
-    else
+}
+
+int shopt_exec(char **str)
+{
+    size_t n = get_args(str);
+    char *arg = str[1];
+    int opt = is_option(arg);
+    if (!n)
+        print_shopt(1, NO);
+    else if (opt == 1 || opt == 2)
     {
-        warnx("Invalid shell option name");
-        return 1;
+        enum shopt shopt = get_shopt(str[2]);
+        if (shopt == OTHER)
+            err_shopt();
+        shopt_option(opt, shopt);
+    }
+    else if (!opt)
+    {
+        enum shopt shopt;
+        for (size_t i = 1; str[i]; i++)
+        {
+            shopt = get_shopt(str[i]);
+            printf("%s         %s\n", str[i],
+                    shell.shopt_states[shopt - 2] ? "on" : "off");
+        }
     }
     return 0;
 }
