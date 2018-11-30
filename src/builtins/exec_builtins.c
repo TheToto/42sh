@@ -1,10 +1,10 @@
 /**
-* \file exec_builtins.c
-* Execute the builtins
-* \authors sabrina.meng
-* \version 0.8
-* \date 29-11-2018
-*/
+ * \file exec_builtins.c
+ * Execute the builtins
+ * \authors sabrina.meng
+ * \version 0.8
+ * \date 29-11-2018
+**/
 
 #define _GNU_SOURCE
 
@@ -43,22 +43,33 @@ static enum builtin get_builtin(char *str)
     return ANY;
 }
 
+size_t get_args(char *str)
+{
+    size_t n = 0;
+    for (size_t i = 0; str[i]; i++)
+    {
+        if (str[i] == ' ')
+            n++;
+    }
+    return n;
+}
+
 int exec_builtin(char *str)
 {
     char *cmd = strdup(str);
     char *tmp = strtok(cmd, " ");
     enum builtin builtin = get_builtin(tmp);
-    if (builtin == ANY)
-        return -1;
+    int res = -1;
     switch (builtin)
     {
     case EXIT:
-        exit(0);
+        res = exec_exit(str);
+        break;
     case CD:
         break;
     case SHOPT:
-        if (shopt_exec(str) && shell.type != S_PROMPT)
-            exit(1);
+        res = shopt_exec(str);
+        break;
     case EXPORT:
         break;
     case ALIAS:
@@ -73,9 +84,11 @@ int exec_builtin(char *str)
         break;
     case HISTORY:
         break;
+    case ANY:
+        break;
     default:
         errx(127, "%s : command not found", str);
     }
     free(cmd);
-    return 0;
+    return res;
 }

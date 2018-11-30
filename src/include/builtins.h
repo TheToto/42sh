@@ -1,3 +1,10 @@
+/**
+ * \file builtins.h
+ * Execute the builtins
+ * \authors sabrina.meng
+ * \version 0.8
+ * \date 30-11-2018
+**/
 #pragma once
 
 ///Enumeration of the builtins
@@ -18,8 +25,23 @@ enum builtin
 };
 
 /**
-* Check if it is a builtin then execute it
-* \param char *str  The string to be parsed
-* \return Return 0 if no error, else, a value different from 0
-*/
+ * Get the nb of arguments in the string given
+ * \param char *str  The string to be parsed
+ * \return Return the nb of arguments
+**/
+size_t get_args(char *str);
+
+/**
+ * Check if it is a builtin then execute it
+ * \param char *str  The string to be parsed
+ * \return Return 0 if no error, else, a value different from 0
+**/
 int exec_builtin(char *str);
+
+/**
+ * Execute the exit builtin
+ * \param char *str  The string to be parsed
+ * \return Return the value specified in arguments or if not, return the value
+ * of the last command
+**/
+int exec_exit(char *str);
