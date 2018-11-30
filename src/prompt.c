@@ -61,6 +61,20 @@ struct token_list *show_ps2(void)
     return l->token_list;
 }
 
+char *quote_ps2(void)
+{
+    char *buf = readline(get_var(shell.var, "PS2"));
+    size_t size_buf = strlen(shell.buf);
+    char *tmp = realloc(shell.buf,
+            (size_buf + strlen(buf) + 2) * sizeof(char));
+    if (!tmp)
+        err("Failled to realloc quote ps2");
+    shell.buf = tmp;
+    strcat(shell.buf, buf);
+    free(buf);
+    return shell.buf + size_buf;
+}
+
 int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
@@ -82,7 +96,9 @@ int show_prompt(int norc, int is_print)
             free(buf);
             break;
         }
+        shell.buf = buf;
         exec_main(buf, is_print, library);
+        shell.buf = NULL;
         free(buf);
     }
     write_hist(histpath);

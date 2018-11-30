@@ -83,3 +83,9 @@ int show_prompt(int norc, int is_print);
 * \return Return new token_list
 */
 struct token_list *show_ps2(void);
+
+/**
+* Show PS2 for quoting, and add it next to shell.buf
+* \return Return next string pointer
+*/
+char *quote_ps2(void);
