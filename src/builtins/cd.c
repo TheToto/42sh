@@ -14,25 +14,21 @@
 #include <stdlib.h>
 
 #include "builtins.h"
+#include "env.h"
+#include "shell.h"
 
-int changedir(char **str)
+static int chngdir(char *arg, char *prevdir)
 {
-    size_t n = get_args(str);
-    if (n > 1)
-    {
-        warnx("cd : too many arguments");
-        return 1;
-    }
-    char *arg = str[1];
-    char prevdir[PATH_MAX];
-    if (!arg || strcmp(arg, "-"))
-        getcwd(prevdir, sizeof(prevdir));
     if (!arg)
     {
-        if (chdir(getenv("HOME")) == -1)
+        char *path = get_var(shell.var, "HOME");
+        if (path && path[0])
         {
-            warnx("cd : cannot change directory");
-            return 1;
+            if (chdir(path) == -1)
+            {
+                warnx("cd : cannot change directory");
+                return 1;
+            }
         }
     }
     else if (!strcmp(arg, "-"))
@@ -56,4 +52,19 @@ int changedir(char **str)
         }
     }
     return 0;
+}
+
+int changedir(char **str)
+{
+    size_t n = get_args(str);
+    if (n > 1)
+    {
+        warnx("cd : too many arguments");
+        return 1;
+    }
+    char *arg = str[1];
+    char prevdir[PATH_MAX];
+    if (!arg || strcmp(arg, "-"))
+        getcwd(prevdir, sizeof(prevdir));
+    return chngdir(arg, prevdir);
 }
