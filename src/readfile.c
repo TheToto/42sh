@@ -47,9 +47,9 @@ int launch_pipe(int is_print)
     for (int i = 0; 1; i++)
     {
         char tmp = getc(stdin);
-        size++;
         if (tmp == EOF)
             break;
+        size++;
         pipe[i] = tmp;
         if (size == capacity - 1)
         {
