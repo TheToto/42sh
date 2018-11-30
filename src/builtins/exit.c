@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "builtins.h"
 
@@ -19,6 +20,7 @@ int exec_exit(char **str)
     size_t n = get_args(str);
     char *arg = str[1];
     int val;
+    printf("exit\n");
     if (!n)
         val = 0; //TO FIX : has to be the last command return value
     else
