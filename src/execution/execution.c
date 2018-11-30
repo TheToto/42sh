@@ -115,6 +115,8 @@ int exec_main(char *str, int is_print, struct variables *library)
     {
         lexer_destroy(shell.lexer);
         warnx("Error in parsing");
+        if (shell.type == S_OPTION)
+            return 1;
         return 2;
     }
 
