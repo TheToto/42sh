@@ -12,6 +12,27 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
+struct ast_node *rule_do_group(struct token_list **tok)
+{
+    if (TOK_TYPE(tok) != DO)
+    {
+        warnx("Need a do in do group");
+        return NULL;
+    }
+    NEXT_TOK(tok);
+    ask_ps2(tok);
+    struct ast_node *do_group = rule_compound_list(tok, DONE);
+    ask_ps2(tok);
+    if (TOK_TYPE(tok) == DONE)
+    {
+        NEXT_TOK(tok);
+        return do_group;
+    }
+    destroy_ast(do_group);
+    warnx("I need a done after a do group");
+    return NULL;
+}
+
 struct ast_node *rule_while(struct token_list **tok)
 {
     if (TOK_TYPE(tok) != WHILE)
@@ -42,27 +63,6 @@ struct ast_node *rule_while(struct token_list **tok)
     return create_ast_node_while(condition, do_group);
 }
 
-struct ast_node *rule_do_group(struct token_list **tok)
-{
-    if (TOK_TYPE(tok) != DO)
-    {
-        warnx("Need a do in do group");
-        return NULL;
-    }
-    NEXT_TOK(tok);
-    ask_ps2(tok);
-    struct ast_node *do_group = rule_compound_list(tok, DONE);
-    ask_ps2(tok);
-    if (TOK_TYPE(tok) == DONE)
-    {
-        NEXT_TOK(tok);
-        return do_group;
-    }
-    destroy_ast(do_group);
-    warnx("I need a done after a do group");
-    return NULL;
-}
-
 struct ast_node *rule_until(struct token_list **tok)
 {
     if (TOK_TYPE(tok) != UNTIL)
@@ -76,14 +76,13 @@ struct ast_node *rule_until(struct token_list **tok)
     struct ast_node *condition = rule_compound_list(tok, DO);
     if (!condition)
         return NULL;
-
+    ask_ps2(tok);
     if (TOK_TYPE(tok) != DO)
     {
         destroy_ast(condition);
         warnx("Need a do after a while condition");
         return NULL;
     }
-    NEXT_TOK(tok);
     struct ast_node *do_group = rule_do_group(tok);
     if (!do_group)
     {
