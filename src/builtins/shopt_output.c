@@ -76,21 +76,21 @@ void print_shopt(int is_builtin, enum shopt shopt)
     size_t i = 0;
     if (shopt == NO)
     {
-        printf("ast_print         %s\n",
+        printf("ast_print       %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("dotglob           %s\n",
+        printf("dotglob         %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("expand_aliasases  %s\n",
+        printf("expand_aliases  %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("extglob           %s\n",
+        printf("extglob         %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("nocaseglob        %s\n",
+        printf("nocaseglob      %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("nullglob          %s\n",
+        printf("nullglob        %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("sourcepath        %s\n",
+        printf("sourcepath      %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
-        printf("xpg_echo          %s\n",
+        printf("xpg_echo        %s\n",
                 shell.shopt_states[i++] ? "on" : "off");
     }
     else

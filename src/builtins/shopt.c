@@ -95,10 +95,12 @@ int shopt_exec(char **str)
     else if (!opt)
     {
         enum shopt shopt;
+        int len;
         for (size_t i = 1; str[i]; i++)
         {
             shopt = get_shopt(str[i]);
-            printf("%s         %s\n", str[i],
+            len = 19 - strlen(str[i]);
+            printf("%s%*s\n", str[i], len,
                     shell.shopt_states[shopt - 2] ? "on" : "off");
         }
     }
