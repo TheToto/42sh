@@ -52,7 +52,7 @@
 * [x] Ressource file reader
 
 # Built in
-* [x] exit (hardcoded)
+* [~] exit (need to fix exit with no arg)
 * [ ] cd
 * [~] shopt (output handled)
 * [ ] export

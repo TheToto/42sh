@@ -85,6 +85,8 @@ int shopt_exec(char **str)
     int opt = is_option(arg);
     if (!n)
         print_shopt(1, NO);
+    else if (opt == -1)
+        return 1;
     else if (opt == 1 || opt == 2)
     {
         enum shopt shopt = get_shopt(str[2]);
