@@ -96,11 +96,10 @@ void assign_prefix(struct variables *var, char *prefix);
 
 /**
 * @fn replace_var
-* @param var library to use
 * @param scmd new variable
 * Replace element by its new variable if a declaration was made
 */
-char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd);
+char **replace_var_scmd(struct ast_node_scmd *scmd);
 
 /**
 * @param var library to use

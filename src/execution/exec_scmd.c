@@ -86,11 +86,13 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     int status = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
-    for (size_t i = 0; i < scmd->elt_size; i++)
-        remove_quoting(&(scmd->elements[i]));
+    char **expanded = replace_var_scmd(scmd);
     if (scmd->elt_size > 0)
     {
-        status = execute(scmd->elements, status, var);
+        status = execute(expanded, status, var);
     }
+    for (size_t i = 0; i < scmd->elt_size + 1; i++)
+        free(expanded[i]);
+    free(expanded);
     return status;
 }
