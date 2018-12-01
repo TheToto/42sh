@@ -22,7 +22,6 @@ struct ast_node *rule_do_group(struct token_list **tok)
     NEXT_TOK(tok);
     ask_ps2(tok);
     struct ast_node *do_group = rule_compound_list(tok, DONE);
-    ask_ps2(tok);
     if (TOK_TYPE(tok) == DONE)
     {
         NEXT_TOK(tok);

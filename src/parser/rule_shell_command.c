@@ -27,6 +27,7 @@ struct ast_node *rule_shell_command(struct token_list **tok)
     if (TOK_TYPE(tok) == BRACKET_ON)
     {
         NEXT_TOK(tok);
+        ask_ps2(tok);
         struct ast_node *res = rule_compound_list(tok, BRACKET_OFF);
         if (!res)
             return NULL;
@@ -42,6 +43,7 @@ struct ast_node *rule_shell_command(struct token_list **tok)
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
     {
         NEXT_TOK(tok);
+        ask_ps2(tok);
         struct ast_node *res = rule_compound_list(tok, PARENTHESIS_OFF);
         if (!res)
             return NULL;
