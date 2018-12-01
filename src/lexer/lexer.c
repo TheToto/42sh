@@ -61,20 +61,23 @@ static int get_next_quoted(char *str)
     int i = 0;
     for (; str[i] && str[i] != '\t' && str[i] != ' '; i++)
     {
-        if (str[i] != '\'' || (i > 0 && str[i - 1] == '\\'))
+        if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
         {
+            i++;
             while (str[i]
                 && (str[i] != '\'' || (i > 0 && str[i - 1] == '\\')))
                 i++;
         }
-        else if (str[i] != '\"' || (i > 0 && str[i - 1] == '\\'))
+        else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
         {
+            i++;
             while (str[i]
                 && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
                 i++;
         }
-        else if (str[i] != '`' || (i > 0 && str[i - 1] == '\\'))
+        else if (str[i] == '`' && !(i > 0 && str[i - 1] == '\\'))
         {
+            i++;
             while (str[i]
                 && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
                 i++;
@@ -106,17 +109,7 @@ static char *get_next_str(char **beg, char **ptr)
     skip_space_and_tab(beg);
     skip_comment(beg);
     *ptr = *beg;
-    char *cur = *beg;
-    for (; *cur && *cur != ' ' && *cur != '\t'
-            && *cur != '\"'; cur++)
-        len += 1;
-    if (*cur == '\"')
-    {
-        for (cur += 1, len += 1; *cur && *cur != '\"'; cur++)
-            len += 1;
-        for (; *cur && *cur != ' ' && *cur != '\t'; cur++)
-            len += 1;
-    }
+    len = get_next_quoted(*beg);
     char *res = calloc(1, len + 1);
     if (res)
     {
@@ -172,9 +165,29 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
+static int get_next_qword(char **str, char *word, struct token_list *tl)
+{
+    int i = 1;
+    word[0] = **str;
+    while ((*str)[i] && (*str)[i] != **str)
+    {
+        word[i] = (*str)[i];
+        i++;
+    }
+    word[i] = (*str)[i];
+    word[i + 1] = 0;
+    set_tl(tl, word, WORD_EXT, *str);
+    return i + 1;
+}
+
 static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
+    if (**str == '\'' || **str == '\"' || **str == '`')
+    {
+        *str += get_next_qword(str, word, tl);
+        return;
+    }
     size_t i = 0;
     int found = 0;
     enum token_type type = WORD;
