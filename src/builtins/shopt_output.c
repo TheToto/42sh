@@ -22,10 +22,9 @@ int *init_shoptlist(void)
         if (!shell.shopt_states)
             errx(1, "Malloc error");
     }
-    size_t j = ASTPRINT;
-    for (size_t i = 0; i < NB_SHOPT; i++, j++)
+    for (size_t i = 0; i < NB_SHOPT; i++)
         shell.shopt_states[i] = 0;
-    shell.shopt_states[SRCPATH - 2] = 1;
+    shell.shopt_states[SRCPATH] = 1;
     return shell.shopt_states;
 }
 
@@ -40,10 +39,10 @@ static void reset_shopt(enum shopt shopt)
     case NOCASEGLOB:
     case NULLGLOB:
     case XPGECHO:
-        shell.shopt_states[shopt - 2] = 0;
+        shell.shopt_states[shopt] = 0;
         break;
     case SRCPATH:
-        shell.shopt_states[shopt - 2] = 1;
+        shell.shopt_states[shopt] = 1;
         break;
     default:
         break;

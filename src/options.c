@@ -60,7 +60,7 @@ enum option get_option(char *opt)
 
 static int check_ast_print(char **argv)
 {
-    if (shell.shopt_states[ASTPRINT - 2])
+    if (shell.shopt_states[ASTPRINT])
         return 1;
     for (size_t i = 1; argv[i]; i++)
     {

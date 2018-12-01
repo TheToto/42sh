@@ -12,11 +12,7 @@
 ///Enumeration of the shopt variables
 enum shopt
 {
-    OTHER = 0, ///<Not a shopt variable
-
-    NO,///<No arguments given to shopt builtin
-
-    ASTPRINT,///<ast_print  Prints the AST
+    ASTPRINT = 0,///<ast_print  Prints the AST
 
     DOTGLOB,/**<dotglob  Bash includes filenames beginning with a ‘.’
                          in the results of filename expansion.*/
@@ -38,6 +34,10 @@ enum shopt
 
     XPGECHO,/**<xpg_echo  The echo builtin expands backslash-escape sequences
                           by default.*/
+
+    OTHER, ///<Not a shopt variable
+
+    NO,///<No arguments given to shopt builtin
 };
 
 /**

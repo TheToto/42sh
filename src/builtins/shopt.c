@@ -54,27 +54,24 @@ static int is_option(char *opt)
 
 }
 
-static void shopt_option(int opt, enum shopt shopt)
+static void shopt_option(char **str, int opt)
 {
-    if (opt == 1)
+    enum shopt shopt = get_shopt(str[2]);
+    if (shopt == NO)
     {
-        if (shopt == NO)
-        {
-            for (size_t j = 0; j < NB_SHOPT; j++)
-                shell.shopt_states[j] = 0;
-        }
-        else
-            shell.shopt_states[shopt - 2] = 0;
+        for (size_t j = 0; j < NB_SHOPT; j++)
+            shell.shopt_states[j] = opt == 1 ? 0 : 1;
     }
-    else if (opt == 2)
+    else
     {
-        if (shopt == NO)
+        for (size_t i = 2; str[i]; i++)
         {
-            for (size_t j = 0; j < NB_SHOPT; j++)
-                shell.shopt_states[j] = 1;
+            shopt = get_shopt(str[i]);
+            if (shopt == OTHER)
+                err_shopt();
+            else
+                shell.shopt_states[shopt] = opt == 1 ? 0 : 1;
         }
-        else
-            shell.shopt_states[shopt - 2] = 1;
     }
 }
 
@@ -83,27 +80,27 @@ int shopt_exec(char **str)
     size_t n = get_args(str);
     char *arg = str[1];
     int opt = is_option(arg);
+    enum shopt shopt;
     if (!n)
         print_shopt(1, NO);
     else if (opt == -1)
         return 1;
     else if (opt == 1 || opt == 2)
-    {
-        enum shopt shopt = get_shopt(str[2]);
-        if (shopt == OTHER)
-            err_shopt();
-        shopt_option(opt, shopt);
-    }
+        shopt_option(str, opt);
     else if (!opt)
     {
-        enum shopt shopt;
         int len;
         for (size_t i = 1; str[i]; i++)
         {
             shopt = get_shopt(str[i]);
-            len = 19 - strlen(str[i]);
-            printf("%s%*s\n", str[i], len,
-                    shell.shopt_states[shopt - 2] ? "on" : "off");
+            if (shopt == OTHER)
+                err_shopt();
+            else
+            {
+                len = 19 - strlen(str[i]);
+                printf("%s%*s\n", str[i], len,
+                        shell.shopt_states[shopt] ? "on" : "off");
+            }
         }
     }
     return 0;
