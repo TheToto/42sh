@@ -12,7 +12,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <time.h>
 
 #include "env.h"
 #include "ast.h"
@@ -186,10 +185,7 @@ char *get_var(struct variables *var, char *name)
     if (i == var->size)
         return NULL;
     if (!strcmp(name, "RANDOM"))
-    {
-        srand(time(NULL));
         sprintf(cur->value, "%d", rand() % 32767);
-    }
     return cur->value;
 }
 

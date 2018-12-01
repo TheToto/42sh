@@ -9,6 +9,7 @@
 #include <err.h>
 #include <shell.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "options.h"
 #include "lexer.h"
@@ -38,6 +39,7 @@ void my_abort(void)
 
 int main(int argc, char *argv[])
 {
+    srand(time(NULL));
     if (atexit(my_abort) != 0)
         errx(1, "Failed to set up atexit");
     if (argc < 1)
