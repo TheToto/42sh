@@ -21,6 +21,8 @@ static int check_redirect(enum token_type tok)
 
 static struct ast_node *fix_redir_funcdec(struct ast_node *redir)
 {
+    if (!redir)
+        return NULL;
     if (redir->type != N_REDIRECT)
         return redir;
     struct ast_node *save = redir;
