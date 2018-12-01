@@ -56,18 +56,55 @@ static void set_tl(struct token_list *tl, char *str,
     tl->next = NULL;
 }
 
-static char *get_next_str(char **beg, char **ptr)
+static int get_next_quoted(char *str)
 {
-    if (!beg || !*beg || !**beg)
-        return NULL;
-    size_t len = 0;
+    int i = 0;
+    for (; str[i] && str[i] != '\t' && str[i] != ' '; i++)
+    {
+        if (str[i] != '\'' || (i > 0 && str[i - 1] == '\\'))
+        {
+            while (str[i]
+                && (str[i] != '\'' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        else if (str[i] != '\"' || (i > 0 && str[i - 1] == '\\'))
+        {
+            while (str[i]
+                && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        else if (str[i] != '`' || (i > 0 && str[i - 1] == '\\'))
+        {
+            while (str[i]
+                && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+    }
+    return i;
+}
+
+static void skip_space_and_tab(char **beg)
+{
     for (; **beg && (**beg == ' ' || **beg == '\t'); (*beg)++)
         continue;
+}
+
+static void skip_comment(char **beg)
+{
     if (**beg == '#')
     {
         for (; **beg && **beg != '\n'; (*beg)++)
             continue;
     }
+}
+
+static char *get_next_str(char **beg, char **ptr)
+{
+    if (!beg || !*beg || !**beg)
+        return NULL;
+    size_t len = 0;
+    skip_space_and_tab(beg);
+    skip_comment(beg);
     *ptr = *beg;
     char *cur = *beg;
     for (; *cur && *cur != ' ' && *cur != '\t'
