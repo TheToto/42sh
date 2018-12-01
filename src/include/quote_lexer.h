@@ -7,8 +7,8 @@
 enum token_quote
 {
     DOLLAR,             ///< $
-    BACK_QUOTED,        ///< `
     DQUOTED,            ///< "
+    BACK_QUOTED,        ///< `
     QUOTED,             ///< '
     BACK_SLASHED,       ///< '\'
     WORD_DEFAULT,       ///< everithing else
@@ -28,7 +28,7 @@ struct lexer_quote
     struct token_list_quote *tl;
 };
 
-void remove_quoting(char **str_org);
+char *remove_quoting(char **str_org);
 
 struct lexer_quote *lexer_quote(char *str);
 void destroy_lexer_quote(struct lexer_quote *l);

@@ -80,6 +80,8 @@
     - src/parser/rule_simple_command.c;
     - src/parser/rule_while.c;
     - src/prompt.c
+    - src/quote/quote_handling.c
+    - src/quote/quote_lexer.c
     - src/readfile.c;
 
 :defines:
