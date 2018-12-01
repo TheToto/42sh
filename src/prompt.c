@@ -79,16 +79,15 @@ int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
     read_history(histpath);
-    struct variables *library = init_var();
-    if (!get_var(library, "PS1"))
-        add_var(library, "PS1", "[42sh@pc]$ ");
-    if (!get_var(library, "PS2"))
-        add_var(library, "PS2", "> ");
+    if (!get_var(shell.var, "PS1"))
+        add_var(shell.var, "PS1", "[42sh@pc]$ ");
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ");
     if (!norc)
-        launchrc(is_print, library);
+        launchrc(is_print, shell.var);
     while (1)
     {
-        char *buf = readline(get_var(library, "PS1"));
+        char *buf = readline(get_var(shell.var, "PS1"));
         if (buf && *buf)
             add_history(buf);
         if (!strcmp(buf, "exit"))
@@ -97,14 +96,13 @@ int show_prompt(int norc, int is_print)
             break;
         }
         shell.buf = buf;
-        exec_main(buf, is_print, library);
+        exec_main(buf, is_print, shell.var);
         shell.buf = NULL;
         free(buf);
     }
     write_hist(histpath);
     history_truncate_file(histpath, 500);
 
-    destroy_var(library);
     free(histpath);
     return 0;
 }

@@ -153,6 +153,7 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
     }
     shell.type = S_OPTION;
     struct variables *library = init_var();
+    set_up_var(argv);
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
     exit(res);
@@ -160,32 +161,31 @@ static void exec_cmd(size_t section, char **argv, size_t i, int ast)
 
 static void launch_sh(char *argv[], int i, int ast, int norc)
 {
+    struct variables *var = init_var();
+    int res = 0;
     if (!argv[i])
     {
         if (isatty(STDIN_FILENO))
         {
             shell.type = S_PROMPT;
-            exit(show_prompt(norc, ast));
+            set_up_var(argv);
+            res = show_prompt(norc, ast);
         }
         else
         {
+            set_up_var(argv);
             shell.type = S_INPUT;
-            exit(launch_pipe(ast));
+            res = launch_pipe(ast);
         }
     }
     else
     {
         shell.type = S_FILE;
-        int res = 0;
-        for (; argv[i]; i++)
-        {
-            //printf("File to exec : %s\n", argv[i]);
-            struct variables *var = init_var();
-            res = launch_file(argv[i], ast, var);
-            destroy_var(var);
-        }
-        exit(res);
+        set_up_var(argv + 1);
+        res = launch_file(argv[1], ast, var);
     }
+    destroy_var(var);
+    exit(res);
 }
 
 void options(char *argv[])

@@ -62,10 +62,8 @@ int launch_pipe(int is_print)
         }
     }
     pipe[size] = '\0';
-    struct variables *library = init_var();
-    int res = exec_main(pipe, is_print, library);
+    int res = exec_main(pipe, is_print, shell.var);
     free(pipe);
     shell.buf = NULL;
-    destroy_var(library);
     return res;
 }

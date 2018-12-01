@@ -118,3 +118,5 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type);
 * @return NULL if not found, its value otherwise
 */
 void *get_func(struct variables *var, char *name);
+
+void set_up_var(char *args[]);

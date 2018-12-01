@@ -6,15 +6,58 @@
 * \brief Management of shell variables
 */
 
-#define _DEFAULT_SOURCE
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <err.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <time.h>
+
 #include "env.h"
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+
+void set_up_var(char *args[])
+{
+    char *buf_nb = calloc(20, sizeof(char));
+    // $$
+    sprintf(buf_nb, "%d", getpid());
+    add_var(shell.var, "$", buf_nb);
+    // $0...n $#
+    size_t nb = 0;
+    size_t size = 0;
+    for (; args && args[nb]; nb++)
+    {
+        sprintf(buf_nb, "%ld", nb);
+        add_var(shell.var, buf_nb, args[nb]);
+        size += strlen(args[nb]) + 1;
+    }
+    sprintf(buf_nb, "%ld", nb - 1);
+    add_var(shell.var, "#", buf_nb);
+    // $@ $*
+    char *star = calloc(size, sizeof(char));
+    for (size_t i = 1; args && args[i]; i++)
+    {
+        strcat(star, args[i]);
+        if (args[i + 1])
+            strcat(star, " ");
+    }
+    add_var(shell.var, "*", star);
+    add_var(shell.var, "@", star);
+    sprintf(buf_nb, "%d", getuid());
+    add_var(shell.var, "UID", buf_nb);
+    char *pwd = get_current_dir_name();
+    add_var(shell.var, "OLDPWD", pwd);
+    free(pwd);
+    add_var(shell.var, "RANDOM", "32767");
+    // SHELLOPTS
+    add_var(shell.var, "IFS", " \\t\\n");
+
+    free(star);
+    free(buf_nb);
+}
 
 struct variables *init_var(void)
 {
@@ -142,6 +185,11 @@ char *get_var(struct variables *var, char *name)
     }
     if (i == var->size)
         return NULL;
+    if (!strcmp(name, "RANDOM"))
+    {
+        srand(time(NULL));
+        sprintf(cur->value, "%d", rand() % 32767);
+    }
     return cur->value;
 }
 
