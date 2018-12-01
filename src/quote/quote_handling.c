@@ -11,7 +11,7 @@ static
 void remove_quoting_inside_dquoting(char **str_org)
 {
     char *str = *str_org;
-    size_t len =strlen(str);
+    size_t len = strlen(str);
     char *res = calloc(1, len);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
@@ -19,7 +19,14 @@ void remove_quoting_inside_dquoting(char **str_org)
     struct token_list_quote *tl = l->tl;
     while (tl->next)
     {
-        if (tl->tok > QUOTED)
+        if (tl->tok == BACK_SLASHED)
+        {
+            if (*tl->str != '$' && *tl->str != '`' && *tl->str != '\n'
+                && *tl->str != '"' && *tl->str != '\\')
+                strcat(res, "\\");
+            strcat(res, tl->str);
+        }
+        else if (tl->tok > QUOTED)
             strcat(res, tl->str);
         else if (tl->tok == QUOTED)
         {
