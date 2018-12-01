@@ -5,8 +5,11 @@
 *\date 22-11-2018
 *\brief Fonction declaration rule function
 */
+#define _GNU_SOURCE
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "parser.h"
 #include "ast.h"
@@ -17,8 +20,9 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     char *name_func;
     if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
         NEXT_TOK(tok);
+    ask_ps2(tok);
     if (TOK_TYPE(tok) == WORD)
-        name_func = TOK_STR(tok);
+        name_func = strdup(TOK_STR(tok));
     else
     {
         warnx("This function has no name");
@@ -40,8 +44,11 @@ struct ast_node *rule_funcdec(struct token_list **tok)
         return NULL;
     }
     remove_new_line(tok);
+    ask_ps2(tok);
     struct ast_node *body = rule_shell_command(tok);
     if (!body)
         return NULL;
-    return create_ast_node_fctdec(name_func, body);
+    struct ast_node *res = create_ast_node_fctdec(name_func, body);
+    free(name_func);
+    return res;
 }
