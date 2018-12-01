@@ -21,15 +21,30 @@
 
 static void add_params(char **expanded, struct variables *var)
 {
-    for (int i = 1; expanded[i] != NULL; i++)
+    char *buf_nb = calloc(20, sizeof(char));
+    if (!buf_nb)
+        errx(1, "Failed to malloc");
+    size_t nb = 1;
+    size_t size = 0;
+    for (; expanded && expanded[nb]; nb++)
     {
-        char *buf = calloc(50, sizeof(char));
-        if (!buf)
-            err(1, "Malloc failed in add_params");
-        sprintf(buf, "%d", i);
-        add_var(var, buf, expanded[i]);
-        free(buf);
+        sprintf(buf_nb, "%ld", nb);
+        add_var(var, buf_nb, expanded[nb]);
+        size += strlen(expanded[nb]) + 1;
     }
+    sprintf(buf_nb, "%ld", nb - 1);
+    add_var(var, "#", buf_nb);
+    // $@ $*
+    char *star = calloc(size, sizeof(char));
+    for (size_t i = 1; expanded && expanded[i]; i++)
+    {
+        strcat(star, expanded[i]);
+        if (expanded[i + 1])
+            strcat(star, " ");
+    }
+    add_var(var, "*", star);
+    add_var(var, "@", star);
+    free(buf_nb);
 }
 
 static void urgent_free(char **expanded)

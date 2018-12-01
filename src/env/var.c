@@ -21,6 +21,8 @@
 void set_up_var(char *args[])
 {
     char *buf_nb = calloc(20, sizeof(char));
+    if (!buf_nb)
+        errx(1, "Failed to malloc");
     // $$
     sprintf(buf_nb, "%d", getpid());
     add_var(shell.var, "$", buf_nb);
