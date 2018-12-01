@@ -28,7 +28,7 @@ struct lexer_quote
     struct token_list_quote *tl;
 };
 
-char *remove_quoting(char **str_org);
+char *remove_quoting(char *str);
 
 struct lexer_quote *lexer_quote(char *str);
 void destroy_lexer_quote(struct lexer_quote *l);

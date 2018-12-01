@@ -56,7 +56,7 @@ char *remove_quoting(char *str)
     char *res = calloc(1, len);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
-        return;
+        return NULL;
     struct token_list_quote *tl = l->tl;
     while (tl->next)
     {
@@ -78,7 +78,7 @@ char *remove_quoting(char *str)
                 if (!check)
                 {
                     free(res);
-                    return;
+                    return NULL;
                 }
                 len += strlen(tmp);
                 res = check;
