@@ -64,9 +64,10 @@
 * [ ] history
 
 # Export
-* [ ] Code basic files
-* [ ] Handle transmission of exported var
-* [ ] Assign to builtins management
+* [x] Code basic files
+* [x] Handle transmission of exported var
+* [x] Assign to builtins management
+* [ ] Assign all var env to lib at starting
 
 # RETURN VALUE
 * [ ] Fix wrong return value
