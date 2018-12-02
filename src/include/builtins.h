@@ -54,3 +54,9 @@ int exec_exit(char **str);
  * \return Return 1 in case of error, else 0
 **/
 int changedir(char **str);
+
+/**
+ * Execute the echo builtin
+ * \param char **str  The string to be parsed
+**/
+int echo(char **str);

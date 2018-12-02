@@ -59,14 +59,11 @@ int exec_builtin(char **str)
     switch (builtin)
     {
     case EXIT:
-        res = exec_exit(str);
-        break;
+        return exec_exit(str);
     case CD:
-        res = changedir(str);
-        break;
+        return changedir(str);
     case SHOPT:
-        res = shopt_exec(str);
-        break;
+        return shopt_exec(str);
     case EXPORT:
         break;
     case ALIAS:
@@ -74,7 +71,7 @@ int exec_builtin(char **str)
     case UNALIAS:
         break;
     case ECHO:
-        break;
+        return echo(str);
     case CONTINUE:
         break;
     case SOURCE:
