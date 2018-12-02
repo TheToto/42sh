@@ -16,6 +16,12 @@ struct stack *init_stack(void)
     return stack;
 }
 
+void destroy_stack(struct stack *stack)
+{
+    free(stack->tab);
+    free(stack);
+}
+
 int is_full_stack(struct stack *stack)
 {
     return stack->size == stack->capacity;
