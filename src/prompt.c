@@ -51,10 +51,7 @@ static void launchrc(int is_print, struct variables *var)
         launch_file("/etc/42shrc", is_print, var);
     if (!stat(filerc, &buf))
         launch_file(filerc, is_print, var);
-    if (!get_var(var, "PS1"))
-        add_var(var, "PS1", "[42sh@pc]$ ");
-    if (!get_var(var, "PS2"))
-        add_var(var, "PS2", "> ");
+
     free(filerc);
 }
 
@@ -69,6 +66,18 @@ struct token_list *show_ps2(void)
     return l->token_list;
 }
 
+static void init_libvar(void)
+{
+    if (!get_var(shell.var, "PS1"))
+        add_var(shell.var, "PS1", "[42sh@pc]$ ");
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ");
+    if (!get_var(shell.var, "PWD"))
+        add_var(shell.var, "PWD", getenv("PWD"));
+    if (!get_var(shell.var, "HOME"))
+        add_var(shell.var, "HOME", getenv("HOME"));
+}
+
 int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
@@ -76,6 +85,7 @@ int show_prompt(int norc, int is_print)
     struct variables *library = init_var();
     if (!norc)
         launchrc(is_print, library);
+    init_libvar();
     while (1)
     {
         char *buf = readline(get_var(library, "PS1"));
