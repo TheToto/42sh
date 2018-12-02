@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "shell.h"
+#include "builtins.h"
 #include "env.h"
 
 static char err_param(char *str)
@@ -34,7 +35,7 @@ static char name_ok(char *str)
     }
     if (digits == len)
         return 0;
-    if (len >= 255)
+    if (len >= PATH_MAX)
         return 0;
     return 1;
 }
@@ -42,7 +43,7 @@ static char name_ok(char *str)
 static char treat_export(char **str, char *p, char *n)
 {
     char res = 0;
-    size_t i = 0;
+    size_t i = 1;
     for (; str[i]; i++)
     {
         if (str[i][0] == '-')
@@ -74,7 +75,7 @@ static char treat_export(char **str, char *p, char *n)
             return -1;
         }
     }
-    if (i == 0)
+    if (i == 1)
         *p = 1;
     return res;
 }
@@ -96,7 +97,7 @@ static int handle_p(char flags)
 
 static int handle_n(char **str)
 {
-    for (size_t i = 0; str[i]; i++)
+    for (size_t i = 1; str[i]; i++)
     {
         if (str[i][0] != '-')
             del_var(shell.var, str[i]);
@@ -109,21 +110,22 @@ static void my_split(char *str, char *name, char *value)
     size_t i = 0;
     for (; str[i] && str[i] != '='; i++)
         name[i] = str[i];
-    for (; str[i]; i++)
-        value[i] = str[i];
+    i += str[i] == '=';
+    for (size_t j = 0; str[i]; i++, j++)
+        value[j] = str[i];
 }
 
 static int handle_export(char **str)
 {
-    for (size_t i = 0; str[i]; i++)
+    for (size_t i = 1; str[i]; i++)
     {
         if (str[i][0] != '-')
         {
-            char name[255] =
+            char name[PATH_MAX] =
             {
                 0
             };
-            char value[255] =
+            char value[PATH_MAX] =
             {
                 0
             };

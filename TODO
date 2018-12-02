@@ -52,15 +52,21 @@
 * [x] Ressource file reader
 
 # Built in
+* [ ] management of builtins
 * [~] exit (need to fix exit with no arg)
 * [x] cd
 * [~] shopt (output handled)
-* [ ] export
+* [~] export
 * [ ] alias/unalias
 * [ ] echo
 * [ ] continue/break
 * [ ] source
 * [ ] history
+
+# Export
+* [ ] Code basic files
+* [ ] Handle transmission of exported var
+* [ ] Assign to builtins management
 
 # RETURN VALUE
 * [ ] Fix wrong return value

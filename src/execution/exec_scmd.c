@@ -25,10 +25,10 @@ static int execute(char **expanded, int status, struct variables *var)
     pid_t pid;
     int error = 0;
     void *func = NULL;
-    int res = exec_builtin(expanded);
+    int res = -1;
     if ((func = get_func(var, expanded[0])))
         status = exec_node(func, var);
-    else if (res != -1)
+    else if ((res =  exec_builtin(expanded)) != -1)
         return res;
     else
     {
