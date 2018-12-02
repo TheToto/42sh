@@ -31,6 +31,7 @@ void remove_quoting_inside_dquoting(char **str_org)
         else if (tl->tok == QUOTED)
         {
             strcat(res, "'");
+            remove_quoting_inside_dquoting(&tl->str);
             strcat(res, tl->str);
             strcat(res, "'");
         }
