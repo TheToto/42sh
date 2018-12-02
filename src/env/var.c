@@ -58,7 +58,7 @@ static void expand_var(struct variables *var)
     var->capacity *= 2;
 }
 
-void add_var(struct variables *var, char *name, char *value)
+void add_var(struct variables *var, char *name, char *value, char exported)
 {
     if (!var || !name || !value)
     {
@@ -79,6 +79,7 @@ void add_var(struct variables *var, char *name, char *value)
     {
         free(cur->value);
         cur->value = strdup(value);
+        cur->exported = exported;
         return;
     }
     if (pos == var->capacity)
@@ -87,6 +88,7 @@ void add_var(struct variables *var, char *name, char *value)
     if (!var)
         errx(1, "cannot malloc new word in add_var");
     new->name = strdup(name);
+    new->exported = exported;
     new->value = strdup(value);
     var->size += 1;
     var->lib[pos] = new;
@@ -122,6 +124,27 @@ void destroy_var(struct variables *var)
     free(var->f_lib);
     free(var);
     shell.var = NULL;
+}
+
+void del_var(struct variables *var, char *name)
+{
+    size_t i = 0;
+    size_t last = var->size - 1;
+    struct var *cur;
+    while (i < var->size)
+    {
+        cur = var->lib[i];
+        if (strcmp(name, cur->name) == 0 && cur->exported >= 1)
+        {
+            var->lib[i] = var->lib[last];
+            var->lib[last] = 0;
+            free(cur->name);
+            free(cur->value);
+            free(cur);
+            break;
+        }
+        i++;
+    }
 }
 
 char *get_var(struct variables *var, char *name)
@@ -161,7 +184,7 @@ void assign_prefix(struct variables *var, char *prefix)
     sscanf(prefix, "%[^=]=%s", name, value);
     //fprintf(stderr, "Add var %s : %s\n", name, value);
     //recursive call here for further expansion
-    add_var(var, name, value);
+    add_var(var, name, value, 0);
 }
 
 char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)

@@ -19,6 +19,7 @@ struct var
 {
     char *name;     ///<variable name
     char *value;    ///<variable value
+    char exported;  ///<attribute exported
 };
 
 ///enumeration of different types of functions
@@ -68,7 +69,7 @@ struct variables *init_var(void);
  * @param value the value of the variable
  * @return return the newly allocated structure
  */
-void add_var(struct variables *var, char *name, char *value);
+void add_var(struct variables *var, char *name, char *value, char exported);
 
 /**
  * @fn destroy_var
@@ -76,6 +77,14 @@ void add_var(struct variables *var, char *name, char *value);
  * @param var pointer to the library of variables to destroy
  */
 void destroy_var(struct variables *var);
+
+/**
+ * @fn del_var
+ * Remove the name variables from the library if exists
+ * @param var pointer to the library of variables to destroy
+ * @param name variable to remove
+ */
+void del_var(struct variables *var, char *name);
 
 /**
  * @fn get_var
