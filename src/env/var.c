@@ -18,25 +18,42 @@
 #include "ast_destroy.h"
 #include "shell.h"
 
+static char *itoa(int i, char *buf_nb)
+{
+    sprintf(buf_nb, "%d", i);
+    return buf_nb;
+}
+
+static void set_up_reserved(void)
+{
+    char buf_nb[20] =
+    {
+        0
+    };
+    add_var(shell.var, "$", itoa(getpid(), buf_nb));
+    add_var(shell.var, "UID", itoa(getuid(), buf_nb));
+    char *pwd = get_current_dir_name();
+    add_var(shell.var, "OLDPWD", pwd);
+    free(pwd);
+    add_var(shell.var, "RANDOM", "32767");
+    // SHELLOPTS
+    add_var(shell.var, "IFS", " \\t\\n");
+}
+
 void set_up_var(char *args[])
 {
-    char *buf_nb = calloc(20, sizeof(char));
-    if (!buf_nb)
-        errx(1, "Failed to malloc");
-    // $$
-    sprintf(buf_nb, "%d", getpid());
-    add_var(shell.var, "$", buf_nb);
-    // $0...n $#
-    size_t nb = 0;
-    size_t size = 0;
-    for (; args && args[nb]; nb++)
+    char buf_nb[20] =
     {
-        sprintf(buf_nb, "%ld", nb);
-        add_var(shell.var, buf_nb, args[nb]);
+        0
+    };
+    int nb = 0;
+    int size = 0;
+    for (; args && args[nb] && nb < 100; nb++)
+    {
+        add_var(shell.var, itoa(nb, buf_nb), args[nb]);
         size += strlen(args[nb]) + 1;
     }
-    sprintf(buf_nb, "%ld", nb - 1);
-    add_var(shell.var, "#", buf_nb);
+    add_var(shell.var, "#", itoa(nb - 1, buf_nb));
     // $@ $*
     char *star = calloc(size, sizeof(char));
     for (size_t i = 1; args && args[i]; i++)
@@ -47,17 +64,8 @@ void set_up_var(char *args[])
     }
     add_var(shell.var, "*", star);
     add_var(shell.var, "@", star);
-    sprintf(buf_nb, "%d", getuid());
-    add_var(shell.var, "UID", buf_nb);
-    char *pwd = get_current_dir_name();
-    add_var(shell.var, "OLDPWD", pwd);
-    free(pwd);
-    add_var(shell.var, "RANDOM", "32767");
-    // SHELLOPTS
-    add_var(shell.var, "IFS", " \\t\\n");
-
     free(star);
-    free(buf_nb);
+    set_up_reserved();
 }
 
 struct variables *init_var(void)

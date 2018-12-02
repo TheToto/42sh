@@ -6,6 +6,7 @@
 * execution of scmd
 */
 
+#define _GNU_SOURCE
 #include <sys/types.h>
 #include <unistd.h>
 #include <err.h>
@@ -19,23 +20,31 @@
 #include "parser.h"
 #include "ast_destroy.h"
 
+static char *itoa(int i, char *buf_nb)
+{
+
+    sprintf(buf_nb, "%d", i);
+    return buf_nb;
+}
+
 static void add_params(char **expanded, struct variables *var)
 {
-    char *buf_nb = calloc(20, sizeof(char));
-    if (!buf_nb)
-        errx(1, "Failed to malloc");
-    size_t nb = 1;
-    size_t size = 0;
-    for (; expanded && expanded[nb]; nb++)
+    char buf_nb[20] =
     {
-        sprintf(buf_nb, "%ld", nb);
-        add_var(var, buf_nb, expanded[nb]);
+        0
+    };
+    int nb = 1;
+    int size = 0;
+    for (; expanded && expanded[nb] && nb < 100; nb++)
+    {
+        add_var(var, itoa(nb, buf_nb), expanded[nb]);
         size += strlen(expanded[nb]) + 1;
     }
-    sprintf(buf_nb, "%ld", nb - 1);
-    add_var(var, "#", buf_nb);
+    add_var(var, "#", itoa(nb - 1, buf_nb));
+    for(; nb < 100; nb++)
+        add_var(var, itoa(nb, buf_nb), "");
     // $@ $*
-    char *star = calloc(size, sizeof(char));
+    char *star = calloc(size + 1, sizeof(char));
     for (size_t i = 1; expanded && expanded[i]; i++)
     {
         strcat(star, expanded[i]);
@@ -44,7 +53,51 @@ static void add_params(char **expanded, struct variables *var)
     }
     add_var(var, "*", star);
     add_var(var, "@", star);
-    free(buf_nb);
+    free(star);
+}
+
+static int exec_func(char **expanded, struct variables *var, void *func)
+{
+    int status = 0;
+    char buf_nb[20] =
+    {
+        0
+    };
+    char **backup = calloc(100, sizeof(char*));
+
+    // BACKUP VARS
+    for (int i = 0; i < 99; i++)
+    {
+        char *b = get_var(var, itoa(i, buf_nb));
+        if (b)
+            backup[i] = strdup(b);
+    }
+    char *sharp = strdup(get_var(var, "#"));
+    char *star = strdup(get_var(var, "*"));
+    char *arob = strdup(get_var(var, "@"));
+
+    add_params(expanded, var);
+    status = exec_node(func, var);
+
+    // RESTORE VARS
+    for (int i = 0; i < 99; i++)
+    {
+        if (backup[i])
+        {
+            add_var(var, itoa(i, buf_nb), backup[i]);
+            free(backup[i]);
+        }
+        else
+            add_var(var, itoa(i, buf_nb), "");
+    }
+    free(backup);
+    add_var(var, "#", sharp);
+    add_var(var, "*", star);
+    add_var(var, "@", arob);
+    free(sharp);
+    free(star);
+    free(arob);
+    return status;
 }
 
 static void urgent_free(char **expanded)
@@ -67,11 +120,10 @@ static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
-    void *func = NULL;
-    if ((func = get_func(var, expanded[0])))
+    void *func = get_func(var, expanded[0]);
+    if (func)
     {
-        add_params(expanded, var);
-        status = exec_node(func, var);
+        status = exec_func(expanded, var, func);
     }
     else
     {
@@ -101,6 +153,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
     char **expanded = replace_var_scmd(var, scmd);
+
     if (scmd->elt_size > 0)
     {
         status = execute(expanded, status, var);
