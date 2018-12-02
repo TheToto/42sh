@@ -15,7 +15,7 @@ static int is_num(char c)
     return (c >= '0' && c <= '9') || c == '+' || c == '-';
 }
 
-static int priority(char op)
+static int priority(int op)
 {
     switch (op)
     {
@@ -25,13 +25,50 @@ static int priority(char op)
         case '*':
         case '/':
             return 2;
+        case '&' * 2:
+        case '|':
+        case '|' * 2:
+        case '^':
+            return 0;
         default:
             break;
     }
     return 0;
 }
 
-static int compute_op(int a, int b, char op)
+static int get_operator(char *str, size_t *i, short go_forward)
+{
+    switch (str[*i])
+    {
+        case '*':
+            if (str[*i + 1] == '*')
+            {
+                *i += go_forward;
+                return '*' * 2;
+            }
+            return '*';
+        case '&':
+            if (str[*i + 1] == '&')
+            {
+                *i += go_forward;
+                return '&' * 2;
+            }
+            return '&';
+        case '|':
+            if (str[*i + 1] == '|')
+            {
+                *i += go_forward;
+                return '|' * 2;
+            }
+            return '|';
+        default:
+            return str[*i];
+    }
+    return 0;
+}
+
+
+static int compute_op(int a, int b, int op)
 {
     switch (op)
     {
@@ -41,21 +78,46 @@ static int compute_op(int a, int b, char op)
             return a - b;
         case '*':
             return a * b;
+        case '*' * 2:
+            break;
         case '/':
             return a / b;
+        case '&':
+            break;
+        case '&' * 2:
+            break;
+        case '|':
+            break;
+        case '|' * 2:
+            break;
+        case '^':
+            break;
         default:
             break;
     }
-    errx(1, "libmath : Malformed input, unexpected %c", op);
+    errx(1, "libmath : Malformed input, unexpected %d", op);
 }
 
 static int get_number(char *str, size_t *i)
 {
     int val = 0;
+    // Handle ~ and !
+    int tilde = 0;
+    int bang = 0;
     int less = 0;
     if (str[*i] == '-')
     {
         less = 1;
+        (*i)++;
+    }
+    else if (str[*i] == '!')
+    {
+        bang = 1;
+        (*i)++;
+    }
+    else if (str[*i] == '~')
+    {
+        tilde = 1;
         (*i)++;
     }
     else if (str[*i] == '+')
@@ -121,14 +183,14 @@ int evaluate_maths(char *str)
             push_stack(values, get_number(str, &i));
             want_num = 0;
         }
-        else if (priority(str[i]) != 0 && !want_num)
+        else if (priority(get_operator(str, &i, 0)) != 0 && !want_num)
         {
-            while (!is_empty_stack(sign)
-                    && priority(peak_stack(sign)) >= priority(str[i]))
+            while (!is_empty_stack(sign) && priority(peak_stack(sign))
+                    >= priority(get_operator(str, &i, 0)))
             {
                 compute_next(values, sign);
             }
-            push_stack(sign, str[i]);
+            push_stack(sign, get_operator(str, &i, 1));
             want_num = 1;
         }
         else
@@ -143,5 +205,5 @@ int evaluate_maths(char *str)
 
 int main(void)
 {
-    return evaluate_maths("- 3 +(3+2)*2");
+    return evaluate_maths("- 3 +(2&&2)*2");
 }
