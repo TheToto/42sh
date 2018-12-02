@@ -7,12 +7,12 @@ struct stack *init_stack(void)
 {
     struct stack *stack = malloc(sizeof(struct stack));
     if (!stack)
-        errx(1, "stack_lib : Failled to malloc stack");
+        errx(1, "libstack : Failled to malloc stack");
     stack->capacity = 10;
     stack->size = 0;
     stack->tab = malloc(stack->capacity * sizeof(int));
     if (!stack->tab)
-        errx(1, "stack_lib : Failled to malloc stack");
+        errx(1, "libstack : Failled to malloc stack");
     return stack;
 }
 
@@ -36,7 +36,7 @@ static void expand_stack(struct stack *stack)
 {
     int *new_tab = realloc(stack->tab, stack->capacity * 2 * sizeof(int));
     if (!new_tab)
-        errx(1, "stack_lib : Failled to realloc stack");
+        errx(1, "libstack : Failled to realloc stack");
     stack->capacity *= 2;
     stack->tab = new_tab;
 }
@@ -53,7 +53,7 @@ void push_stack(struct stack *stack, int item)
 int pop_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
-        errx(1, "stack_lib : you cannot pop an empty stack");;
+        errx(1, "libstack : you cannot pop an empty stack");;
     int to_remove = stack->size - 1;
     stack->size -= 1;
     return stack->tab[to_remove];
@@ -62,7 +62,7 @@ int pop_stack(struct stack* stack)
 int peak_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
-        errx(1, "stack_lib : you cannot peak an empty stack");;
+        errx(1, "libstack : you cannot peak an empty stack");;
     int to_peak = stack->size - 1;
     return stack->tab[to_peak];
 }
