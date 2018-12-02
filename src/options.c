@@ -120,7 +120,7 @@ void options(char *argv[])
 
     for (; argv[i]; i++)
     {
-        if (argv[i][0] != '-')
+        if (argv[i][0] != '-' && argv[i][0] != '+')
             break;
         enum option opt = get_option(argv[i]);
         if (opt == CMD)
