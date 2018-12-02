@@ -169,7 +169,7 @@ static int get_next_qword(char **str, char *word, struct token_list *tl)
 {
     int i = 1;
     word[0] = **str;
-    while ((*str)[i] && (*str)[i] != **str)
+    while ((*str)[i] && ((*str)[i] != **str || (*str)[i - 1] == '\\'))
     {
         word[i] = (*str)[i];
         i++;
