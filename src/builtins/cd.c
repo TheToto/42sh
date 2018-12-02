@@ -17,39 +17,49 @@
 #include "env.h"
 #include "shell.h"
 
-static int chngdir(char *arg, char *prevdir)
+static int cd_noarg(void)
 {
-    if (!arg)
+    char *path = get_var(shell.var, "HOME");
+    if (path && path[0])
     {
-        char *path = get_var(shell.var, "HOME");
-        if (path && path[0])
-        {
-            if (chdir(path) == -1)
-            {
-                warnx("cd : cannot change directory");
-                return 1;
-            }
-        }
-    }
-    else if (!strcmp(arg, "-"))
-    {
-        char *tmp = strdup(prevdir);
-        getcwd(prevdir, sizeof(prevdir));
-        if (chdir(tmp) == -1)
+        add_var(shell.var, "OLDPWD", get_var(shell.var, "PWD"));
+        if (chdir(path) == -1)
         {
             warnx("cd : cannot change directory");
-            free(tmp);
             return 1;
         }
+        char *curdir = get_current_dir_name();
+        add_var(shell.var, "PWD", curdir);
+        free(curdir);
+    }
+    return 0;
+}
+
+static int cd_arg(char *arg)
+{
+    if (!strcmp(arg, "-"))
+    {
+        char *tmp = strdup(get_var(shell.var, "PWD"));
+        add_var(shell.var, "PWD", get_var(shell.var, "OLDPWD"));
+        add_var(shell.var, "OLDPWD", tmp);
         free(tmp);
+        if (chdir(get_var(shell.var, "PWD")) == -1)
+        {
+            warnx("cd : cannot change directory");
+            return 1;
+        }
     }
     else
     {
+        add_var(shell.var, "OLDPWD", get_var(shell.var, "PWD"));
         if (chdir(arg) == -1)
         {
             warnx("cd : cannot change directory");
             return 1;
         }
+        char *curdir = get_current_dir_name();
+        add_var(shell.var, "PWD", curdir);
+        free(curdir);
     }
     return 0;
 }
@@ -63,8 +73,9 @@ int changedir(char **str)
         return 1;
     }
     char *arg = str[1];
-    char prevdir[PATH_MAX];
-    if (!arg || strcmp(arg, "-"))
-        getcwd(prevdir, sizeof(prevdir));
-    return chngdir(arg, prevdir);
+    if (!get_var(shell.var, "OLDPWD"))
+        add_var(shell.var, "OLDPWD", get_var(shell.var, "PWD"));
+    if (!arg)
+        return cd_noarg();
+    return cd_arg(arg);
 }
