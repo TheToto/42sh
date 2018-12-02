@@ -12,7 +12,15 @@ static int is_digit(char c)
 
 static int is_num(char c)
 {
-    return (c >= '0' && c <= '9') || c == '+' || c == '-';
+    if (is_digit(c))
+        return 1;
+    if (c == '!')
+        return 1;
+    if (c == '~')
+        return 1;
+    if (c == '-')
+        return 1;
+    return 0;
 }
 
 static int priority(int op)
@@ -98,37 +106,51 @@ static int compute_op(int a, int b, int op)
     errx(1, "libmath : Malformed input, unexpected %d", op);
 }
 
+static int compute_bang(int val, int nb)
+{
+    val = nb == 0 ? 1 : 0;
+    if (val > 1)
+        return (nb + val) % 2;
+    return (nb + val) % 2;
+}
+
+static int compute_tilde(int val)
+{
+    return ~val;
+}
+
+static void apply_modif(char modif, int *tilde, int *bang, int *less)
+{
+    if (modif == '!')
+        (*bang) += 1;
+    if (modif == '~')
+        (*tilde) = !(*tilde);
+    if (modif == '-')
+        (*less) = !*(less);
+}
+
 static int get_number(char *str, size_t *i)
 {
     int val = 0;
-    // Handle ~ and !
     int tilde = 0;
     int bang = 0;
     int less = 0;
-    if (str[*i] == '-')
+    while (*i < strlen(str) && !is_digit(str[*i]))
     {
-        less = 1;
+        apply_modif(str[*i], &tilde, &bang, &less);
         (*i)++;
+        for (; *i < strlen(str) && str[*i] == ' '; (*i)++);
     }
-    else if (str[*i] == '!')
-    {
-        bang = 1;
-        (*i)++;
-    }
-    else if (str[*i] == '~')
-    {
-        tilde = 1;
-        (*i)++;
-    }
-    else if (str[*i] == '+')
-        (*i)++;
-    for (; *i < strlen(str) && str[*i] == ' '; (*i)++);
     while (*i < strlen(str) && is_digit(str[*i]))
     {
         val = (val * 10) + (str[*i] - '0');
         (*i)++;
     }
     (*i)--;
+    if (tilde)
+        val = compute_tilde(val);
+    if (bang)
+        val = compute_bang(val, bang);
     return less ? -val : val;
 }
 
@@ -205,5 +227,5 @@ int evaluate_maths(char *str)
 
 int main(void)
 {
-    return evaluate_maths("- 3 +(2&&2)*2");
+    printf("%d\n", evaluate_maths("~2"));
 }
