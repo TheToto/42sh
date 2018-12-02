@@ -141,10 +141,12 @@ void del_var(struct variables *var, char *name)
             free(cur->name);
             free(cur->value);
             free(cur);
+            var->size -= 1;
             break;
         }
         i++;
     }
+    unsetenv(name);
 }
 
 char *get_var(struct variables *var, char *name)

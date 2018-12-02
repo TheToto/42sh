@@ -5,12 +5,16 @@
 *   @date 02/12/2018
 *   @brief Execution of the export builtin
 */
+#define _DEFAULT_SOURCE
 #include <err.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "shell.h"
 #include "builtins.h"
 #include "env.h"
+
+extern char **environ;
 
 static char err_param(char *str)
 {
@@ -55,7 +59,7 @@ static char treat_export(char **str, char *p, char *n)
                     *p = 1;
                     res += 1;
                 }
-                else if (str[i][2] == 'n')
+                else if (str[i][1] == 'n')
                     *n = 1;
                 else
                 {
@@ -84,13 +88,9 @@ static int handle_p(char flags)
 {
     if (flags > 1)
         return 0;
-    for (size_t i = 0; i < shell.var->size; i++)
+    for (size_t i = 0; environ[i]; i++)
     {
-        printf("%s", shell.var->lib[i]->name);
-        if (shell.var->lib[i]->exported <= 1)
-            printf("=\"%s\"\n", shell.var->lib[i]->value);
-        else
-            printf("\n");
+        printf("%s\n", environ[i]);
     }
     return 0;
 }
@@ -134,6 +134,7 @@ static int handle_export(char **str)
                 add_var(shell.var, name, value, 1);
             else
                 add_var(shell.var, name, value, 2);
+            setenv(name, value, 1);
         }
     }
     return 0;
