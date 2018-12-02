@@ -26,19 +26,6 @@
 #include "readfile.h"
 #include "builtins.h"
 
-static size_t get_section(char *arg)
-{
-    if (arg[0] == '-')
-    {
-        if (arg[1] && arg[1] == '-')
-            return 0;
-        return 1;
-    }
-    if (arg[0] == '+')
-        return 1;
-    return 2;
-}
-
 enum option get_option(char *opt)
 {
     if (!strcmp(opt, "--norc"))
@@ -56,8 +43,6 @@ enum option get_option(char *opt)
     return NONE;
 }
 
-
-
 static int check_ast_print(char **argv)
 {
     if (shell.shopt_states[ASTPRINT])
@@ -70,26 +55,23 @@ static int check_ast_print(char **argv)
     return 0;
 }
 
-static void exec_shopt(char **argv, size_t i, size_t section, enum option opt)
+static void exec_shopt(char **argv, size_t i, enum option opt)
 {
-    if (section == 1)
-    {
-        enum shopt shopt = get_shopt(argv[i + 1]);
-        if (shopt == OTHER)
-            err_shopt();
-        if (shopt == NO && opt == SHOPT_MINUS)
-            print_shopt(0, shopt);
-        if (shopt == NO && opt == SHOPT_PLUS)
-            print_shopt_plus(shopt);
-    }
+    enum shopt shopt = get_shopt(argv[i + 1]);
+    if (shopt == OTHER)
+        err_shopt();
+    if (shopt == NO && opt == SHOPT_MINUS)
+        print_shopt(0, shopt);
+    if (shopt == NO && opt == SHOPT_PLUS)
+        print_shopt_plus(shopt);
 }
 
-static void exec_cmd(size_t section, char **argv, size_t i, int ast)
+static void exec_cmd(char **argv, size_t i, int ast)
 {
-    if (section == 1 && !(argv[++i] && argv[i][0] != '-'))
+    if (!(argv[++i] && argv[i][0] != '-'))
     {
-        warnx("Invalid arguments for -c option");
-        errx(1, "Usage: -c <command>");
+        errx(2, "Invalid arguments for -c option\n\
+          Usage: -c <command>");
     }
     int res = 0;
     shell.type = S_OPTION;
@@ -131,7 +113,6 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
 
 void options(char *argv[])
 {
-    size_t section = 0;
     size_t i = 1;
     shell.shopt_states = init_shoptlist();
     int ast = check_ast_print(argv);
@@ -139,26 +120,21 @@ void options(char *argv[])
 
     for (; argv[i]; i++)
     {
-        size_t sect = get_section(argv[i]);
-        section = section > sect ? section : sect;
-        if (section == 2)
+        if (argv[i][0] != '-')
             break;
         enum option opt = get_option(argv[i]);
         if (opt == CMD)
-            exec_cmd(section, argv, i, ast);
+            exec_cmd(argv, i, ast);
         else if (opt == CMD || opt == AST)
             continue;
         else if (opt == SHOPT_MINUS || opt == SHOPT_PLUS)
-            exec_shopt(argv, i, section, opt);
+            exec_shopt(argv, i, opt);
         else if (opt == NORC)
             norc = 1;
         else if (opt == VERSION)
         {
-            if (!section)
-            {
                 printf("Version 0.5\n");
                 exit(0);
-            }
         }
     }
     launch_sh(argv, i, ast, norc);
