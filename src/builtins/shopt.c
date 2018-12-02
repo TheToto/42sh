@@ -45,6 +45,8 @@ static int is_option(char *opt)
         return 1;
     else if (!strcmp(opt, "-s"))
         return 2;
+    else if (!strcmp(opt, "-q"))
+        return 3;
     else if (opt[0] == '-')
     {
         warnx("Invalid shell option name");
@@ -57,12 +59,12 @@ static int is_option(char *opt)
 static void shopt_option(char **str, int opt)
 {
     enum shopt shopt = get_shopt(str[2]);
-    if (shopt == NO)
+    if (shopt == NO && opt != 3)
     {
         for (size_t j = 0; j < NB_SHOPT; j++)
             shell.shopt_states[j] = opt == 1 ? 0 : 1;
     }
-    else
+    else if (opt != 3)
     {
         for (size_t i = 2; str[i]; i++)
         {
@@ -83,9 +85,9 @@ int shopt_exec(char **str)
     enum shopt shopt;
     if (!n)
         print_shopt(1, NO);
-    else if (opt == -1)
+    else if (opt == -1 || (opt == 3 && n > 1))
         return 1;
-    else if (opt == 1 || opt == 2)
+    else if (opt > 0)
         shopt_option(str, opt);
     else if (!opt)
     {
