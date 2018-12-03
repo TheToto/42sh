@@ -130,10 +130,14 @@ static int should_change(enum token_type *type,
     char *tmp = lstring[0];
     char *str = lstring[1];
     char *word = lstring[2];
+    if ((word[*i] == '$' && word[*i + 1] == '(') || i[1])
+    {
+        i[1] += (*tmp == '(') ? 1 : (word[*i] == ')') ? -1 : 0;
+    }
     enum token_type type_tmp = get_token_type(tmp);
     if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
-    if (type_tmp != NOT && (((*type != type_next)
+    if (!i[1] && type_tmp != NOT && (((*type != type_next)
                 && (*type < 10 || *type > 22 || type_tmp < 33
                     || type_tmp == 34 || tmp == 0)
                 && (*type != NAME || (type_tmp != 38
@@ -188,24 +192,24 @@ static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         *str += get_next_qword(str, word, tl);
         return;
     }
-    size_t i = 0;
+    size_t i[2] = { 0 };
     int found = 0;
     enum token_type type = WORD;
-    for (; !found && i < strlen(*str); i++)
+    for (; !found && *i < strlen(*str); (*i)++)
     {
-        word[i] = (*str)[i];
+        word[*i] = (*str)[*i];
         type = get_token_type(word);
-        word[i + 1] = (*str)[i + 1];
+        word[*i + 1] = (*str)[*i + 1];
         enum token_type type_next = get_token_type(word);
         char tmp[] =
         {
-            (*str)[i + 1], 0
+            (*str)[*i + 1], 0
         };
         char *lstring[] =
         {
             tmp, *str, word
         };
-        if (should_change(&type, type_next, lstring, &i))
+        if (should_change(&type, type_next, lstring, i))
             found = 1;
     }
     if (!fnmatch("*\"*", *str, 0) && type != ASSIGNMENT_WORD)
@@ -213,9 +217,9 @@ static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         strcpy(word, *str);
         type = WORD_EXT;
     }
-    word[i] = 0;
+    word[*i] = 0;
     set_tl(tl, word, type, ptr);
-    *str += i;
+    *str += *i;
 }
 
 struct lexer *lexer(char *str)
