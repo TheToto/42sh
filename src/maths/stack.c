@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <err.h>
+#include <limits.h>
 
 #include "stack.h"
 
@@ -53,7 +54,7 @@ void push_stack(struct stack *stack, int item)
 int pop_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
-        errx(1, "libstack : you cannot pop an empty stack");;
+        return INT_MIN;
     int to_remove = stack->size - 1;
     stack->size -= 1;
     return stack->tab[to_remove];
@@ -62,7 +63,7 @@ int pop_stack(struct stack* stack)
 int peak_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
-        errx(1, "libstack : you cannot peak an empty stack");;
+        return INT_MIN;
     int to_peak = stack->size - 1;
     return stack->tab[to_peak];
 }

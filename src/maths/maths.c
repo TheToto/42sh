@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <err.h>
+#include <limits.h>
 
 #include "stack.h"
 
@@ -116,7 +117,8 @@ static int compute_op(int a, int b, int op)
         default:
             break;
     }
-    errx(1, "libmath : Malformed input, unexpected %d", op);
+    warnx("libmath : Malformed input, unexpected %d", op);
+    return INT_MIN;
 }
 
 static int apply_modif(char modif, int val)
@@ -127,8 +129,8 @@ static int apply_modif(char modif, int val)
         return ~val;
     if (modif == '-')
         return -val;
-    warnx("libmath : Unknow modifier");
-    return 0;
+    warnx("libmath : Unknow modifier %c", modif);
+    return INT_MIN;
 }
 
 static int get_number(char *str, size_t *i)
@@ -146,6 +148,8 @@ static int get_number(char *str, size_t *i)
     while (j < strlen(str) && !is_digit(str[j]))
     {
         val = apply_modif(str[j], val);
+        if (val == INT_MIN)
+            return val;
         j++;
         for (; j < strlen(str) && str[j] == ' '; j++);
     }
@@ -162,10 +166,19 @@ static int destroy_maths(struct stack *values, struct stack *sign)
 
 static void compute_next(struct stack *values, struct stack *sign)
 {
-    int left = pop_stack(values);
-    int right = pop_stack(values);
-    int op = pop_stack(sign);
-    push_stack(values, compute_op(left, right, op));
+    int left = INT_MIN;
+    int right = INT_MIN;
+    int op = INT_MIN;
+    left = pop_stack(values);
+    right = pop_stack(values);
+    op = pop_stack(sign);
+    if (right == INT_MIN || left == INT_MIN)
+    {
+        warnx("libmath : Operators or values stack is empty");
+        push_stack(values, INT_MIN);
+    }
+    else
+        push_stack(values, compute_op(left, right, op));
 }
 
 static int math_error(char *str, int want_num,
@@ -177,7 +190,7 @@ static int math_error(char *str, int want_num,
         warnx("libmath : invalid number '%s'", str);
     else
         warnx("libmath : invalid operator '%s'", str);
-    return 0;
+    return INT_MIN;
 }
 
 
