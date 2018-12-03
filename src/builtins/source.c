@@ -11,6 +11,7 @@
 #include "builtins.h"
 #include "shell.h"
 #include "readfile.h"
+#include "env.h"
 
 int source(char **str)
 {
@@ -21,8 +22,7 @@ int source(char **str)
         \n%s: usage: %s filename [arguments]", str[0], str[0], str[0]);
         return 2;
     }
-    //for (size_t i = 2; str[i]; i++)
-    //    add_var(shell.var, $(i - 1), str[i]);
+    set_up_var(str + 1);
     launch_file(filename, 0, shell.var);
     return 0;
 }
