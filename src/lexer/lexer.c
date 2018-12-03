@@ -197,8 +197,11 @@ static int get_assignment_value(char *str)
     char quote = 0;
     do
     {
-        if ((i && str[i - 1] == '\\') || (in_quote && *cur != quote))
+        if ((i && str[i] && str[i - 1] == '\\') || (in_quote && *cur != quote))
+        {
+            i++;
             continue;
+        }
         if (*cur == '"' || *cur == '\'' || *cur == '`')
         {
             in_quote = !in_quote;
