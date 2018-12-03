@@ -154,11 +154,7 @@ int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);
     char **expanded = replace_var_scmd(scmd);
-    for (int i = 0; expanded[i]; i++)
-    {
-        printf(":%s", expanded[i]);
-    }
-    printf(":\n");
+
     if (scmd->elt_size > 0)
     {
         status = execute(expanded, status, var);
