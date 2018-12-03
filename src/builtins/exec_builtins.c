@@ -75,7 +75,9 @@ int exec_builtin(char **str)
     case ECHO:
         return echo(str);
     case CONTINUE:
-        break;
+        return exec_continue(str);
+    case BREAK:
+        return exec_break(str);
     case SOURCE:
         return source(str);
     case HISTORY:

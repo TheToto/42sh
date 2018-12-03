@@ -77,3 +77,15 @@ int exec_export(char **str);
  * 1 if filename doesn't exist, else 0
 **/
 int source(char **str);
+
+/**
+ * Execute the continue builtin
+ * \param char **str  The string to be parsed
+**/
+int exec_continue(char **str);
+
+/**
+ * Execute the break builtin
+ * \param char **str  The string to be parsed
+**/
+int exec_break(char **str);
