@@ -12,7 +12,7 @@ void remove_quoting_inside_dquoting(char **str_org)
 {
     char *str = *str_org;
     size_t len = strlen(str);
-    char *res = calloc(1, len);
+    char *res = calloc(1, len + 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
         return;
@@ -40,7 +40,7 @@ void remove_quoting_inside_dquoting(char **str_org)
             char *tmp = get_var(shell.var, tl->str);
             if (tmp)
             {
-                char *check = realloc(res, len + strlen(tmp));
+                char *check = realloc(res, len + strlen(tmp) + 1);
                 if (!check)
                 {
                     free(res);
@@ -82,7 +82,7 @@ char *remove_quoting(char *str)
             }
             if (tmp)
             {
-                char *check = realloc(res, len + strlen(tmp));
+                char *check = realloc(res, len + strlen(tmp) + 1);
                 if (!check)
                 {
                     free(res);
