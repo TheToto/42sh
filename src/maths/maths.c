@@ -235,8 +235,3 @@ int evaluate_maths(char *str)
         compute_next(values, sign);
     return destroy_maths(values, sign);
 }
-
-int main(int argc, char **argv)
-{
-    printf("%d\n", evaluate_maths(argv[1]));
-}
