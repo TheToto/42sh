@@ -297,7 +297,7 @@ void assign_prefix(struct variables *var, char *prefix)
     for (size_t i = 0; i < 256 && *prefix != '\0'; i++, *prefix++)
         value[i] = *prefix;
     char *val = remove_quoting(value);
-    add_var(var, name, value, 0);
+    add_var(var, name, val, 0);
     free(val);
 }
 

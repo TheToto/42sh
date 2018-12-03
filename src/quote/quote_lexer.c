@@ -35,13 +35,39 @@ void destroy_lexer_quote(struct lexer_quote *l)
     free(l);
 }
 
-int is_dollar(char *str)
+int get_dollar(char **str_org, int *is_quoted)
 {
-    if (!fnmatch("[0-9!$?#*@-]", str, FNM_EXTMATCH))
+    char *str = *str_org;
+    char tmp[2];
+    tmp[0] = *str;
+    tmp[1] = 0;
+    int i = 1;
+    if (!fnmatch("[0-9!$?#*@-]", tmp, FNM_EXTMATCH))
         return 1;
-    else if (!fnmatch("?({)[_a-zA-Z]*([_0-9a-zA-Z])", str, FNM_EXTMATCH))
-        return 2;
-    return 0;
+    if (*str == '(' || *str == '{')
+    {
+        char target = (*str == '(') ? ')' : '}';
+        *is_quoted = 1;
+        (*str_org)++;
+        for (; str[i]; i++)
+        {
+            if (str[i] == target)
+                break;
+        }
+    }
+    else
+    {
+        i--;
+        char *word = calloc(strlen(str) + 1, 1);
+        *word = *str;
+        while (str[i] && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
+        {
+            i++;
+            word[i] = str[i];
+        }
+        free (word);
+    }
+    return i;
 }
 
 static enum token_quote get_tok_quote(char first)
@@ -78,19 +104,10 @@ static char *get_next_word(char **str, enum token_quote *tok)
     }
     else if (first == '$')
     {
-        int i = 0;
-        int res = 2;
-        *str += (**str == '{');
-        for (; **str && res == 2; i++)
-        {
-            word[i] = **str;
-            res = is_dollar(word);
-            if (res == 0)
-                break;
-            (*str)++;
-        }
-        *str += (**str == '}');
-        word[i + res % 2] = 0;
+        int is_quoted = 0;
+        int res = get_dollar(str, &is_quoted);
+        strncat(word, *str, res - is_quoted);
+        (*str) += res + is_quoted;
     }
     else if (first != '\"' && first != '\'' && first != '`')
     {
