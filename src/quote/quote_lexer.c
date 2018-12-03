@@ -70,7 +70,7 @@ char *get_next_word(char **str, enum token_quote *tok)
 {
     char first = **str;
     size_t len = strlen(*str);
-    char *word = calloc(1, len);
+    char *word = calloc(1, len + 1);
     *str += (**str && (**str == '\\' || **str == '$'
                 || **str == '\"' || **str == '\'' || **str == '`'));
     if (first == '\\')

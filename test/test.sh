@@ -238,15 +238,18 @@ pretty_printf_stderr () {
 }
 
 check_sanity () {
+    no_error=2
     while read line; do
         case $line in
             *"LEAK SUMMARY"* )
                 return 0;;
+            *"ERROR SUMMARY: 0 errors"* )
+                no_error=1;;
             * )
                 continue;;
        esac
     done < /tmp/tmp_sanity
-    return 1
+    return $no_error
 }
 
 list_of_dir="$(ls test/scripts)"
@@ -256,7 +259,7 @@ list_of_file=""
 for dir in $list_of_dir; do
     is_in $dir "$list_of_category"
     is_asked=$?
-    if [ $is_asked -eq 0 ]; then
+    if [ $is_asked -ne 1 ]; then
         dir_path="test/scripts/$dir"
         list_of_file="$list_of_file"" $dir_path"
         for file in $(ls "$dir_path"); do
@@ -303,10 +306,14 @@ for file in $list_of_file; do
 
     diff /tmp/tmp_def /tmp/tmp_ref > /tmp/res
     diff_content="$(cat /tmp/res)"
-    if [ $exit_status_sanity -eq 0 ]; then
+    if [ $exit_status_sanity -ne 1 ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED"$DEFAULT": $TEST"
-        printf $RED"        Leaks\n"$DEFAULT
+        if [ $exit_status_sanity -eq 0 ]; then
+            printf $RED"        Leaks\n"$DEFAULT
+        else
+            printf $RED"        Errors found\n"$DEFAULT
+        fi
     elif [ $exit_status -eq 124 ]; then
         FAILED="$(($FAILED + 1))"
         printf $RED"      FAILED"$DEFAULT": $TEST"

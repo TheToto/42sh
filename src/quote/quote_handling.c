@@ -61,7 +61,7 @@ void remove_quoting_inside_dquoting(char **str_org)
 char *remove_quoting(char *str)
 {
     size_t len = strlen(str);
-    char *res = calloc(1, len);
+    char *res = calloc(1, len + 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
         return NULL;
