@@ -119,52 +119,37 @@ static int compute_op(int a, int b, int op)
     errx(1, "libmath : Malformed input, unexpected %d", op);
 }
 
-static int compute_bang(int val, int nb)
-{
-    val = nb == 0 ? 1 : 0;
-    if (val > 1)
-        return (nb + val) % 2;
-    return (nb + val) % 2;
-}
-
-static int compute_tilde(int val)
-{
-    return ~val;
-}
-
-static void apply_modif(char modif, int *tilde, int *bang, int *less)
+static int apply_modif(char modif, int val)
 {
     if (modif == '!')
-        (*bang) += 1;
+        return val == 0 ? 1 : 0;
     if (modif == '~')
-        (*tilde) = !(*tilde);
+        return ~val;
     if (modif == '-')
-        (*less) = !*(less);
+        return -val;
+    warnx("libmath : Unknow modifier");
+    return 0;
 }
 
 static int get_number(char *str, size_t *i)
 {
     int val = 0;
-    int tilde = 0;
-    int bang = 0;
-    int less = 0;
+    size_t j = *i;
     while (*i < strlen(str) && !is_digit(str[*i]))
-    {
-        apply_modif(str[*i], &tilde, &bang, &less);
         (*i)++;
-        for (; *i < strlen(str) && str[*i] == ' '; (*i)++);
-    }
     while (*i < strlen(str) && is_digit(str[*i]))
     {
         val = (val * 10) + (str[*i] - '0');
         (*i)++;
     }
     (*i)--;
-    if (tilde)
-        val = compute_tilde(val);
-    if (bang)
-        val = compute_bang(val, bang);
-    return less ? -val : val;
+    while (j < strlen(str) && !is_digit(str[j]))
+    {
+        val = apply_modif(str[j], val);
+        j++;
+        for (; j < strlen(str) && str[j] == ' '; j++);
+    }
+    return val;
 }
 
 static int destroy_maths(struct stack *values, struct stack *sign)
