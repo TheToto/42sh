@@ -96,5 +96,10 @@ char *remove_quoting(char *str)
         tl = tl->next;
     }
     destroy_lexer_quote(l);
+    if (*res == 0)
+    {
+        free(res);
+        return NULL;
+    }
     return res;
 }
