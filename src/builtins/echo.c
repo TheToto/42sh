@@ -22,5 +22,6 @@ int echo(char **str)
             printf("%s ", str[i]);
         printf("%s\n", str[n]);
     }
+    fflush(stdout);
     return 0;
 }
