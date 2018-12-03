@@ -15,6 +15,11 @@
 * [x] Advanced tests
 * [x] Test suite options
 * [x] Setup timeout
+* [ ] Test until
+
+# CODING STYLE
+* [ ] Indent DOXYGEN with 0 space
+* [ ] Send tickets to ACU for broken moulinette
 
 # DOC
 * [x] Set up Doxygen
@@ -27,6 +32,7 @@
 # AST
 * [x] Create AST
 * [x] Print AST
+* [ ] Set guards for NULL or incorrect AST
 * [x] Destroy AST
 
 # CMAKE
@@ -53,11 +59,15 @@
 * [x] Handle func declaration
 * [x] Handle parameters
 * [x] Handle positionnal parameters
+* [ ] Handle double output redirection
+* [ ] Replace hardcoded file desciptors (in/err/out)
 
 # Interactive mode
 * [x] Interactive mode
 * [x] History
 * [x] Ressource file reader
+* [ ] Catch Ctrl-C
+* [ ] Catch Ctrl-D
 
 # Built in
 * [~] exit (hardcoded)
