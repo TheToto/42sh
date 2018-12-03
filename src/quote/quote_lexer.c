@@ -37,7 +37,7 @@ void destroy_lexer_quote(struct lexer_quote *l)
 
 int is_dollar(char *str)
 {
-    if (!fnmatch("[0-9!$-?#*@]", str, FNM_EXTMATCH))
+    if (!fnmatch("[0-9!$?#*@-]", str, FNM_EXTMATCH))
         return 1;
     if (!fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", str, FNM_EXTMATCH))
         return 2;
