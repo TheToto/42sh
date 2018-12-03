@@ -56,30 +56,60 @@ static void set_tl(struct token_list *tl, char *str,
     tl->next = NULL;
 }
 
-static char *get_next_str(char **beg, char **ptr)
+static int get_next_quoted(char *str)
 {
-    if (!beg || !*beg || !**beg)
-        return NULL;
-    size_t len = 0;
+    int i = 0;
+    for (; str[i] && str[i] != '\t' && str[i] != ' '; i++)
+    {
+        if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i]
+                && (str[i] != '\'' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i]
+                && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        else if (str[i] == '`' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i]
+                && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+    }
+    return i;
+}
+
+static void skip_space_and_tab(char **beg)
+{
     for (; **beg && (**beg == ' ' || **beg == '\t'); (*beg)++)
         continue;
+}
+
+static void skip_comment(char **beg)
+{
     if (**beg == '#')
     {
         for (; **beg && **beg != '\n'; (*beg)++)
             continue;
     }
+}
+
+static char *get_next_str(char **beg, char **ptr)
+{
+    if (!beg || !*beg || !**beg)
+        return NULL;
+    size_t len = 0;
+    skip_space_and_tab(beg);
+    skip_comment(beg);
     *ptr = *beg;
-    char *cur = *beg;
-    for (; *cur && *cur != ' ' && *cur != '\t'
-            && *cur != '\"'; cur++)
-        len += 1;
-    if (*cur == '\"')
-    {
-        for (cur += 1, len += 1; *cur && *cur != '\"'; cur++)
-            len += 1;
-        for (; *cur && *cur != ' ' && *cur != '\t'; cur++)
-            len += 1;
-    }
+    len = get_next_quoted(*beg);
     char *res = calloc(1, len + 1);
     if (res)
     {
@@ -100,10 +130,16 @@ static int should_change(enum token_type *type,
     char *tmp = lstring[0];
     char *str = lstring[1];
     char *word = lstring[2];
+    if ((word[*i] == '$' && (word[*i + 1] == '(' || word[*i + 1] == '{')) 
+        || i[1] || i[2])
+    {
+        i[1] += (*tmp == '(') ? 1 : (word[*i] == ')') ? -1 : 0;
+        i[2] += (*tmp == '{') ? 1 : (word[*i] == '}') ? -1 : 0;
+    }
     enum token_type type_tmp = get_token_type(tmp);
     if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
-    if (type_tmp != NOT && (((*type != type_next)
+    if (!i[1] && !i[2] && type_tmp != NOT && (((*type != type_next)
                 && (*type < 10 || *type > 22 || type_tmp < 33
                     || type_tmp == 34 || tmp == 0)
                 && (*type != NAME || (type_tmp != 38
@@ -135,27 +171,47 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
+static int get_next_qword(char **str, char *word, struct token_list *tl)
+{
+    int i = 1;
+    word[0] = **str;
+    while ((*str)[i] && ((*str)[i] != **str || (*str)[i - 1] == '\\'))
+    {
+        word[i] = (*str)[i];
+        i++;
+    }
+    word[i] = (*str)[i];
+    word[i + 1] = 0;
+    set_tl(tl, word, WORD_EXT, *str);
+    return i + 1;
+}
+
 static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
-    size_t i = 0;
+    if (**str == '\'' || **str == '\"' || **str == '`')
+    {
+        *str += get_next_qword(str, word, tl);
+        return;
+    }
+    size_t i[3] = { 0 };
     int found = 0;
     enum token_type type = WORD;
-    for (; !found && i < strlen(*str); i++)
+    for (; !found && *i < strlen(*str); (*i)++)
     {
-        word[i] = (*str)[i];
+        word[*i] = (*str)[*i];
         type = get_token_type(word);
-        word[i + 1] = (*str)[i + 1];
+        word[*i + 1] = (*str)[*i + 1];
         enum token_type type_next = get_token_type(word);
         char tmp[] =
         {
-            (*str)[i + 1], 0
+            (*str)[*i + 1], 0
         };
         char *lstring[] =
         {
             tmp, *str, word
         };
-        if (should_change(&type, type_next, lstring, &i))
+        if (should_change(&type, type_next, lstring, i))
             found = 1;
     }
     if (!fnmatch("*\"*", *str, 0) && type != ASSIGNMENT_WORD)
@@ -163,9 +219,9 @@ static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         strcpy(word, *str);
         type = WORD_EXT;
     }
-    word[i] = 0;
+    word[*i] = 0;
     set_tl(tl, word, type, ptr);
-    *str += i;
+    *str += *i;
 }
 
 struct lexer *lexer(char *str)

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo next is a comment #this is a comemnt
+echo next is a comment #this is a comment

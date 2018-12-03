@@ -17,6 +17,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+#include "quote_lexer.h"
 
 static char *itoa(int i, char *buf_nb)
 {
@@ -214,22 +215,18 @@ void assign_prefix(struct variables *var, char *prefix)
     add_var(var, name, value);
 }
 
-char **replace_var_scmd(struct variables *var, struct ast_node_scmd *scmd)
+char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
-    size_t j = 0;
-    for (size_t i = 0; i < scmd->elt_size; i++, j++)
+    for (size_t i = 0; i < scmd->elt_size; i++)
     {
-        if (scmd->elements[i][0] == '$')
+        char *new = remove_quoting(scmd->elements[i]);
+        if (!new)
         {
-            char *value = get_var(var, scmd->elements[i] + 1);
-            if (value)
-                res[j] = strdup(value);
-            else
-                j--;
+            free(res);
+            errx(1, "fatal : Failed to remove quoting");
         }
-        else
-            res[j] = strdup(scmd->elements[i]);
+        res[i] = new;
     }
     return res;
 }
