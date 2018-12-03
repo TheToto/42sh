@@ -61,6 +61,7 @@ void remove_quoting_inside_dquoting(char **str_org)
 char *remove_quoting(char *str)
 {
     size_t len = strlen(str);
+    int has_not_dollar = 0;
     char *res = calloc(1, len + 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
@@ -68,6 +69,7 @@ char *remove_quoting(char *str)
     struct token_list_quote *tl = l->tl;
     while (tl->next)
     {
+        has_not_dollar = has_not_dollar || tl->tok != DOLLAR;
         if (tl->tok >= QUOTED)
             strcat(res, tl->str);
         else if (tl->tok <= DQUOTED)
@@ -96,7 +98,7 @@ char *remove_quoting(char *str)
         tl = tl->next;
     }
     destroy_lexer_quote(l);
-    if (*res == 0)
+    if (!has_not_dollar && *res == 0)
     {
         free(res);
         return NULL;
