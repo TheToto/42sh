@@ -11,6 +11,7 @@
 #include <string.h>
 #include <err.h>
 #include "env.h"
+#include "ast.h"
 
 static void get_pos(struct aliases *alias, char *name, size_t *i)
 {
@@ -139,4 +140,22 @@ char *get_alias(struct aliases *alias, char *name)
             return alias->values[pos];
     }
     return NULL;
+}
+
+void replace_aliases(struct ast_node_scmd *node, size_t size)
+{
+    if (node->elt_size == 0)
+        return;
+    char **tab = calloc(8, sizeof(char*));
+    if (!tab)
+        err(1, "replace_aliases: cannot calloc array of char*");
+    size_t size = 0;
+    size_t capacity = 8;
+    char *expand = get_alias(node->elements[0]);
+    if (!expand)
+        return;
+    for (size_t i = 0; expand[i]; i++)
+    {
+        
+    }
 }
