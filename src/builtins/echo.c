@@ -99,6 +99,14 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
     }
 }
 
+static void my_printf(char *to_print, char **str, size_t i)
+{
+    printf("%s", to_print);
+    if (str[i + 1] && not_opt(str[i + 1]))
+        printf(" ");
+    free(to_print);
+}
+
 int echo(char **str)
 {
     char flags = get_flags(str);
@@ -124,8 +132,7 @@ int echo(char **str)
                 else
                     to_print[new] = str[i][old];
             }
-            printf("%s", to_print);
-            free(to_print);
+            my_printf(to_print, str, i);
         }
     }
     if ((flags & 1) == 0)
