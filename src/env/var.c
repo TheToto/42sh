@@ -292,7 +292,8 @@ void assign_prefix(struct variables *var, char *prefix)
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
-    for (size_t i = 0; i < scmd->elt_size; i++)
+    size_t j = 0;
+    for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
         char *new = remove_quoting(scmd->elements[i]);
         if (!new)
@@ -300,7 +301,15 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
             free(res);
             errx(1, "fatal : Failed to remove quoting");
         }
-        res[i] = new;
+        if (strlen(new) == 0)
+        {
+            free(new);
+            j--;
+        }
+        else
+        {
+            res[j] = new;
+        }
     }
     return res;
 }
