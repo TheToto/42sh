@@ -298,11 +298,6 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
         char *new = remove_quoting(scmd->elements[i]);
         if (!new)
         {
-            free(res);
-            errx(1, "fatal : Failed to remove quoting");
-        }
-        if (strlen(new) == 0)
-        {
             free(new);
             j--;
         }
