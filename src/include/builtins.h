@@ -9,6 +9,8 @@
 
 #define PATH_MAX 4096
 
+#include <stddef.h>
+
 ///Enumeration of the builtins
 enum builtin
 {
@@ -67,3 +69,11 @@ int echo(char **str);
  * \param char **str  The string to be parsed
 **/
 int exec_export(char **str);
+
+/**
+ * Execute the source | . builtins
+ * \param char **str  The string to be parsed
+ * \return Return 2 if no filename is given,
+ * 1 if filename doesn't exist, else 0
+**/
+int source(char **str);

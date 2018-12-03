@@ -38,7 +38,7 @@ static enum builtin get_builtin(char *str)
         return CONTINUE;
     else if (!strcmp(str, "break"))
         return BREAK;
-    else if (!strcmp(str, "source"))
+    else if (!strcmp(str, "source") || !strcmp(str, "."))
         return SOURCE;
     else if (!strcmp(str, "history"))
         return HISTORY;
@@ -68,7 +68,6 @@ int exec_builtin(char **str)
         return shopt_exec(str);
     case EXPORT:
         return exec_export(str);
-        break;
     case ALIAS:
         break;
     case UNALIAS:
@@ -78,7 +77,7 @@ int exec_builtin(char **str)
     case CONTINUE:
         break;
     case SOURCE:
-        break;
+        return source(str);
     case HISTORY:
         break;
     case ANY:
