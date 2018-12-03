@@ -207,7 +207,7 @@ static int get_assignment_value(char *str)
         *cur = str[i];
         tok = get_token_type(cur);
         i++;
-    }while (str[i] && tok > 32 && tok != 34);
+    }while (*cur && tok > 32 && tok != 34);
     return i + 1;
 }
 
@@ -246,11 +246,6 @@ static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         };
         if (should_change(&type, type_next, lstring, i))
             found = 1;
-    }
-    if (!fnmatch("*\"*", *str, 0) && type != ASSIGNMENT_WORD)
-    {
-        strcpy(word, *str);
-        type = WORD_EXT;
     }
     word[*i] = 0;
     set_tl(tl, word, type, ptr);
