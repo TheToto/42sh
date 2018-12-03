@@ -139,7 +139,7 @@ static int should_change(enum token_type *type,
     enum token_type type_tmp = get_token_type(tmp);
     if (*type == IO_NUMBER && type_tmp > 8 && (*type != type_next || !*tmp))
         *type = WORD;
-    if (!i[1] && !i[2] && type_tmp != NOT && (((*type != type_next)
+    if ((!i[1] && !i[2] && type_tmp != NOT && (((*type != type_next)
                 && (*type < 10 || *type > 22 || type_tmp < 33
                     || type_tmp == 34 || tmp == 0)
                 && (*type != NAME || (type_tmp != 38
@@ -148,6 +148,7 @@ static int should_change(enum token_type *type,
                     && (type_tmp < NAME && type_tmp != 33 && tmp[0] != '='))
                 || (*type == ASSIGNMENT_WORD && type_tmp < NAME
                     && type_tmp != IO_NUMBER)))
+        && (word[*i] != '\\'))
     {
         if ((*type == SEMICOLON && type_next == DSEMICOLON)
                 || (*type == AMPERSAND && type_next == LOGICAL_AND)
