@@ -91,10 +91,11 @@ static void import_exported(struct variables *var)
        size_t j = 0;
        for (; environ[i][j] && environ[i][j] != '='; j++)
        {
-            name[i] = environ[i][j];
+            name[j] = environ[i][j];
             if (i >= size)
                 name = my_realloc(name, &size);
        }
+       name[j] = '\0';
        char *value = calloc(255, sizeof(char));
        size = 255;
        if (environ[i][j])
@@ -108,7 +109,7 @@ static void import_exported(struct variables *var)
                value = my_realloc(value, &size);
        }
 
-        value[k] = 0;
+        value[k] = '\0';
         if (value[0])
             add_var(var, name, value, 1);
         else
