@@ -32,6 +32,7 @@ struct shell
     struct variables *var;  ///<Current var library
     struct ast_node *ast;   ///<Current ast
     char *buf;              ///<Current buffer
+    int *shopt_states;      ///<Current shopt vars
 };
 
 ///Shell global struct

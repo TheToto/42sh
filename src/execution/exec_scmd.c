@@ -19,6 +19,7 @@
 #include "execution.h"
 #include "parser.h"
 #include "ast_destroy.h"
+#include "builtins.h"
 
 static char *itoa(int i, char *buf_nb)
 {
@@ -120,11 +121,12 @@ static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
+    status = exec_builtin(expanded);
+    if (status != -1)
+        return res;
     void *func = get_func(var, expanded[0]);
     if (func)
-    {
-        status = exec_func(expanded, var, func);
-    }
+        status = exec_node(func, var);
     else
     {
         pid = fork();
@@ -148,7 +150,6 @@ static int execute(char **expanded, int status, struct variables *var)
 
 int exec_scmd(struct ast_node_scmd *scmd, struct variables *var)
 {
-    //if !builtin cmd
     int status = 0;
     for (size_t i = 0; i < scmd->pre_size; i++)
         assign_prefix(var, scmd->prefix[i]);

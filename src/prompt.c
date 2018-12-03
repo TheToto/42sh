@@ -22,6 +22,8 @@
 #include "ast_destroy.h"
 #include "readfile.h"
 #include "shell.h"
+#include "builtins.h"
+#include "shopt.h"
 
 static char *init_path(char *file)
 {
@@ -49,6 +51,7 @@ static void launchrc(int is_print, struct variables *var)
         launch_file("/etc/42shrc", is_print, var);
     if (!stat(filerc, &buf))
         launch_file(filerc, is_print, var);
+
     free(filerc);
 }
 
@@ -59,6 +62,18 @@ struct token_list *show_ps2(void)
     struct lexer *l = lexer(buf);
     free(buf);
     return l->token_list;
+}
+
+static void init_libvar(void)
+{
+    if (!get_var(shell.var, "PS1"))
+        add_var(shell.var, "PS1", "[42sh@pc]$ ");
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ");
+    if (!get_var(shell.var, "PWD"))
+        add_var(shell.var, "PWD", getenv("PWD"));
+    if (!get_var(shell.var, "HOME"))
+        add_var(shell.var, "HOME", getenv("HOME"));
 }
 
 char *quote_ps2(void)
@@ -84,17 +99,13 @@ int show_prompt(int norc, int is_print)
     if (!get_var(shell.var, "PS2"))
         add_var(shell.var, "PS2", "> ");
     if (!norc)
-        launchrc(is_print, shell.var);
+        launchrc(is_print, library);
+    init_libvar();
     while (1)
     {
         char *buf = readline(get_var(shell.var, "PS1"));
         if (buf && *buf)
             add_history(buf);
-        if (!strcmp(buf, "exit"))
-        {
-            free(buf);
-            break;
-        }
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);
         shell.buf = NULL;
