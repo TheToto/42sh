@@ -64,6 +64,20 @@ int echo(char **str);
 
 /**
  * Execute the export builtin
- * \param char **str  The string to be parsed
+ * \param str  The string to be parsed
 **/
 int exec_export(char **str);
+
+/**
+* Execute the alias builtin
+* @param str the string to be parsed
+* @return exit status of the builtin
+*/
+int exec_alias(char **str);
+
+/*
+* Execute the unalias builtin
+* @param str the string to be parsed
+* @return exit status of the builtin
+*/
+int unalias(char **str);

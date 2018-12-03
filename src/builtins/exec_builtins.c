@@ -70,6 +70,7 @@ int exec_builtin(char **str)
         return exec_export(str);
         break;
     case ALIAS:
+        return exec_alias(str);
         break;
     case UNALIAS:
         break;

@@ -50,6 +50,14 @@ struct variables
     struct func **f_lib;///<array of defined functions or builtins
 };
 
+struct aliases
+{
+    size_t capacity;    ///<capacity of the aliases array
+    size_t size;        ///<current size of the aliases array
+    char **names;       ///<array of aliases names
+    char **values;      ///<array of matching aliases values
+};
+
 /**
 * @fn init_var
 * @brief Initialization of the array of variables
@@ -128,3 +136,38 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type);
 void *get_func(struct variables *var, char *name);
 
 void set_up_var(char *args[]);
+
+/**
+* Initilize the library of aliases
+* @return return the newly allocated structure
+*/
+struct aliases *init_alias(void);
+
+/**
+* Destroy the library and all of the suballocated pointers
+* @param alias the library to be destroyed
+*/
+void destroy_alias(struct aliases *alias);
+
+/**
+* Add the new alias with its value. If already exists, just replace value
+* @param alias the library to be added
+* @param name the name of the alias
+* @param value the value of the alias
+*/
+void add_alias(struct aliases *alias, char *name, char *value);
+
+/**
+* Remove the specified alias from the specified library
+* @param alias the library where to remove
+* @param name the name of the alias to remove
+*/
+void remove_alias(struct aliases *alis, char *name);
+
+/**
+* Search in the alias library fot the alias name
+* @param alias Library to look in
+* @param name Alias to look for
+* @return return NULL if not found or the value of the alias otherwise
+*/
+char *get_alias(struct aliases *alias, char *name);

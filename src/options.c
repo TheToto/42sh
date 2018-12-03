@@ -114,6 +114,7 @@ void options(char *argv[])
 {
     size_t i = 1;
     shell.shopt_states = init_shoptlist();
+    shell.alias = init_alias();
     int ast = check_ast_print(argv);
     int norc = 0;
 
