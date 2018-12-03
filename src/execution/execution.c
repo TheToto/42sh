@@ -38,7 +38,12 @@ int exec_while(struct ast_node_while *n_while, struct variables *var)
     while (exec_node(n_while->condition, var) == 0)
     {
             res = exec_node(n_while->exec, var);
-            if (shell.n_continue)
+            if (shell.n_continue > 1 && shell.loop > 1)
+            {
+                shell.n_continue -= 1;
+                break;
+            }
+            else if (shell.n_continue == 1)
                 shell.n_continue -= 1;
             else if (shell.n_break)
             {
