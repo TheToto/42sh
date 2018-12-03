@@ -51,6 +51,13 @@
     - src/ast/ast_node_scmd.c;
     - src/ast/ast_node_while.c;
     - src/ast/print_ast.c
+    - src/builtins/cd.c
+    - src/builtins/echo.c
+    - src/builtins/exec_builtins.c
+    - src/builtins/exit.c
+    - src/builtins/export.c
+    - src/builtins/shopt.c
+    - src/builtins/shopt_output.c
     - src/env/functions.c
     - src/env/var.c;
     - src/execution/exec_case.c

@@ -63,9 +63,9 @@ void err_shopt(void)
             sourcepath\n\
             xpg_echo";
     if (shell.type == S_PROMPT)
-        warnx(msg);
+        warnx("%s", msg);
     else
-        errx(2, msg);
+        errx(2, "%s", msg);
 }
 
 void print_shopt(int is_builtin, enum shopt shopt)
