@@ -162,7 +162,7 @@ void add_alias(struct aliases *alias, char *name, char *value);
 * @param alias the library where to remove
 * @param name the name of the alias to remove
 */
-void remove_alias(struct aliases *alis, char *name);
+int remove_alias(struct aliases *alis, char *name);
 
 /**
 * Search in the alias library fot the alias name

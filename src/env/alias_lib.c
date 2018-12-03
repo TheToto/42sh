@@ -105,7 +105,7 @@ void add_alias(struct aliases *alias, char *name, char *value)
     }
 }
 
-void remove_alias(struct aliases *alias, char *name)
+int remove_alias(struct aliases *alias, char *name)
 {
     size_t pos = 0;
     char *tmp;
@@ -122,9 +122,10 @@ void remove_alias(struct aliases *alias, char *name)
             alias->names[alias->size - 1] = 0;
             alias->values[alias->size - 1] = 0;
             alias->size -= 1;
-            break;
+            return 0;
         }
     }
+    return 1;
 }
 
 char *get_alias(struct aliases *alias, char *name)
