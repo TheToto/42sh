@@ -19,6 +19,7 @@ struct var
 {
     char *name;     ///<variable name
     char *value;    ///<variable value
+    char exported;  ///<attribute exported
 };
 
 ///enumeration of different types of functions
@@ -58,17 +59,17 @@ struct variables
 struct variables *init_var(void);
 
 /**
-* @fn add_var
-* @brief Add a new variable to the array
-* @details Look if a variable with the same name already exist and replace its
-* value when appropriated. Otherwise, realloc if size too small and allocate
-* the definition at first available cell in the array.
-* @param var the pre-created array of definitions
-* @param name the name of the variable
-* @param value the value of the variable
-* @return return the newly allocated structure
-*/
-void add_var(struct variables *var, char *name, char *value);
+ * @fn add_var
+ * @brief Add a new variable to the array
+ * @details Look if a variable with the same name already exist and replace its
+ * value when appropriated. Otherwise, realloc if size too small and allocate
+ * the definition at first available cell in the array.
+ * @param var the pre-created array of definitions
+ * @param name the name of the variable
+ * @param value the value of the variable
+ * @return return the newly allocated structure
+ */
+void add_var(struct variables *var, char *name, char *value, char exported);
 
 /**
 * @fn destroy_var
@@ -78,12 +79,20 @@ void add_var(struct variables *var, char *name, char *value);
 void destroy_var(struct variables *var);
 
 /**
-* @fn get_var
-* Look for the variable with name \a name in the array \var
-* @param var library to look in
-* @param name variable researched
-* @return NULL if not found, its value otherwise
-*/
+ * @fn del_var
+ * Remove the name variables from the library if exists
+ * @param var pointer to the library of variables to destroy
+ * @param name variable to remove
+ */
+void del_var(struct variables *var, char *name);
+
+/**
+ * @fn get_var
+ * Look for the variable with name \a name in the array \var
+ * @param var library to look in
+ * @param name variable researched
+ * @return NULL if not found, its value otherwise
+ */
 char *get_var(struct variables *var, char *name);
 
 /**

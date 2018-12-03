@@ -45,7 +45,7 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
     int res = 0;
     for (size_t i = 0; i < n_for->size; i++)
     {
-        add_var(var, name, n_for->values[i]);
+        add_var(var, name, n_for->values[i], 0);
         res = exec_node(n_for->exec, var);
     }
     return res;

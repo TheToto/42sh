@@ -13,11 +13,14 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "builtins.h"
 #include "env.h"
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
 #include "quote_lexer.h"
+
+extern char **environ;
 
 static char *itoa(int i, char *buf_nb)
 {
@@ -69,6 +72,52 @@ void set_up_var(char *args[])
     set_up_reserved();
 }
 
+static void *my_realloc(void *p, size_t *size)
+{
+    char *ptr = realloc(p, 2 * *size);
+    if (!ptr)
+        err(1, "cannot realloc in my_realloc");
+    p = ptr;
+    *size *= 2;
+    return p;
+}
+
+static void import_exported(struct variables *var)
+{
+    for (size_t i = 0; environ[i]; i++)
+    {
+       size_t size = 255;
+       char *name = calloc(255, sizeof(char));
+       size_t j = 0;
+       for (; environ[i][j] && environ[i][j] != '='; j++)
+       {
+            name[i] = environ[i][j];
+            if (i >= size)
+                name = my_realloc(name, &size);
+       }
+       char *value = calloc(255, sizeof(char));
+       size = 255;
+       if (environ[i][j])
+           j++;
+
+       size_t k = 0;
+       for (; environ[i][j]; j++, k++)
+       {
+           value[k] = environ[i][j];
+           if (k >= size)
+               value = my_realloc(value, &size);
+       }
+
+        value[k] = 0;
+        if (value[0])
+            add_var(var, name, value, 1);
+        else
+            add_var(var, name, value, 2);
+        free(name);
+        free(value);
+    }
+}
+
 struct variables *init_var(void)
 {
     struct variables *new = malloc(sizeof(struct variables));
@@ -98,6 +147,7 @@ struct variables *init_var(void)
     new->size = 0;
     new->capacity = 8;
     shell.var = new;
+    import_exported(new);
     return new;
 }
 
@@ -111,7 +161,7 @@ static void expand_var(struct variables *var)
     var->capacity *= 2;
 }
 
-void add_var(struct variables *var, char *name, char *value)
+void add_var(struct variables *var, char *name, char *value, char exported)
 {
     if (!var || !name || !value)
     {
@@ -132,6 +182,7 @@ void add_var(struct variables *var, char *name, char *value)
     {
         free(cur->value);
         cur->value = strdup(value);
+        cur->exported = exported;
         return;
     }
     if (pos == var->capacity)
@@ -140,6 +191,7 @@ void add_var(struct variables *var, char *name, char *value)
     if (!var)
         errx(1, "cannot malloc new word in add_var");
     new->name = strdup(name);
+    new->exported = exported;
     new->value = strdup(value);
     var->size += 1;
     var->lib[pos] = new;
@@ -177,6 +229,29 @@ void destroy_var(struct variables *var)
     shell.var = NULL;
 }
 
+void del_var(struct variables *var, char *name)
+{
+    size_t i = 0;
+    size_t last = var->size - 1;
+    struct var *cur;
+    while (i < var->size)
+    {
+        cur = var->lib[i];
+        if (strcmp(name, cur->name) == 0 && cur->exported >= 1)
+        {
+            var->lib[i] = var->lib[last];
+            var->lib[last] = 0;
+            free(cur->name);
+            free(cur->value);
+            free(cur);
+            var->size -= 1;
+            break;
+        }
+        i++;
+    }
+    unsetenv(name);
+}
+
 char *get_var(struct variables *var, char *name)
 {
     if (!var || !name)
@@ -212,7 +287,7 @@ void assign_prefix(struct variables *var, char *prefix)
     };
     sscanf(prefix, "%[^=]=%s", name, value);
     //recursive call here for further expansion
-    add_var(var, name, value);
+    add_var(var, name, value, 0);
 }
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)

@@ -70,15 +70,22 @@
 * [ ] Catch Ctrl-D
 
 # Built in
+* [ ] management of builtins
 * [~] exit (need to fix exit with no arg)
 * [x] cd
 * [~] shopt (output handled)
-* [ ] export
+* [~] export
 * [ ] alias/unalias
 * [ ] echo
 * [ ] continue/break
 * [ ] source
 * [x] history
+
+# Export
+* [x] Code basic files
+* [x] Handle transmission of exported var
+* [x] Assign to builtins management
+* [ ] Assign all var env to lib at starting
 
 # RETURN VALUE
 * [~] Fix wrong return value

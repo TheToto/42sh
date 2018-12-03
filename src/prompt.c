@@ -67,13 +67,13 @@ struct token_list *show_ps2(void)
 static void init_libvar(void)
 {
     if (!get_var(shell.var, "PS1"))
-        add_var(shell.var, "PS1", "[42sh@pc]$ ");
+        add_var(shell.var, "PS1", "[42sh@pc]$ ", 1);
     if (!get_var(shell.var, "PS2"))
-        add_var(shell.var, "PS2", "> ");
+        add_var(shell.var, "PS2", "> ", 1);
     if (!get_var(shell.var, "PWD"))
-        add_var(shell.var, "PWD", getenv("PWD"));
+        add_var(shell.var, "PWD", getenv("PWD"), 1);
     if (!get_var(shell.var, "HOME"))
-        add_var(shell.var, "HOME", getenv("HOME"));
+        add_var(shell.var, "HOME", getenv("HOME"), 1);
 }
 
 char *quote_ps2(void)

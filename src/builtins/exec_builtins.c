@@ -67,6 +67,7 @@ int exec_builtin(char **str)
     case SHOPT:
         return shopt_exec(str);
     case EXPORT:
+        return exec_export(str);
         break;
     case ALIAS:
         break;

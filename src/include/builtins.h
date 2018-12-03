@@ -1,7 +1,7 @@
 /**
  * \file builtins.h
  * Execute the builtins
- * \authors sabrina.meng
+ * \authors sabrina.meng louis.hollevill
  * \version 0.8
  * \date 30-11-2018
 **/
@@ -60,3 +60,10 @@ int changedir(char **str);
  * \param char **str  The string to be parsed
 **/
 int echo(char **str);
+
+
+/**
+ * Execute the export builtin
+ * \param char **str  The string to be parsed
+**/
+int exec_export(char **str);

@@ -122,12 +122,11 @@ static int execute(char **expanded, int status, struct variables *var)
 {
     pid_t pid;
     int error = 0;
-    status = exec_builtin(expanded);
-    if (status != -1)
+    void *func = NULL;
+    if ((func = get_func(var, expanded[0])))
+        status = exec_node(func, var);
+    else if ((status = exec_builtin(expanded)) != -1)
         return status;
-    void *func = get_func(var, expanded[0]);
-    if (func)
-        status = exec_func(expanded, var, func);
     else
     {
         pid = fork();
