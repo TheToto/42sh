@@ -33,11 +33,12 @@ static int priority(int op)
         case '*':
         case '/':
             return 2;
+        case '*' * 2:
         case '&' * 2:
         case '|':
         case '|' * 2:
         case '^':
-            return 0;
+            return 3;
         default:
             break;
     }
@@ -75,6 +76,18 @@ static int get_operator(char *str, size_t *i, short go_forward)
     return 0;
 }
 
+static int int_pow(int num, int exp)
+{
+    int res = 1;
+    while (exp)
+    {
+        if (exp & 1)
+            res *= num;
+        exp /= 2;
+        num *= num;
+    }
+    return res;
+}
 
 static int compute_op(int a, int b, int op)
 {
@@ -87,19 +100,19 @@ static int compute_op(int a, int b, int op)
         case '*':
             return a * b;
         case '*' * 2:
-            break;
+            return int_pow(b, a);
         case '/':
             return a / b;
         case '&':
-            break;
+            return b & a;
         case '&' * 2:
-            break;
+            return b && a;
         case '|':
-            break;
+            return b | a;
         case '|' * 2:
-            break;
+            return b || a;
         case '^':
-            break;
+            return b ^ a;
         default:
             break;
     }
@@ -166,7 +179,7 @@ static void compute_next(struct stack *values, struct stack *sign)
 {
     int left = pop_stack(values);
     int right = pop_stack(values);
-    char op = pop_stack(sign);
+    int op = pop_stack(sign);
     push_stack(values, compute_op(left, right, op));
 }
 
@@ -225,7 +238,7 @@ int evaluate_maths(char *str)
     return destroy_maths(values, sign);
 }
 
-int main(void)
+int main(int argc, char **argv)
 {
-    printf("%d\n", evaluate_maths("~2"));
+    printf("%d\n", evaluate_maths(argv[1]));
 }
