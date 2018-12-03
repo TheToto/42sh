@@ -70,10 +70,8 @@ static void init_libvar(void)
         add_var(shell.var, "PS1", "[42sh@pc]$ ", 1);
     if (!get_var(shell.var, "PS2"))
         add_var(shell.var, "PS2", "> ", 1);
-    if (!get_var(shell.var, "PWD"))
-        add_var(shell.var, "PWD", getenv("PWD"), 1);
-    if (!get_var(shell.var, "HOME"))
-        add_var(shell.var, "HOME", getenv("HOME"), 1);
+    add_var(shell.var, "PWD", getenv("PWD"), 1);
+    add_var(shell.var, "HOME", getenv("HOME"), 1);
 }
 
 char *quote_ps2(void)
@@ -94,10 +92,6 @@ int show_prompt(int norc, int is_print)
 {
     char *histpath = init_path("/.42sh_history");
     read_history(histpath);
-    if (!get_var(shell.var, "PS1"))
-        add_var(shell.var, "PS1", "[42sh@pc]$ ");
-    if (!get_var(shell.var, "PS2"))
-        add_var(shell.var, "PS2", "> ");
     if (!norc)
         launchrc(is_print, shell.var);
     init_libvar();

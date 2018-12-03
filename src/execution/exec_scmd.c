@@ -39,12 +39,12 @@ static void add_params(char **expanded, struct variables *var)
     int size = 0;
     for (; expanded && expanded[nb] && nb < 100; nb++)
     {
-        add_var(var, itoa(nb, buf_nb), expanded[nb]);
+        add_var(var, itoa(nb, buf_nb), expanded[nb], 0);
         size += strlen(expanded[nb]) + 1;
     }
-    add_var(var, "#", itoa(nb - 1, buf_nb));
+    add_var(var, "#", itoa(nb - 1, buf_nb), 0);
     for(; nb < 100; nb++)
-        add_var(var, itoa(nb, buf_nb), "");
+        add_var(var, itoa(nb, buf_nb), "", 0);
     // $@ $*
     char *star = calloc(size + 1, sizeof(char));
     for (size_t i = 1; expanded && expanded[i]; i++)
@@ -53,8 +53,8 @@ static void add_params(char **expanded, struct variables *var)
         if (expanded[i + 1])
             strcat(star, " ");
     }
-    add_var(var, "*", star);
-    add_var(var, "@", star);
+    add_var(var, "*", star, 0);
+    add_var(var, "@", star, 0);
     free(star);
 }
 
@@ -86,16 +86,16 @@ static int exec_func(char **expanded, struct variables *var, void *func)
     {
         if (backup[i])
         {
-            add_var(var, itoa(i, buf_nb), backup[i]);
+            add_var(var, itoa(i, buf_nb), backup[i], 0);
             free(backup[i]);
         }
         else
-            add_var(var, itoa(i, buf_nb), "");
+            add_var(var, itoa(i, buf_nb), "", 0);
     }
     free(backup);
-    add_var(var, "#", sharp);
-    add_var(var, "*", star);
-    add_var(var, "@", arob);
+    add_var(var, "#", sharp, 0);
+    add_var(var, "*", star, 0);
+    add_var(var, "@", arob, 0);
     free(sharp);
     free(star);
     free(arob);
@@ -124,7 +124,7 @@ static int execute(char **expanded, int status, struct variables *var)
     int error = 0;
     void *func = NULL;
     if ((func = get_func(var, expanded[0])))
-        status = exec_node(func, var);
+        status = exec_func(expanded, var, func);
     else if ((status = exec_builtin(expanded)) != -1)
         return status;
     else

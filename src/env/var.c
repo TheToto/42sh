@@ -34,14 +34,14 @@ static void set_up_reserved(void)
     {
         0
     };
-    add_var(shell.var, "$", itoa(getpid(), buf_nb));
-    add_var(shell.var, "UID", itoa(getuid(), buf_nb));
+    add_var(shell.var, "$", itoa(getpid(), buf_nb), 0);
+    add_var(shell.var, "UID", itoa(getuid(), buf_nb), 0);
     char *pwd = get_current_dir_name();
-    add_var(shell.var, "OLDPWD", pwd);
+    add_var(shell.var, "OLDPWD", pwd, 0);
     free(pwd);
-    add_var(shell.var, "RANDOM", "32767");
+    add_var(shell.var, "RANDOM", "32767", 0);
     // SHELLOPTS
-    add_var(shell.var, "IFS", " \\t\\n");
+    add_var(shell.var, "IFS", " \\t\\n", 0);
 }
 
 void set_up_var(char *args[])
@@ -54,10 +54,10 @@ void set_up_var(char *args[])
     int size = 0;
     for (; args && args[nb] && nb < 100; nb++)
     {
-        add_var(shell.var, itoa(nb, buf_nb), args[nb]);
+        add_var(shell.var, itoa(nb, buf_nb), args[nb], 0);
         size += strlen(args[nb]) + 1;
     }
-    add_var(shell.var, "#", itoa(nb - 1, buf_nb));
+    add_var(shell.var, "#", itoa(nb - 1, buf_nb), 0);
     // $@ $*
     char *star = calloc(size, sizeof(char));
     for (size_t i = 1; args && args[i]; i++)
@@ -66,8 +66,8 @@ void set_up_var(char *args[])
         if (args[i + 1])
             strcat(star, " ");
     }
-    add_var(shell.var, "*", star);
-    add_var(shell.var, "@", star);
+    add_var(shell.var, "*", star, 0);
+    add_var(shell.var, "@", star, 0);
     free(star);
     set_up_reserved();
 }
