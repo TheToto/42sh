@@ -74,13 +74,17 @@ static void my_split(char *str, char *name, char *value)
         value[j] = str[i];
 }
 
-static void look_for(char *name)
+static int look_for(char *name)
 {
     char *res = get_alias(shell.alias, name);
     if (!res)
+    {
         warnx("alias: %s: not found", name);
+        return 1;
+    }
     else
         printf("alias %s=\'%s\'\n", name, res);
+    return 0;
 }
 
 static void assign(char *name, char *value)
@@ -99,6 +103,7 @@ static void assign(char *name, char *value)
 
 int exec_alias(char **str)
 {
+    int res = 0;
     char flag = alias_options(str);
     if (flag == -1)
         return 2;
@@ -114,11 +119,11 @@ int exec_alias(char **str)
         char *value = calloc(len, sizeof(char));
         my_split(str[i], name, value);
         if (!value[0])
-            look_for(name);
+            res |= look_for(name);
         else
             assign(name, value);
         free(name);
         free(value);
     }
-    return 0;
+    return res;
 }
