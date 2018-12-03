@@ -9,6 +9,7 @@
 #include <err.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include "shell.h"
 #include "builtins.h"
@@ -21,6 +22,16 @@ static char err_param(char *str)
     warnx("'%s' is not a valid identifier", str);
     warnx("usage: export[-n] [name[=value] ...] or export -p");
     return -1;
+}
+
+static void *my_realloc(void *p, size_t *size)
+{
+    char *ptr = realloc(p, 2 * *size);
+    if (!ptr)
+        err(1, "cannot realloc in my_realloc");
+    p = ptr;
+    *size *= 2;
+    return p;
 }
 
 static char name_ok(char *str)
@@ -38,8 +49,6 @@ static char name_ok(char *str)
             return 0;
     }
     if (digits == len)
-        return 0;
-    if (len >= PATH_MAX)
         return 0;
     return 1;
 }
@@ -90,7 +99,17 @@ static int handle_p(char flags)
         return 0;
     for (size_t i = 0; environ[i]; i++)
     {
-        printf("%s\n", environ[i]);
+        char *name = strdup(environ[i]);
+        char *value;
+        size_t i = 0;
+        for (; name[i] && name[i] != '='; i++);
+        if (name[i])
+        {
+            value = name + i + 1;
+            name[i] = 0;
+        }
+        printf("%s=\"%s\"\n", name, value);
+        free(name);
     }
     return 0;
 }
@@ -108,11 +127,21 @@ static int handle_n(char **str)
 static void my_split(char *str, char *name, char *value)
 {
     size_t i = 0;
+    size_t size = 255;
     for (; str[i] && str[i] != '='; i++)
+    {
         name[i] = str[i];
+        if (i >= size)
+            name = my_realloc(name, &size);
+    }
     i += str[i] == '=';
+    size = 255;
     for (size_t j = 0; str[i]; i++, j++)
+    {
         value[j] = str[i];
+        if (i >= size)
+            name = my_realloc(name, &size);
+    }
 }
 
 static int handle_export(char **str)
@@ -121,20 +150,16 @@ static int handle_export(char **str)
     {
         if (str[i][0] != '-')
         {
-            char name[PATH_MAX] =
-            {
-                0
-            };
-            char value[PATH_MAX] =
-            {
-                0
-            };
+            char *name = calloc(255, sizeof(char));
+            char *value = calloc(255, sizeof(char));
             my_split(str[i], name, value);
             if (*value)
                 add_var(shell.var, name, value, 1);
             else
                 add_var(shell.var, name, value, 2);
             setenv(name, value, 1);
+            free(name);
+            free(value);
         }
     }
     return 0;

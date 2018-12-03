@@ -11,10 +11,59 @@
 #include <err.h>
 #include <string.h>
 #include <stdio.h>
+#include <builtins.h>
 #include "env.h"
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+
+extern char **environ;
+
+static void *my_realloc(void *p, size_t *size)
+{
+    char *ptr = realloc(p, 2 * *size);
+    if (!ptr)
+        err(1, "cannot realloc in my_realloc");
+    p = ptr;
+    *size *= 2;
+    return p;
+}
+
+static void import_exported(struct variables *var)
+{
+    for (size_t i = 0; environ[i]; i++)
+    {
+       size_t size = 255;
+       char *name = calloc(255, sizeof(char));
+       size_t j = 0;
+       for (; environ[i][j] && environ[i][j] != '='; j++)
+       {
+            name[i] = environ[i][j];
+            if (i >= size)
+                name = my_realloc(name, &size);
+       }
+       char *value = calloc(255, sizeof(char));
+       size = 255;
+       if (environ[i][j])
+           j++;
+
+       size_t k = 0;
+       for (; environ[i][j]; j++, k++)
+       {
+           value[k] = environ[i][j];
+           if (k >= size)
+               value = my_realloc(value, &size);
+       }
+
+        value[k] = 0;
+        if (value[0])
+            add_var(var, name, value, 1);
+        else
+            add_var(var, name, value, 2);
+        free(name);
+        free(value);
+    }
+}
 
 struct variables *init_var(void)
 {
@@ -45,6 +94,7 @@ struct variables *init_var(void)
     new->size = 0;
     new->capacity = 8;
     shell.var = new;
+    import_exported(new);
     return new;
 }
 
