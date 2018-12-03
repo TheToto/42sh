@@ -36,6 +36,8 @@ void my_abort(void)
         lexer_destroy(shell.lexer);
     if (shell.buf)
         free(shell.buf);
+    if (shell.shopt_states)
+        free(shell.shopt_states);
 }
 
 int main(int argc, char *argv[])
