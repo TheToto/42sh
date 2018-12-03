@@ -221,8 +221,6 @@ void destroy_var(struct variables *var)
         free(next->name);
         if (next->type == DECLARED)
             destroy_ast(next->value);
-        //else
-            //free(bultin)?
         free(next);
     }
     free(var->f_lib);

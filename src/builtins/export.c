@@ -108,7 +108,7 @@ static int handle_p(char flags)
             value = name + i + 1;
             name[i] = 0;
         }
-        printf("%s=\"%s\"\n", name, value);
+        printf("export %s=\"%s\"\n", name, value);
         free(name);
     }
     return 0;

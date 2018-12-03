@@ -24,7 +24,7 @@ static void expand_f_lib(struct variables *var)
     var->f_lib = new;
     var->f_capacity *= 2;
 }
-#include <stdio.h>
+
 int add_func(struct variables *var, char *name, void *value, enum f_type type)
 {
     if (!var || !name || !value)
@@ -49,17 +49,15 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type)
     {
         if (cur->type == DECLARED)
             destroy_ast(cur->value);
-        //else
-        //free(builtin)?
         cur->value = value;
         cur->type = type;
         return 0;
     }
-    if (pos == var->capacity)
+    if (pos == var->f_capacity)
         expand_f_lib(var);
     struct func *new = malloc(sizeof(struct func));
     if (!new)
-        err(1, "cannot malloc new word in add_var");
+        err(1, "cannot malloc new word in add_func");
     new->name = strdup(name);
     new->type = type;
     new->value = value;
@@ -72,7 +70,7 @@ void *get_func(struct variables *var, char *name)
 {
     if (!var || !name)
     {
-        warnx("cannot get_var: no var or name provided");
+        warnx("cannot get_func: no var or name provided");
         return NULL;
     }
     struct func *cur;

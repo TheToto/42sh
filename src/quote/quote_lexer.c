@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>
+#include <err.h>
 
 #include "quote_lexer.h"
 
-static
-struct lexer_quote *init_lexer(void)
+static struct lexer_quote *init_lexer(void)
 {
     struct lexer_quote *l = NULL;
     l = calloc(1, sizeof(*l));
@@ -44,8 +44,7 @@ int is_dollar(char *str)
     return 0;
 }
 
-static
-enum token_quote get_tok_quote(char first)
+static enum token_quote get_tok_quote(char first)
 {
     switch (first)
     {
@@ -65,8 +64,7 @@ enum token_quote get_tok_quote(char first)
     return WORD_DEFAULT;
 }
 
-static
-char *get_next_word(char **str, enum token_quote *tok)
+static char *get_next_word(char **str, enum token_quote *tok)
 {
     char first = **str;
     size_t len = strlen(*str);
@@ -120,7 +118,7 @@ struct lexer_quote *lexer_quote(char *str)
 {
     struct lexer_quote *l = init_lexer();
     if (!l)
-        return NULL;
+        err(1, "Failed to malloc lexer_quote");
     struct token_list_quote *tl = l->tl;
     while (*str)
     {
