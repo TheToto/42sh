@@ -92,7 +92,7 @@ static void import_exported(struct variables *var)
        for (; environ[i][j] && environ[i][j] != '='; j++)
        {
             name[j] = environ[i][j];
-            if (i >= size)
+            if (i >= size - 1)
                 name = my_realloc(name, &size);
        }
        name[j] = '\0';
@@ -105,7 +105,7 @@ static void import_exported(struct variables *var)
        for (; environ[i][j]; j++, k++)
        {
            value[k] = environ[i][j];
-           if (k >= size)
+           if (k >= size - 1)
                value = my_realloc(value, &size);
        }
 
