@@ -285,8 +285,10 @@ void assign_prefix(struct variables *var, char *prefix)
         0
     };
     sscanf(prefix, "%[^=]=%s", name, value);
+    char *val = remove_quoting(value);
     //recursive call here for further expansion
     add_var(var, name, value, 0);
+    free(val);
 }
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)
