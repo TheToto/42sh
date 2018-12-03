@@ -82,10 +82,8 @@ int exec_builtin(char **str)
         return source(str);
     case HISTORY:
         break;
-    case ANY:
-        break;
     default:
-        errx(127, "%s : command not found", str[0]);
+        break;
     }
     return res;
 }

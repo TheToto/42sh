@@ -99,15 +99,16 @@ int show_prompt(int norc, int is_print)
     {
         char *buf = readline(get_var(shell.var, "PS1"));
         if (buf && *buf)
+        {
             add_history(buf);
+            write_hist(histpath);
+            history_truncate_file(histpath, 500);
+        }
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);
         shell.buf = NULL;
         free(buf);
     }
-    write_hist(histpath);
-    history_truncate_file(histpath, 500);
-
     free(histpath);
     return 0;
 }

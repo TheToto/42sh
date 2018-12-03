@@ -13,10 +13,16 @@
 #include <stdlib.h>
 
 #include "builtins.h"
+#include "shell.h"
 
 static int error_check(char **str)
 {
-
+    if (!shell.loop)
+    {
+        warnx("%s: only meaningful in a 'for', 'while', or 'until' loop",
+               str[0]);
+        return 0;
+    }
     if (str[1] && !atoi(str[1]) && strcmp(str[1], "0"))
     {
         warnx("%s: numeric argument required", str[0]);
@@ -38,25 +44,21 @@ static int error_check(char **str)
 int exec_continue(char **str)
 {
     int n = 1;
-    char *arg = str[1];
     int err = error_check(str);
     if (err)
         return err;
     n = !str[1] ? 1 : atoi(str[1]);
-    arg = arg;
-    n = n;
+    shell.n_continue = n;
     return 0;
 }
 
 int exec_break(char **str)
 {
     int n = 1;
-    char *arg = str[1];
     int err = error_check(str);
     if (err)
         return err;
     n = !str[1] ? 1 : atoi(str[1]);
-    arg = arg;
-    n = n;
+    shell.n_break = n;
     return 0;
 }
