@@ -99,7 +99,7 @@ int show_prompt(int norc, int is_print)
     if (!get_var(shell.var, "PS2"))
         add_var(shell.var, "PS2", "> ");
     if (!norc)
-        launchrc(is_print, library);
+        launchrc(is_print, shell.var);
     init_libvar();
     while (1)
     {

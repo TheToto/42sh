@@ -18,6 +18,8 @@
 
 static enum builtin get_builtin(char *str)
 {
+    if (!str)
+        return ANY;
     if (!strcmp(str, "exit"))
         return EXIT;
     else if (!strcmp(str, "cd"))

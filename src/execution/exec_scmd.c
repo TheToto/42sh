@@ -123,10 +123,10 @@ static int execute(char **expanded, int status, struct variables *var)
     int error = 0;
     status = exec_builtin(expanded);
     if (status != -1)
-        return res;
+        return status;
     void *func = get_func(var, expanded[0]);
     if (func)
-        status = exec_node(func, var);
+        status = exec_func(expanded, var, func);
     else
     {
         pid = fork();
