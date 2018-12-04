@@ -64,8 +64,7 @@ static int get_next_quoted(char *str)
         if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
         {
             i++;
-            while (str[i]
-                && (str[i] != '\'' || (i > 0 && str[i - 1] == '\\')))
+            while (str[i] && (str[i] != '\''))
                 i++;
         }
         else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
@@ -172,19 +171,39 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
-static int get_next_qword(char **str, char *word, struct token_list *tl)
+static int get_next_qword(char *str)
 {
-    int i = 1;
-    word[0] = **str;
-    while ((*str)[i] && ((*str)[i] != **str || (*str)[i - 1] == '\\'))
+    char cur[2];
+    cur[0] = *str;
+    cur[1] = 0;
+    int i = 0;
+    enum token_type tok = WORD;
+    for (; *cur && (tok >= NAME || tok == 33); i++)
     {
-        word[i] = (*str)[i];
-        i++;
+        if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i] && (str[i] != '\''))
+                i++;
+        }
+        else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i]
+                && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        else if (str[i] == '`' && !(i > 0 && str[i - 1] == '\\'))
+        {
+            i++;
+            while (str[i]
+                && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
+                i++;
+        }
+        cur[0] = str[i];
+        tok = get_token_type(cur);
     }
-    word[i] = (*str)[i];
-    word[i + 1] = 0;
-    set_tl(tl, word, WORD_EXT, *str);
-    return i + 1;
+    return i - 1;
 }
 
 static int get_assignment_value(char *str)
@@ -197,17 +216,19 @@ static int get_assignment_value(char *str)
     char quote = 0;
     do
     {
-        if ((i && str[i] && str[i - 1] == '\\') || (in_quote && *cur != quote))
+        *cur = str[i];
+        if (i && str[i] && ((str[i - 1] == '\\' && quote != '\'')
+            || (in_quote && *cur != quote)))
         {
             i++;
             continue;
         }
+        *cur = str[i];
         if (*cur == '"' || *cur == '\'' || *cur == '`')
         {
             in_quote = !in_quote;
             quote = *cur;
         }
-        *cur = str[i];
         tok = get_token_type(cur);
         i++;
     }while (*cur && tok > 32 && tok != 34);
@@ -217,16 +238,20 @@ static int get_assignment_value(char *str)
 static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
-    if (**str == '\'' || **str == '\"' || **str == '`')
-    {
-        *str += get_next_qword(str, word, tl);
-        return;
-    }
     size_t i[3] = { 0 };
     int found = 0;
     enum token_type type = WORD;
     for (; !found && *i < strlen(*str); (*i)++)
     {
+        if (((*str)[*i] == '\'' || (*str)[*i] == '\"' || (*str)[*i] == '`')
+            && ((*i && (*str)[*i - 1] != '\\') || !*i))
+        {
+            int res = get_next_qword(*str);
+            strncat(word, *str, res);
+            *i += res;
+            type = WORD_EXT;
+            break;
+        }
         word[*i] = (*str)[*i];
         type = get_token_type(word);
         word[*i + 1] = (*str)[*i + 1];
