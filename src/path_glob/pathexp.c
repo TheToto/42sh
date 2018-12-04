@@ -70,6 +70,7 @@ static void explore_dir(char *cur_path, char *path, char *patern, struct queue *
 struct queue *expand_path(char *path)
 {
     struct queue *q = init_queue();
+    char *save = strdup(path);
     char *cur_path = calloc(PATH_MAX, sizeof(char));
     char *dir = calloc(PATH_MAX, sizeof(char));
 
@@ -81,11 +82,13 @@ struct queue *expand_path(char *path)
     path = get_next_path(path, dir);
     explore_dir(cur_path, path, dir, q);
 
-    debug_queue(q);
     sort_queue(q);
-    debug_queue(q);
+
+    if (q->size == 0)
+        push_queue(q, save);
 
     free(cur_path);
+    free(save);
     free(dir);
     return q;
 }

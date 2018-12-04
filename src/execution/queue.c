@@ -43,16 +43,22 @@ void fusion_queue(struct queue *dest, struct queue *src)
     destroy_queue(src);
 }
 
-static int my_strcmp(const void *p1, const void *p2)
-{
-    const char **str1 = p1;
-    const char **str2 = p2;
-    return strcmp(*str1, *str2);
-}
-
 void sort_queue(struct queue *q)
 {
-    qsort(q->queue, q->size, sizeof(char*), my_strcmp);
+    size_t argc = q->size;
+    char **argv = q->queue;
+    for (size_t i = 0; i < argc; i++)
+    {
+        for (size_t j = 1; j < (argc - i - 1); j++)
+        {
+            if (strcmp(argv[j], argv[j + 1]) > 0)
+            {
+                char *temp = argv[j];
+                argv[j] = argv[j + 1];
+                argv[j + 1] = temp;
+            }
+        }
+    }
 }
 
 char **dump_queue(struct queue *q)
@@ -63,6 +69,6 @@ char **dump_queue(struct queue *q)
 void debug_queue(struct queue *q)
 {
     for (size_t i = 0; i < q->size; i++)
-        printf("%s -> ", q->queue[i]);
-    printf("END\n");
+        printf("%s ", q->queue[i]);
+    printf("\n");
 }
