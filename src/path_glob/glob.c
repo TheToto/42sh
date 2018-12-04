@@ -32,19 +32,24 @@ void explore_dir(char *cur_path, char *path, char *patern)
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
     {
-        //printf("Compare %s:%s\n", myfile->d_name, patern);
+        //printf("Compare %s:%s / %s\n", myfile->d_name, patern, path);
         if (!fnmatch(patern, myfile->d_name, 0))
         {
             //printf("Enter : %s\n", myfile->d_name);
+            char *new_path = strdup(path);
             char *new_patern = calloc(PATH_MAX, sizeof(char));
-            path = get_next_path(path, new_patern);
+            char *new_cur_path = calloc(PATH_MAX, sizeof(char));
+            char *alt_path = get_next_path(new_path, new_patern);
             if (!strlen(new_patern) && strcmp(myfile->d_name, ".")
                     && strcmp(myfile->d_name, ".."))
                 printf("Found : %s\n", myfile->d_name);
-            strcat(cur_path, "/");
-            strcat(cur_path, myfile->d_name);
-            explore_dir(cur_path, path, new_patern);
+            strcat(new_cur_path, cur_path);
+            strcat(new_cur_path, "/");
+            strcat(new_cur_path, myfile->d_name);
+            explore_dir(new_cur_path, alt_path, new_patern);
             free(new_patern);
+            free(new_cur_path);
+            free(new_path);
         }
     }
     closedir(mydir);
