@@ -107,7 +107,7 @@ static char *get_next_word(char **str, enum token_quote *tok)
         int is_quoted = 0;
         int res = get_dollar(str, &is_quoted);
         strncat(word, *str, res - is_quoted);
-        (*str) += res + is_quoted;
+        (*str) += res;
     }
     else if (first != '\"' && first != '\'' && first != '`')
     {
