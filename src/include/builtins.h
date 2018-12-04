@@ -80,4 +80,4 @@ int exec_alias(char **str);
 * @param str the string to be parsed
 * @return exit status of the builtin
 */
-int unalias(char **str);
+int exec_unalias(char **str);

@@ -171,3 +171,9 @@ int remove_alias(struct aliases *alis, char *name);
 * @return return NULL if not found or the value of the alias otherwise
 */
 char *get_alias(struct aliases *alias, char *name);
+
+/**
+* Replace first element of a simple command by its alias if exists
+* @param node node of the simple command to analyse
+*/
+void replace_aliases(struct ast_node_scmd *node);

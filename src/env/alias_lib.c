@@ -12,6 +12,7 @@
 #include <err.h>
 #include "env.h"
 #include "ast.h"
+#include "shell.h"
 
 static void get_pos(struct aliases *alias, char *name, size_t *i)
 {
@@ -86,7 +87,8 @@ void add_alias(struct aliases *alias, char *name, char *value)
     }
     else
     {
-        alias->values[pos] = value;
+        free(alias->values[pos]);
+        alias->values[pos] = strdup(value);
     }
     if (alias->size == alias->capacity)
     {
@@ -142,20 +144,96 @@ char *get_alias(struct aliases *alias, char *name)
     return NULL;
 }
 
-void replace_aliases(struct ast_node_scmd *node, size_t size)
+static char **my_realloc(char **ptr, size_t *size)
+{
+    char **new = realloc(ptr, 2 * sizeof(char*) * (*size));
+    if (!new)
+        err(1, "replace_aliases: cannot realloc char**");
+    ptr = new;
+    *size *= 2;
+    return new;
+}
+
+static char *char_realloc(char *ptr, size_t *size)
+{
+    char *new = realloc(ptr, 2 * sizeof(char) * (*size));
+    if (!new)
+        err(1, "replace_aliases: cannot realloc char*");
+    ptr = new;
+    *size *= 2;
+    return new;
+}
+
+static void expand_scmd(struct ast_node_scmd *node, char **tab, size_t size)
+{
+    if (size == 0)
+    {
+        free(node->elements[0]);
+        for (size_t i = 0; i < node->elt_size - 1; i++)
+        {
+            node->elements[i] = node->elements[i + 1];
+        }
+        node->elt_size -= 1;
+        node->elements[size] = 0;
+    }
+    else if (size == 1)
+    {
+        free(node->elements[0]);
+        node->elements[0] = tab[0];
+    }
+    else
+    {
+        node->elt_size += size;
+
+        if (node->elt_size >= node->elt_capacity)
+        {
+            size_t n_capacity = node->elt_size + 1;
+            node->elements = my_realloc(node->elements,&n_capacity);
+            node->elt_capacity = n_capacity;
+        }
+        for (size_t i = node->elt_size - 1; i >= size; i--)
+            node->elements[i] = node->elements[i - size];
+        for (size_t i = 0; i < size; i++)
+            node->elements[i] = tab[i];
+    }
+    free(tab);
+}
+
+void replace_aliases(struct ast_node_scmd *node)
 {
     if (node->elt_size == 0)
         return;
     char **tab = calloc(8, sizeof(char*));
     if (!tab)
         err(1, "replace_aliases: cannot calloc array of char*");
-    size_t size = 0;
-    size_t capacity = 8;
-    char *expand = get_alias(node->elements[0]);
+    size_t c_size = 0;
+    size_t c_capacity = 8;
+    char *expand = get_alias(shell.alias, node->elements[0]);
     if (!expand)
         return;
+    char *target = calloc(8, sizeof(char));
+    size_t t_capacity = 8;
+    size_t t_size = 0;
+    if (!target)
+        err(1, "replace_aliases: cannot calloc char*");
     for (size_t i = 0; expand[i]; i++)
     {
-        
+        if (target[i] != ' ')
+        {
+            target[i] = expand[i];
+            t_size++;
+            if (t_size == t_capacity)
+                target = char_realloc(target, &t_capacity);
+        }
+        else
+        {
+            tab[c_size] = target;
+            c_size++;
+            if (c_size == c_capacity)
+                tab = my_realloc(tab, &c_capacity);
+            while (expand[i] && expand[i] == ' ')
+                i++;
+        }
     }
+    expand_scmd(node, tab, t_size);
 }

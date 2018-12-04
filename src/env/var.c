@@ -291,7 +291,7 @@ void assign_prefix(struct variables *var, char *prefix)
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
-    replace_aliases(scmd->elements, scmd->size);
+    replace_aliases(scmd);
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
