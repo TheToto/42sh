@@ -20,6 +20,7 @@
 #include "shell.h"
 #include "shopt.h"
 #include "quote_lexer.h"
+#include "maths.h"
 
 extern char **environ;
 
@@ -261,6 +262,12 @@ char *get_var(struct variables *var, char *name)
         warnx("cannot get_var: no var or name provided");
         return NULL;
     }
+    if (*name && *name == '(' && *name + 1 == '(')
+        return get_maths(name);
+    //if (*name && *name == '(')
+    //    return exec_subshell(name);
+
+
     struct var *cur;
     size_t i = 0;
 
@@ -287,9 +294,14 @@ void assign_prefix(struct variables *var, char *prefix)
     {
         0
     };
-    sscanf(prefix, "%[^=]=%s", name, value);
-    //recursive call here for further expansion
-    add_var(var, name, value, 0);
+    for (size_t i = 0; i < 256 && *prefix != '='; i++, *prefix++)
+        name[i] = *prefix;
+    prefix++;
+    for (size_t i = 0; i < 256 && *prefix != '\0'; i++, *prefix++)
+        value[i] = *prefix;
+    char *val = remove_quoting(value);
+    add_var(var, name, val, 0);
+    free(val);
 }
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)

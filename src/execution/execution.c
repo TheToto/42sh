@@ -16,6 +16,7 @@
 #include "env.h"
 #include "options.h"
 #include "lexer.h"
+#include "quote_lexer.h"
 #include "print.h"
 #include "execution.h"
 #include "parser.h"
@@ -45,7 +46,9 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
     int res = 0;
     for (size_t i = 0; i < n_for->size; i++)
     {
-        add_var(var, name, n_for->values[i], 0);
+        char *cur = remove_quoting(n_for->values[i]);
+        add_var(var, name, cur, 0);
+        free(cur);
         res = exec_node(n_for->exec, var);
     }
     return res;
