@@ -1,0 +1,3 @@
+var="
+lol"
+echo $var
