@@ -38,9 +38,11 @@ static void set_up_reserved(void)
     add_var(shell.var, "$", itoa(getpid(), buf_nb), 0);
     add_var(shell.var, "UID", itoa(getuid(), buf_nb), 0);
     char *pwd = get_current_dir_name();
-    add_var(shell.var, "OLDPWD", pwd, 0);
+    if (!get_var(shell.var, "OLDPWD"))
+        add_var(shell.var, "OLDPWD", pwd, 0);
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
+    add_var(shell.var, "?", "", 0);
     // SHELLOPTS
     add_var(shell.var, "IFS", " \\t\\n", 0);
 }

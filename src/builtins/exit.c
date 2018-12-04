@@ -14,6 +14,8 @@
 #include <stdio.h>
 
 #include "builtins.h"
+#include "env.h"
+#include "shell.h"
 
 int exec_exit(char **str)
 {
@@ -22,7 +24,7 @@ int exec_exit(char **str)
     int val;
     printf("exit\n");
     if (!n)
-        val = 0; //TO FIX : has to be the last command return value
+        val = atoi(get_var(shell.var, "?"));
     else
     {
         val = atoi(arg) % 255;
