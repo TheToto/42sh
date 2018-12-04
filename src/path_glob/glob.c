@@ -9,22 +9,66 @@
 #include <fnmatch.h>
 #include <libgen.h>
 
-void explore_dir(char *dir, char *pattern)
+
+char *get_next_path(char *path, char *dir)
 {
-    DIR *mydir = opendir(dir);
+    while (path && *path && *path != '/')
+    {
+        *dir = *path;
+        dir++;
+        path++;
+    }
+    if (*path)
+        path++;
+    *dir = '\0';
+    return path;
+}
+
+void explore_dir(char *cur_path, char *path, char *patern)
+{
+    DIR *mydir = opendir(cur_path);
+    if (!mydir)
+        return;
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
     {
-        printf("%s\n", myfile->d_name);
+        //printf("Compare %s:%s\n", myfile->d_name, patern);
+        if (!fnmatch(patern, myfile->d_name, 0))
+        {
+            //printf("Enter : %s\n", myfile->d_name);
+            char *new_patern = calloc(PATH_MAX, sizeof(char));
+            path = get_next_path(path, new_patern);
+            if (!strlen(new_patern) && strcmp(myfile->d_name, ".")
+                    && strcmp(myfile->d_name, ".."))
+                printf("Found : %s\n", myfile->d_name);
+            strcat(cur_path, "/");
+            strcat(cur_path, myfile->d_name);
+            explore_dir(cur_path, path, new_patern);
+            free(new_patern);
+        }
     }
     closedir(mydir);
 }
 
+
+
 int main(int argc, char* argv[])
 {
     char *path = argv[1];
-    char dir[PATH_MAX]
-    sprintf(path, "%[^/]/$[\n]", );
-    explore_dir("/");
-}
+    char *cur_path = calloc(PATH_MAX, sizeof(char));
+    char *dir = calloc(PATH_MAX, sizeof(char));
 
+    if (*path == '/')
+    {
+        strcat(cur_path, "/");
+        *path++;
+    }
+    else
+    {
+        strcat(cur_path, ".");
+    }
+    path = get_next_path(path, dir);
+    explore_dir(cur_path, path, dir);
+    free(cur_path);
+    free(dir);
+}
