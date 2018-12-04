@@ -48,6 +48,8 @@ static enum builtin get_builtin(char *str)
 size_t get_args(char **str)
 {
     size_t n = 0;
+    if (!*str)
+        return 0;
     for ( ; str[n]; n++)
         continue;
     return n - 1;
