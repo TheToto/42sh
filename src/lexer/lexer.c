@@ -171,39 +171,63 @@ static int should_change(enum token_type *type,
     return 0;
 }
 
-static int get_next_qword(char *str)
+static int get_next_qword(char *str, char **word_org)
 {
+    char *word = *word_org;
     char cur[2];
     cur[0] = *str;
     cur[1] = 0;
     int i = 0;
     enum token_type tok = WORD;
-    for (; *cur && (tok >= NAME || tok == 33); i++)
+    while (*cur && (tok >= NAME || tok == 33))
     {
         if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
         {
+            strncat(word, str + i, 1);
             i++;
             while (str[i] && (str[i] != '\''))
+            {
+                strncat(word, str + i, 1);
                 i++;
+            }
+            strncat(word, str + i, 1);
+            i++;
         }
         else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
         {
+            strncat(word, str + i, 1);
             i++;
             while (str[i]
                 && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
+            {
+                strncat(word, str + i, 1);
                 i++;
+            }
+            strncat(word, str + i, 1);
+            i++;
         }
         else if (str[i] == '`' && !(i > 0 && str[i - 1] == '\\'))
         {
+            strncat(word, str + i, 1);
             i++;
             while (str[i]
                 && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
+            {
+                strncat(word, str + i, 1);
                 i++;
+            }
+            strncat(word, str + i, 1);
+            i++;
+        }
+        else
+        {
+            strncat(word, str + i, 1);
+            i++;
         }
         cur[0] = str[i];
         tok = get_token_type(cur);
     }
-    return i - 1;
+    return i;
 }
 
 static int get_assignment_value(char *str)
@@ -246,8 +270,7 @@ static void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         if (((*str)[*i] == '\'' || (*str)[*i] == '\"' || (*str)[*i] == '`')
             && ((*i && (*str)[*i - 1] != '\\') || !*i))
         {
-            int res = get_next_qword(*str);
-            strncat(word, *str, res);
+            int res = get_next_qword(*str, &word);
             *i += res;
             type = WORD_EXT;
             break;

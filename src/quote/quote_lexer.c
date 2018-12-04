@@ -120,7 +120,7 @@ static char *get_next_word(char **str, enum token_quote *tok)
     }
     else
     {
-        for (int i = 0; **str && (**str != first || *(*str - 1) == '\\'); i++)
+        for (int i = 0; **str && (**str != first || (*(*str - 1) == '\\' && *(*str) != '\'')); i++)
         {
             word[i] = **str;
             (*str)++;
