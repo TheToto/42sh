@@ -69,6 +69,7 @@ static void my_split(char *str, char *name, char *value)
     size_t i = 0;
     for (; str[i] && str[i] != '='; i++)
         name[i] = str[i];
+    value[0] = str[i] ? 0 : 1;
     i = str[i] ? i + 1 : i;
     for (size_t j = 0; str[i]; i++, j++)
         value[j] = str[i];
@@ -118,7 +119,7 @@ int exec_alias(char **str)
         char *name = calloc(len, sizeof(char));
         char *value = calloc(len, sizeof(char));
         my_split(str[i], name, value);
-        if (!value[0])
+        if (value[0] == 1)
             res |= look_for(name);
         else
             assign(name, value);
