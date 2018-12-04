@@ -45,9 +45,9 @@ void fusion_queue(struct queue *dest, struct queue *src)
 
 static int my_strcmp(const void *p1, const void *p2)
 {
-    const char *str1 = p1;
-    const char *str2 = p2;
-    return strcmp(str1, str2);
+    const char **str1 = p1;
+    const char **str2 = p2;
+    return strcmp(*str1, *str2);
 }
 
 void sort_queue(struct queue *q)
@@ -58,4 +58,11 @@ void sort_queue(struct queue *q)
 char **dump_queue(struct queue *q)
 {
     return q->queue;
+}
+
+void debug_queue(struct queue *q)
+{
+    for (size_t i = 0; i < q->size; i++)
+        printf("%s -> ", q->queue[i]);
+    printf("END\n");
 }
