@@ -72,6 +72,7 @@ static void init_libvar(void)
         add_var(shell.var, "PS2", "> ", 1);
     add_var(shell.var, "PWD", getenv("PWD"), 1);
     add_var(shell.var, "HOME", getenv("HOME"), 1);
+    update_shellopts();
 }
 
 char *quote_ps2(void)
