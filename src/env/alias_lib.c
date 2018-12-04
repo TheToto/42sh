@@ -210,7 +210,10 @@ void replace_aliases(struct ast_node_scmd *node)
     size_t c_capacity = 8;
     char *expand = get_alias(shell.alias, node->elements[0]);
     if (!expand)
+    {
+        free(tab);
         return;
+    }
     char *target = calloc(8, sizeof(char));
     size_t t_capacity = 8;
     size_t t_size = 0;
@@ -218,7 +221,7 @@ void replace_aliases(struct ast_node_scmd *node)
         err(1, "replace_aliases: cannot calloc char*");
     for (size_t i = 0; expand[i]; i++)
     {
-        if (target[i] != ' ')
+        if (expand[i] != ' ')
         {
             target[i] = expand[i];
             t_size++;
@@ -235,5 +238,10 @@ void replace_aliases(struct ast_node_scmd *node)
                 i++;
         }
     }
-    expand_scmd(node, tab, t_size);
+    if (expand[0])
+    {
+        tab[c_size] = target;
+        c_size++;
+    }
+    expand_scmd(node, tab, c_size);
 }
