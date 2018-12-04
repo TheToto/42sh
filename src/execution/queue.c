@@ -1,6 +1,7 @@
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "queue.h"
 
@@ -33,6 +34,25 @@ void push_queue(struct queue *q, char *str)
     }
     q->queue[q->size] = strdup(str);
     q->size++;
+}
+
+void fusion_queue(struct queue *dest, struct queue *src)
+{
+    for (size_t i = 0; i < src->size; i++)
+        push_queue(dest, src->queue[i]);
+    destroy_queue(src);
+}
+
+static int my_strcmp(const void *p1, const void *p2)
+{
+    const char *str1 = p1;
+    const char *str2 = p2;
+    return strcmp(str1, str2);
+}
+
+void sort_queue(struct queue *q)
+{
+    qsort(q->queue, q->size, sizeof(char*), my_strcmp);
 }
 
 char **dump_queue(struct queue *q)
