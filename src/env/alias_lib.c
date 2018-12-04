@@ -198,9 +198,9 @@ static void expand_scmd(struct ast_node_scmd *node, char **tab, size_t size)
 
         for (size_t i = 0; i < size; i++)//inserting new args
             node->elements[i] = tab[i];
+        node->elt_size -= 1;
     }
     free(tab);
-    node->elt_size -= 1;
 }
 
 void replace_aliases(struct ast_node_scmd *node)
