@@ -18,6 +18,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+#include "shopt.h"
 #include "quote_lexer.h"
 
 extern char **environ;
@@ -291,7 +292,8 @@ void assign_prefix(struct variables *var, char *prefix)
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
-    replace_aliases(scmd);
+    if (shell.shopt_states[EXP_ALIAS])
+        replace_aliases(scmd);
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
