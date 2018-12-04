@@ -4,6 +4,8 @@
 #include <err.h>
 #include <limits.h>
 
+#include "shell.h"
+#include "env.h"
 #include "stack.h"
 
 static int is_digit(char c)
@@ -234,4 +236,25 @@ int evaluate_maths(char *str)
     while (!is_empty_stack(sign))
         compute_next(values, sign);
     return destroy_maths(values, sign);
+}
+
+int get_int_len (int value)
+{
+    int l = 1;
+    while(value > 9)
+    {
+        l++;
+        value /= 10;
+    }
+    return l;
+}
+
+char *get_maths(char *str)
+{
+    int res = evaluate_maths(str);
+    char *ret = calloc(get_int_len(res) + 2, sizeof(char));
+    sprintf(ret, "%d", res);
+    add_var(shell.var, "RESERVED_MATH", ret, 0);
+    free(ret);
+    return get_var(shell.var, "RESERVED_MATH");
 }
