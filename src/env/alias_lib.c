@@ -192,9 +192,11 @@ static void expand_scmd(struct ast_node_scmd *node, char **tab, size_t size)
             node->elt_capacity = n_capacity;
         }
         free(node->elements[0]);
+        node->elements[0] = NULL;
         for (size_t i = node->elt_size - 1; i > size; i--)
-            node->elements[i] = node->elements[i - size];
-        for (size_t i = 0; i < size; i++)
+            node->elements[i - 1] = node->elements[i - size];//shifting args
+
+        for (size_t i = 0; i < size; i++)//inserting new args
             node->elements[i] = tab[i];
     }
     free(tab);
