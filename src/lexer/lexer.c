@@ -4,7 +4,7 @@
 * a pointer to a lexer structure
 * according to a given string.
 * \author Arthur Busuttil
-* \version 0.5
+* \version 0.8
 */
 #include <stdlib.h>
 #include <string.h>
@@ -68,13 +68,11 @@ struct lexer *lexer(char *str)
                 lexer_destroy(l);
                 return NULL;
             }
-            if (*val)
-                cur = cur->next;
+            cur = (*val) ? cur->next : cur;
         }
         free(save);
         val = get_next_str(&str, &ptr);
-        if (cur->next)
-            cur = cur->next;
+        cur = (cur->next) ? cur->next : cur;
     }
     set_tl(cur, NULL, END_OF_FILE, NULL);
     shell.lexer = l;
