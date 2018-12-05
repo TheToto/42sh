@@ -9,10 +9,12 @@
 #include <string.h>
 #include <err.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "builtins.h"
 #include "shopt.h"
 #include "shell.h"
+#include "env.h"
 
 enum shopt get_shopt(char *arg)
 {
@@ -77,6 +79,42 @@ static void shopt_option(char **str, int opt)
     }
 }
 
+void update_shellopts(void)
+{
+    char *str = calloc(4096, sizeof(char));
+    if (!str)
+        warnx("Calloc error in update_shellopts");
+    else
+    {
+        for (size_t i = 0; i < NB_SHOPT; i++)
+        {
+            if (shell.shopt_states[i])
+            {
+                if (str[0])
+                    strcat(str, ":");
+                if (i == ASTPRINT)
+                    strcat(str, "ast_print");
+                else if (i == DOTGLOB)
+                    strcat(str, "dotglob");
+                else if (i == EXP_ALIAS)
+                    strcat(str, "expand_aliases");
+                else if (i == EXTGLOB)
+                    strcat(str, "extglob");
+                else if (i == NOCASEGLOB)
+                    strcat(str, "nocaseglob");
+                else if (i == NULLGLOB)
+                    strcat(str, "nullglob");
+                else if (i == SRCPATH)
+                    strcat(str, "sourcepath");
+                else if (i == XPGECHO)
+                    strcat(str, "xpg_echo");
+            }
+        }
+    }
+    add_var(shell.var, "SHELLOPTS", str, shell.shopt_states[EXP_ALIAS]);
+    free(str);
+}
+
 int shopt_exec(char **str)
 {
     size_t n = get_args(str);
@@ -105,5 +143,6 @@ int shopt_exec(char **str)
             }
         }
     }
+    update_shellopts();
     return 0;
 }

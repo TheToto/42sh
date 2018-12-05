@@ -20,6 +20,7 @@
 #include "shell.h"
 #include "shopt.h"
 #include "quote_lexer.h"
+#include "shopt.h"
 #include "maths.h"
 
 extern char **environ;
@@ -44,7 +45,15 @@ static void set_up_reserved(void)
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
     add_var(shell.var, "?", "", 0);
-    // SHELLOPTS
+    if (!get_var(shell.var, "PS1"))
+        add_var(shell.var, "PS1", "42sh$ ", 0);
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ", 0);
+    add_var(shell.var, "PWD", pwd, 0);
+    if (!get_var(shell.var, "HOME"))
+        add_var(shell.var, "HOME", getenv("HOME"), 0);
+    shell.shopt_states = init_shoptlist();
+    update_shellopts();
     add_var(shell.var, "IFS", " \\t\\n", 0);
 }
 

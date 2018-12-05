@@ -23,7 +23,10 @@ struct shell shell =
     NULL,
     NULL,
     NULL,
-    NULL
+    NULL,
+    0,
+    0,
+    0
 };
 
 void my_abort(void)

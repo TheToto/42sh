@@ -1,7 +1,7 @@
 /**
 *\file execution.c
 *\author sabrina.meng thomas.lupin
-*\version 0.3
+*\version 0.8
 *\date 15-11-2018
 *\brief Execution of the AST
 */
@@ -35,8 +35,26 @@ int exec_if(struct ast_node_if *n_if, struct variables *var)
 int exec_while(struct ast_node_while *n_while, struct variables *var)
 {
     int res = 0;
+    shell.loop += 1;
     while (exec_node(n_while->condition, var) == 0)
-        res = exec_node(n_while->exec, var);
+    {
+            res = exec_node(n_while->exec, var);
+            if (shell.n_continue > 1 && shell.loop > 1)
+            {
+                shell.n_continue -= 1;
+                break;
+            }
+            else if (shell.n_continue == 1)
+                shell.n_continue -= 1;
+            else if (shell.n_break)
+            {
+                shell.n_break -= 1;
+                if (shell.loop == 1)
+                    shell.n_break = 0;
+                break;
+            }
+    }
+    shell.loop -= 1;
     return res;
 }
 
@@ -44,13 +62,29 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
 {
     char *name = n_for->value;
     int res = 0;
+    shell.loop += 1;
     for (size_t i = 0; i < n_for->size; i++)
     {
         char *cur = remove_quoting(n_for->values[i]);
         add_var(var, name, cur, 0);
         free(cur);
         res = exec_node(n_for->exec, var);
+        if (shell.n_continue > 1 && shell.loop > 1)
+        {
+            shell.n_continue -= 1;
+            break;
+        }
+        else if (shell.n_continue == 1)
+            shell.n_continue -= 1;
+        else if (shell.n_break)
+        {
+            shell.n_break -= 1;
+            if (shell.loop == 1)
+                shell.n_break = 0;
+            break;
+        }
     }
+    shell.loop -= 1;
     return res;
 }
 
@@ -58,6 +92,8 @@ int exec_semicolon(struct ast_node_semicolon *n_semi,
         struct variables *var)
 {
     exec_node(n_semi->left_child, var);
+    if (shell.n_continue || shell.n_break)
+        return 0;
     return exec_node(n_semi->right_child, var);
 }
 

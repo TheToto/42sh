@@ -77,3 +77,8 @@ void print_shopt_plus(enum shopt shopt);
 * \return Return 0 if no error, else return a value different from 0
 */
 int shopt_exec(char **str);
+
+/**
+* Update the $SHELLOPTS variable
+**/
+void update_shellopts(void);
