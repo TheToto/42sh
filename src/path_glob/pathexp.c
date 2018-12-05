@@ -38,7 +38,7 @@ static void explore_dir(char *cur_path, char *path, char *patern, struct queue *
     while((myfile = readdir(mydir)) != NULL)
     {
         //printf("Compare %s:%s / %s\n", myfile->d_name, patern, path);
-        if (!fnmatch(patern, myfile->d_name, 0))
+        if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {
             //printf("Enter : %s\n", myfile->d_name);
             char *new_path = strdup(path);
@@ -55,7 +55,7 @@ static void explore_dir(char *cur_path, char *path, char *patern, struct queue *
                     && strcmp(myfile->d_name, ".."))
                 push_queue(q, new_cur_path);
 
-            if (strcmp(myfile->d_name, ".") && strcmp(myfile->d_name, "..")
+            if ((strcmp(myfile->d_name, ".") && strcmp(myfile->d_name, ".."))
                     || !strcmp(patern, myfile->d_name))
                 explore_dir(new_cur_path, alt_path, new_patern, q);
 
@@ -77,7 +77,7 @@ struct queue *expand_path(char *path)
     if (*path == '/')
     {
         strcat(cur_path, "/");
-        *path++;
+        path++;
     }
     path = get_next_path(path, dir);
     explore_dir(cur_path, path, dir, q);
