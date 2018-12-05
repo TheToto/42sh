@@ -1,3 +1,3 @@
 echo "" > salut
-source salut
+source ./salut
 rm salut

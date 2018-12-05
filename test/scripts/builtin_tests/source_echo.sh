@@ -1,3 +1,3 @@
 echo "echo Hello world" > hello
-source hello
+source ./hello
 rm hello

@@ -1,3 +1,3 @@
 echo "echo Hello World" > salut
-. salut
+. ./salut
 rm salut

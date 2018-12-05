@@ -56,7 +56,7 @@ static void print_aliases(void)
     struct aliases *alias = shell.alias;
     for (size_t i = 0; i < alias->size; i++)
     {
-        printf("alias %s=\'%s\'\n", alias->names[i], alias->values[i]);
+        printf("%s=\'%s\'\n", alias->names[i], alias->values[i]);
     }
 }
 
@@ -84,7 +84,7 @@ static int look_for(char *name)
         return 1;
     }
     else
-        printf("alias %s=\'%s\'\n", name, res);
+        printf("%s=\'%s\'\n", name, res);
     return 0;
 }
 

@@ -63,7 +63,7 @@ int exec_unalias(char **str)
 {
     char flag = unalias_options(str);
     if (flag == -1)
-        return 1;
+        return 2;
     if (flag == 1)
     {
         return remove_all();
