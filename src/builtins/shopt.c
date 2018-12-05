@@ -1,9 +1,9 @@
 /**
- * \file shopt.c
- * Execute the shopt builtin
- * \authors sabrina.meng
- * \version 0.8
- * \date 29-11-2018
+* \file shopt.c
+* Execute the shopt builtin
+* \authors sabrina.meng
+* \version 0.8
+* \date 05-12-2018
 **/
 
 #include <string.h>
@@ -55,17 +55,52 @@ static int is_option(char *opt)
         return -1;
     }
     return 0;
+}
 
+static char *get_shopt_str(enum shopt shopt)
+{
+    switch (shopt)
+    {
+    case ASTPRINT:
+        return "ast_print";
+    case DOTGLOB:
+        return "dotglob";
+    case EXP_ALIAS:
+        return "expand_aliases";
+    case EXTGLOB:
+        return "extglob";
+    case NOCASEGLOB:
+        return "nocaseglob";
+    case NULLGLOB:
+        return "nullglob";
+    case XPGECHO:
+        return "xpg_echo";
+    case SRCPATH:
+        return "sourcepath";
+    default:
+        return NULL;
+    }
+}
+
+static void print_on_off(int state)
+{
+    for (size_t i = 0; i < NB_SHOPT; i++)
+    {
+        if (shell.shopt_states[i] == state)
+        {
+            char *str = get_shopt_str(i);
+            int len = 19 - strlen(str);
+            printf("%s%*s\n", str, len,
+                    shell.shopt_states[i] ? "on" : "off");
+        }
+    }
 }
 
 static void shopt_option(char **str, int opt)
 {
     enum shopt shopt = get_shopt(str[2]);
     if (shopt == NO && opt != 3)
-    {
-        for (size_t j = 0; j < NB_SHOPT; j++)
-            shell.shopt_states[j] = opt == 1 ? 0 : 1;
-    }
+        print_on_off(opt - 1);
     else if (opt != 3)
     {
         for (size_t i = 2; str[i]; i++)
