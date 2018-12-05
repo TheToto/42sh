@@ -19,6 +19,7 @@
 #include "ast_destroy.h"
 #include "shell.h"
 #include "quote_lexer.h"
+#include "shopt.h"
 
 extern char **environ;
 
@@ -40,7 +41,15 @@ static void set_up_reserved(void)
     add_var(shell.var, "OLDPWD", pwd, 0);
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
-    // SHELLOPTS
+    if (!get_var(shell.var, "PS1"))
+        add_var(shell.var, "PS1", "42sh$ ", 0);
+    if (!get_var(shell.var, "PS2"))
+        add_var(shell.var, "PS2", "> ", 0);
+    add_var(shell.var, "PWD", pwd, 0);
+    if (!get_var(shell.var, "HOME"))
+        add_var(shell.var, "HOME", getenv("HOME"), 0);
+    shell.shopt_states = init_shoptlist();
+    update_shellopts();
     add_var(shell.var, "IFS", " \\t\\n", 0);
 }
 
