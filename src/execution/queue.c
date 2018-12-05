@@ -63,7 +63,9 @@ void sort_queue(struct queue *q)
 
 char **dump_queue(struct queue *q)
 {
-    return q->queue;
+    char *res = q->queue;
+    free(q);
+    return res;
 }
 
 void debug_queue(struct queue *q)

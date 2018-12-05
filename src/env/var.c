@@ -308,20 +308,11 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     if (shell.shopt_states[EXP_ALIAS])
         replace_aliases(scmd);
-    char **res = calloc(scmd->elt_size + 1, sizeof(char*));
+    struct *res = init_queue();
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
-        char *new = remove_quoting(scmd->elements[i]);
-        if (!new)
-        {
-            free(new);
-            j--;
-        }
-        else
-        {
-            res[j] = new;
-        }
+        remove_quoting(scmd->elements[i], res);
     }
-    return res;
+    return dump_queue(res);
 }
