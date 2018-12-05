@@ -92,7 +92,8 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
         if (*tmp == ' ' || *tmp == '\t' || *tmp == '\n')
         {
             push_queue(q, *res);
-            *res = calloc(*len, 1);
+            free(*res);
+            *res = calloc(*len + 1, 1);
         }
     }
 }
@@ -115,7 +116,7 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
     return 1;
 }
 
-char *remove_quoting(char *str, struct queue *q)
+void remove_quoting(char *str, struct queue *q)
 {
     size_t len = strlen(str);
     int has_not_dollar = 0;
@@ -141,5 +142,5 @@ char *remove_quoting(char *str, struct queue *q)
         return NULL;
     }
     push_queue(q, res);
-    return res;
+    free(res);
 }
