@@ -31,6 +31,7 @@ struct shell
     struct lexer *lexer;    ///<Current lexer
     struct variables *var;  ///<Current var library
     struct ast_node *ast;   ///<Current ast
+    struct aliases *alias;  ///<Current alias library
     char *buf;              ///<Current buffer
     int *shopt_states;      ///<Current shopt vars
 };

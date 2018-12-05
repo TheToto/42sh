@@ -126,7 +126,7 @@ static int execute(char **expanded, int status, struct variables *var)
     if ((func = get_func(var, expanded[0])))
         status = exec_func(expanded, var, func);
     else if ((status = exec_builtin(expanded)) != -1)
-        return status;
+        status = status;
     else
     {
         pid = fork();
@@ -145,6 +145,9 @@ static int execute(char **expanded, int status, struct variables *var)
         }
         status = WEXITSTATUS(status);
     }
+    char ret[10];
+    sprintf(ret, "%d", status);
+    add_var(var, "?", ret, 0);
     return status;
 }
 

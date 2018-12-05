@@ -68,11 +68,10 @@ int exec_builtin(char **str)
         return shopt_exec(str);
     case EXPORT:
         return exec_export(str);
-        break;
     case ALIAS:
-        break;
+        return exec_alias(str);
     case UNALIAS:
-        break;
+        return exec_unalias(str);
     case ECHO:
         return echo(str);
     case CONTINUE:

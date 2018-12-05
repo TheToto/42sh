@@ -18,6 +18,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "shell.h"
+#include "shopt.h"
 #include "quote_lexer.h"
 #include "maths.h"
 
@@ -38,9 +39,11 @@ static void set_up_reserved(void)
     add_var(shell.var, "$", itoa(getpid(), buf_nb), 0);
     add_var(shell.var, "UID", itoa(getuid(), buf_nb), 0);
     char *pwd = get_current_dir_name();
-    add_var(shell.var, "OLDPWD", pwd, 0);
+    if (!get_var(shell.var, "OLDPWD"))
+        add_var(shell.var, "OLDPWD", pwd, 0);
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
+    add_var(shell.var, "?", "", 0);
     // SHELLOPTS
     add_var(shell.var, "IFS", " \\t\\n", 0);
 }
@@ -303,6 +306,8 @@ void assign_prefix(struct variables *var, char *prefix)
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
+    if (shell.shopt_states[EXP_ALIAS])
+        replace_aliases(scmd);
     char **res = calloc(scmd->elt_size + 1, sizeof(char*));
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)

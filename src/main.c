@@ -38,6 +38,8 @@ void my_abort(void)
         free(shell.buf);
     if (shell.shopt_states)
         free(shell.shopt_states);
+    if (shell.alias)
+        destroy_alias(shell.alias);
 }
 
 int main(int argc, char *argv[])

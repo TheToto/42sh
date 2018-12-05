@@ -14,6 +14,7 @@
 #include "ast.h"
 #include "ast_destroy.h"
 #include "print.h"
+#include "shell.h"
 
 static struct ast_node_scmd *create_ast_node_scmd_intern(void)
 {
