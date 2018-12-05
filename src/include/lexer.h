@@ -11,6 +11,13 @@
 
 #include "parser.h"
 
+void set_tl(struct token_list *tl, char *str,
+            enum token_type tok, char *origin);
+
+void get_next_word_token(char **str, struct token_list *tl, char *ptr);
+
+char *get_next_str(char **beg, char **ptr);
+
 /**
 * \fn enum token_type get_token_type (char *val)
 * \brief Get the token corresponding to val.
