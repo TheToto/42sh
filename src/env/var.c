@@ -71,15 +71,18 @@ void set_up_var(char *args[])
     }
     add_var(shell.var, "#", itoa(nb - 1, buf_nb), 0);
     // $@ $*
-    char *star = calloc(size, sizeof(char));
-    for (size_t i = 1; args && args[i]; i++)
+    char *star = calloc(size + 1, sizeof(char));
+    for (size_t i = 1; args && args[0] && args[i]; i++)
     {
         strcat(star, args[i]);
         if (args[i + 1])
             strcat(star, " ");
     }
-    add_var(shell.var, "*", star, 0);
-    add_var(shell.var, "@", star, 0);
+    if (star && size == 0)
+    {
+        add_var(shell.var, "*", star, 0);
+        add_var(shell.var, "@", star, 0);
+    }
     free(star);
     set_up_reserved();
 }
