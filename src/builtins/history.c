@@ -56,12 +56,16 @@ int exec_history(char **str)
             return 1;
         }
     }
-    if (opt == 1)
+    else if (opt == 1)
     {
         clear_history();
         return 0;
     }
-    if (opt == 2)
-        return read_history_range(str[1], 0, -1);
+    else if (opt == 2)
+    {
+        int err = read_history(str[2]);
+        if (err)
+            return 1;
+    }
     return 0;
 }
