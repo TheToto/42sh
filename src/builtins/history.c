@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <err.h>
+#include <ctype.h>
 
 #include "builtins.h"
 
@@ -52,7 +53,7 @@ int exec_history(char **str)
     {
         if (!str[1])
             return print_hist(history_length);
-        if (!atoi(str[1]) && strcmp(str[1], "0"))
+        if (!atoi(str[1]) && !is_zero(str[1]))
         {
             warnx("history: %s: numeric value required", str[1]);
             return 1;

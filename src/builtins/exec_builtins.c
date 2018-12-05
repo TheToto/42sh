@@ -55,6 +55,16 @@ size_t get_args(char **str)
     return n - 1;
 }
 
+int is_zero(char *s)
+{
+    for (size_t i = 0; s[i]; i++)
+    {
+        if (s[i] != '0')
+            return 0;
+    }
+    return 1;
+}
+
 int exec_builtin(char **str)
 {
     char *cmd = *str;

@@ -40,6 +40,8 @@ int exec_while(struct ast_node_while *n_while, struct variables *var)
     while (exec_node(n_while->condition, var) == 0)
     {
             res = exec_node(n_while->exec, var);
+            if (shell.n_continue == -1 || shell.n_break == -1)
+                break;
             if (shell.n_continue > 1 && shell.loop > 1)
             {
                 shell.n_continue -= 1;
@@ -70,6 +72,8 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
         add_var(var, name, cur, 0);
         free(cur);
         res = exec_node(n_for->exec, var);
+        if (shell.n_continue == -1 || shell.n_break == -1)
+            break;
         if (shell.n_continue > 1 && shell.loop > 1)
         {
             shell.n_continue -= 1;

@@ -23,7 +23,7 @@ static int error_check(char **str)
                str[0]);
         return 0;
     }
-    if (str[1] && !atoi(str[1]) && strcmp(str[1], "0"))
+    if (str[1] && !atoi(str[1]) && !is_zero(str[1]))
     {
         warnx("%s: numeric argument required", str[0]);
         return 128;
@@ -35,7 +35,7 @@ static int error_check(char **str)
     }
     if (str[1] && atoi(str[1]) < 1)
     {
-        warnx("%s: %d: loop count smaller than 1", str[0], atoi(str[1]));
+        warnx("%s: %s: loop count smaller than 1", str[0], str[1]);
         return 1;
     }
     return 0;
@@ -46,7 +46,10 @@ int exec_continue(char **str)
     int n = 1;
     int err = error_check(str);
     if (err)
+    {
+        shell.n_continue = -1;
         return err;
+    }
     n = !str[1] ? 1 : atoi(str[1]);
     shell.n_continue = n;
     return 0;
@@ -57,7 +60,10 @@ int exec_break(char **str)
     int n = 1;
     int err = error_check(str);
     if (err)
+    {
+        shell.n_break = -1;
         return err;
+    }
     n = !str[1] ? 1 : atoi(str[1]);
     shell.n_break = n;
     return 0;

@@ -28,7 +28,7 @@ int exec_exit(char **str)
     else
     {
         val = atoi(arg) % 255;
-        if (!val && strcmp(arg, "0"))
+        if (!val && !is_zero(arg))
             val = 2;
         else if (n != 1)
         {
