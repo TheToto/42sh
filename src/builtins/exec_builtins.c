@@ -22,25 +22,25 @@ static enum builtin get_builtin(char *str)
         return ANY;
     if (!strcmp(str, "exit"))
         return EXIT;
-    else if (!strcmp(str, "cd"))
+    if (!strcmp(str, "cd"))
         return CD;
-    else if (!strcmp(str, "shopt"))
+    if (!strcmp(str, "shopt"))
         return SHOPT;
-    else if (!strcmp(str, "export"))
+    if (!strcmp(str, "export"))
         return EXPORT;
-    else if (!strcmp(str, "alias"))
+    if (!strcmp(str, "alias"))
         return ALIAS;
-    else if (!strcmp(str, "unalias"))
+    if (!strcmp(str, "unalias"))
         return UNALIAS;
-    else if (!strcmp(str, "echo"))
+    if (!strcmp(str, "echo"))
         return ECHO;
-    else if (!strcmp(str, "continue"))
+    if (!strcmp(str, "continue"))
         return CONTINUE;
-    else if (!strcmp(str, "break"))
+    if (!strcmp(str, "break"))
         return BREAK;
-    else if (!strcmp(str, "source") || !strcmp(str, "."))
+    if (!strcmp(str, "source") || !strcmp(str, "."))
         return SOURCE;
-    else if (!strcmp(str, "history"))
+    if (!strcmp(str, "history"))
         return HISTORY;
     return ANY;
 }
@@ -83,7 +83,7 @@ int exec_builtin(char **str)
     case SOURCE:
         return source(str);
     case HISTORY:
-        break;
+        return exec_history(str);
     default:
         break;
     }
