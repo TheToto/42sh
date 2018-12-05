@@ -8,3 +8,4 @@ file(GLOB_RECURSE SOURCES "src/*.c")
 
 add_executable(42sh ${SOURCES})
 add_custom_target(check "../test/test.sh" "check")
+add_custom_target(doc "doxygen" "../doc/configDoxygen")

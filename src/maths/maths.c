@@ -37,6 +37,7 @@ static int priority(int op)
         case '/':
             return 2;
         case '*' * 2:
+        case '&':
         case '&' * 2:
         case '|':
         case '|' * 2:
