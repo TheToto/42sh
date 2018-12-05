@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "queue.h"
+#include "quote_lexer.h"
 
 
 struct queue *init_queue(void)
@@ -45,17 +46,15 @@ void fusion_queue(struct queue *dest, struct queue *src)
 
 void sort_queue(struct queue *q)
 {
-    size_t argc = q->size;
-    char **argv = q->queue;
-    for (size_t i = 0; i < argc; i++)
+    for (size_t i = 0; i < q->size; i++)
     {
-        for (size_t j = 1; j < (argc - i - 1); j++)
+        for (size_t j = 0; j < (q->size - i - 1); j++)
         {
-            if (strcmp(argv[j], argv[j + 1]) > 0)
+            if (strcasecmp(q->queue[j], q->queue[j + 1]) > 0)
             {
-                char *temp = argv[j];
-                argv[j] = argv[j + 1];
-                argv[j + 1] = temp;
+                char *temp = q->queue[j];
+                q->queue[j] = q->queue[j + 1];
+                q->queue[j + 1] = temp;
             }
         }
     }

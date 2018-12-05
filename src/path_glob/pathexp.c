@@ -40,17 +40,14 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
     {
-        printf("Compare %s:%s|%s\n", myfile->d_name, patern, path);
         if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {
-            printf("Enter : %s\n", myfile->d_name);
             char *new_path = strdup(path);
             char *new_patern = calloc(PATH_MAX, sizeof(char));
             char *new_cur_path = calloc(PATH_MAX, sizeof(char));
             char *alt_path = get_next_path(new_path, new_patern);
 
             strcat(new_cur_path, cur_path);
-            printf("CUR :%s\n", new_cur_path);
             if (strlen(new_cur_path) && new_cur_path[strlen(new_cur_path) - 1] != '/')
                 strcat(new_cur_path, "/");
             strcat(new_cur_path, myfile->d_name);
@@ -116,8 +113,6 @@ struct queue *expand_path(char *path)
     }
     if (q->size == 0)
         push_queue(q, save);
-
-    debug_queue(q);
 
     free(cur_path);
     free(save);

@@ -23,6 +23,7 @@
 #include "shopt.h"
 #include "maths.h"
 #include "queue.h"
+#include "pathexp.h"
 
 extern char **environ;
 
@@ -317,11 +318,18 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     if (shell.shopt_states[EXP_ALIAS])
         replace_aliases(scmd);
-    struct queue *res = init_queue();
+    struct queue *qot = init_queue();
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
-        remove_quoting(scmd->elements[i], res);
+        remove_quoting(scmd->elements[i], qot);
     }
+    struct queue *res = init_queue();
+    for (size_t i = 0; i < qot->size; i++)
+    {
+        struct queue *tmp = expand_path(qot->queue[i]);
+        fusion_queue(res, tmp);
+    }
+    destroy_queue(qot);
     return dump_queue(res);
 }
