@@ -283,7 +283,7 @@ for file in $list_of_file; do
     fi
     TESTED="$(($TESTED + 1))"
     TEST=$DEFAULT"    -"$YELLOW"Testing $file file"$DEFAULT"-\n"
-    bash "$file" 2> /tmp/tmp_ref_err > /tmp/tmp 
+    bash --posix "$file" 2> /tmp/tmp_ref_err > /tmp/tmp 
     exit_status_ref="$?"
 
     cat -e /tmp/tmp > /tmp/tmp_ref
