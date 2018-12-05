@@ -42,12 +42,13 @@ static void set_up_reserved(void)
     char *pwd = get_current_dir_name();
     if (!get_var(shell.var, "OLDPWD"))
         add_var(shell.var, "OLDPWD", pwd, 0);
+    add_var(shell.var, "PWD", pwd, 0);
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
     add_var(shell.var, "?", "", 0);
     add_var(shell.var, "PS1", "42sh$ ", 1);
     add_var(shell.var, "PS2", "> ", 1);
-    add_var(shell.var, "PWD", pwd, 0);
+
     if (!get_var(shell.var, "HOME"))
         add_var(shell.var, "HOME", getenv("HOME"), 0);
     shell.shopt_states = init_shoptlist();
