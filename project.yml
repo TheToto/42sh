@@ -70,6 +70,8 @@
     - src/execution/queue.c
     - src/lexer/lexer.c;
     - src/lexer/lexer_func.c;
+    - src/lexer/lexer_str.c;
+    - src/lexer/lexer_word.c;
     - src/maths/maths.c
     - src/maths/stack.c
     - src/options.c;
