@@ -177,3 +177,10 @@ char *get_alias(struct aliases *alias, char *name);
 * @param node node of the simple command to analyse
 */
 void replace_aliases(struct ast_node_scmd *node);
+
+/**
+* Parse the PS given and replace all escaped character by their meaning
+* @param psn PS to evaluate
+* @return return the string corretly expanded
+*/
+char *advanced_prompt(char *psn);

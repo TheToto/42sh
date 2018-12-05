@@ -69,7 +69,7 @@ struct token_list *show_ps2(void)
 
 char *quote_ps2(void)
 {
-    char *buf = readline(get_var(shell.var, "PS2"));
+    char *buf = readline(advanced_prompt("PS2"));
     size_t size_buf = strlen(shell.buf);
     char *tmp = realloc(shell.buf,
             (size_buf + strlen(buf) + 2) * sizeof(char));
@@ -90,7 +90,7 @@ int show_prompt(int norc, int is_print)
     atexit(write_hist);
     while (1)
     {
-        char *buf = readline(get_var(shell.var, "PS1"));
+        char *buf = readline(advanced_prompt("PS1"));
         if (!buf)
             exec_exit(&buf);
         if (*buf)
