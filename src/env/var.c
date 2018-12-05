@@ -20,6 +20,7 @@
 #include "shell.h"
 #include "shopt.h"
 #include "quote_lexer.h"
+#include "shopt.h"
 #include "maths.h"
 #include "queue.h"
 
@@ -45,7 +46,13 @@ static void set_up_reserved(void)
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
     add_var(shell.var, "?", "", 0);
-    // SHELLOPTS
+    add_var(shell.var, "PS1", "42sh$ ", 1);
+    add_var(shell.var, "PS2", "> ", 1);
+
+    if (!get_var(shell.var, "HOME"))
+        add_var(shell.var, "HOME", getenv("HOME"), 0);
+    shell.shopt_states = init_shoptlist();
+    update_shellopts();
     add_var(shell.var, "IFS", " \\t\\n", 0);
 }
 
@@ -64,15 +71,18 @@ void set_up_var(char *args[])
     }
     add_var(shell.var, "#", itoa(nb - 1, buf_nb), 0);
     // $@ $*
-    char *star = calloc(size, sizeof(char));
-    for (size_t i = 1; args && args[i]; i++)
+    char *star = calloc(size + 1, sizeof(char));
+    for (size_t i = 1; args && args[0] && args[i]; i++)
     {
         strcat(star, args[i]);
         if (args[i + 1])
             strcat(star, " ");
     }
-    add_var(shell.var, "*", star, 0);
-    add_var(shell.var, "@", star, 0);
+    if (star && size == 0)
+    {
+        add_var(shell.var, "*", star, 0);
+        add_var(shell.var, "@", star, 0);
+    }
     free(star);
     set_up_reserved();
 }
@@ -314,8 +324,6 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
         remove_quoting(scmd->elements[i], res);
-        //printf("DEBUG QUEUE\n");
-        //debug_queue(res);
     }
     return dump_queue(res);
 }

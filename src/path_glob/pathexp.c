@@ -10,6 +10,8 @@
 #include <libgen.h>
 
 #include "queue.h"
+#include "shell.h"
+#include "env.h"
 
 static char *get_next_path(char *path, char *dir)
 {
@@ -25,7 +27,8 @@ static char *get_next_path(char *path, char *dir)
     return path;
 }
 
-static void explore_dir(char *cur_path, char *path, char *patern, struct queue *q)
+static void explore_dir(char *cur_path, char *path, char *patern,
+        struct queue *q)
 {
     DIR *mydir;
     if (strlen(cur_path))
@@ -37,17 +40,18 @@ static void explore_dir(char *cur_path, char *path, char *patern, struct queue *
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
     {
-        //printf("Compare %s:%s / %s\n", myfile->d_name, patern, path);
+        printf("Compare %s:%s|%s\n", myfile->d_name, patern, path);
         if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {
-            //printf("Enter : %s\n", myfile->d_name);
+            printf("Enter : %s\n", myfile->d_name);
             char *new_path = strdup(path);
             char *new_patern = calloc(PATH_MAX, sizeof(char));
             char *new_cur_path = calloc(PATH_MAX, sizeof(char));
             char *alt_path = get_next_path(new_path, new_patern);
 
             strcat(new_cur_path, cur_path);
-            if (strlen(new_cur_path))
+            printf("CUR :%s\n", new_cur_path);
+            if (strlen(new_cur_path) && new_cur_path[strlen(new_cur_path) - 1] != '/')
                 strcat(new_cur_path, "/");
             strcat(new_cur_path, myfile->d_name);
 
@@ -67,25 +71,53 @@ static void explore_dir(char *cur_path, char *path, char *patern, struct queue *
     closedir(mydir);
 }
 
-struct queue *expand_path(char *path)
+static char *expand_tilde(char *path, char *cur_path, char *save)
 {
-    struct queue *q = init_queue();
-    char *save = strdup(path);
-    char *cur_path = calloc(PATH_MAX, sizeof(char));
-    char *dir = calloc(PATH_MAX, sizeof(char));
-
+    if (path[0] == '~' && (path[1] == '/' || !path[1]))
+    {
+        strcat(cur_path, get_var(shell.var, "HOME"));
+        path++;
+    }
+    else if (path[0] == '~' && path[1] == '+' && (path[2] == '/' || !path[2]))
+    {
+        strcat(cur_path, get_var(shell.var, "PWD"));
+        path += 2;
+    }
+    else if (path[0] == '~' && path[1] == '-' && (path[2] == '/' || !path[2]))
+    {
+        strcat(cur_path, get_var(shell.var, "OLDPWD"));
+        path += 2;
+    }
     if (*path == '/')
     {
         strcat(cur_path, "/");
         path++;
     }
-    path = get_next_path(path, dir);
-    explore_dir(cur_path, path, dir, q);
 
-    sort_queue(q);
+    strcat(save, cur_path);
+    strcat(save, path);
+    return path;
+}
 
+struct queue *expand_path(char *path)
+{
+    struct queue *q = init_queue();
+    char *cur_path = calloc(PATH_MAX, sizeof(char));
+    char *dir = calloc(PATH_MAX, sizeof(char));
+    char *save = calloc(PATH_MAX, sizeof(char));
+
+    path = expand_tilde(path, cur_path, save);
+    if (path)
+    {
+        char *new_path = get_next_path(path, dir);
+        explore_dir(cur_path, new_path, dir, q);
+
+        sort_queue(q);
+    }
     if (q->size == 0)
         push_queue(q, save);
+
+    debug_queue(q);
 
     free(cur_path);
     free(save);

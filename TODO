@@ -67,18 +67,18 @@
 * [x] History
 * [x] Ressource file reader
 * [ ] Catch Ctrl-C
-* [ ] Catch Ctrl-D
+* [~] Catch Ctrl-D (Done for PS1, not PS2)
 
 # Built in
-* [ ] management of builtins
+* [~] management of builtins
 * [~] exit (need to fix exit with no arg)
 * [x] cd
 * [~] shopt (output handled)
 * [~] export
-* [ ] alias/unalias
-* [ ] echo
-* [ ] continue/break
-* [ ] source
+* [x] alias/unalias
+* [x] echo
+* [x] continue/break
+* [x] source
 * [x] history
 
 # Export

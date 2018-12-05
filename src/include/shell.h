@@ -34,6 +34,9 @@ struct shell
     struct aliases *alias;  ///<Current alias library
     char *buf;              ///<Current buffer
     int *shopt_states;      ///<Current shopt vars
+    int loop;               ///<Current number of loops
+    int n_break;            ///<Number of break needed
+    int n_continue;         ///<Number of continue needed
 };
 
 ///Shell global struct

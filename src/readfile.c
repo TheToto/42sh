@@ -18,7 +18,15 @@ int launch_file(char *path, int is_print, struct variables *var)
 {
     FILE *f = fopen(path, "r");
     if (!f)
-        err(1, "can't open %s", path);
+    {
+        if (shell.type != S_PROMPT)
+            err(1, "can't open %s", path);
+        else
+        {
+            warn("can't open %s", path);
+            return 1;
+        }
+    }
 
     fseek(f, 0L, SEEK_END);
     size_t numbytes = ftell(f);

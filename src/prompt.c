@@ -34,13 +34,16 @@ static char *init_path(char *file)
     return histpath;
 }
 
-static void write_hist(char *file)
+static void write_hist(void)
 {
+    char *histpath = init_path("/.42sh_history");
     struct stat buf;
-    if (!stat(file, &buf))
-        append_history(history_length, file);
+    if (!stat(histpath, &buf))
+        append_history(history_length, histpath);
     else
-        write_history(file);
+        write_history(histpath);
+    history_truncate_file(histpath, 500);
+    free(histpath);
 }
 
 static void launchrc(int is_print, struct variables *var)
@@ -64,19 +67,9 @@ struct token_list *show_ps2(void)
     return l->token_list;
 }
 
-static void init_libvar(void)
-{
-    if (!get_var(shell.var, "PS1"))
-        add_var(shell.var, "PS1", "[42sh@pc]$ ", 1);
-    if (!get_var(shell.var, "PS2"))
-        add_var(shell.var, "PS2", "> ", 1);
-    add_var(shell.var, "PWD", getenv("PWD"), 1);
-    add_var(shell.var, "HOME", getenv("HOME"), 1);
-}
-
 char *quote_ps2(void)
 {
-    char *buf = readline(get_var(shell.var, "PS2"));
+    char *buf = readline(advanced_prompt("PS2"));
     size_t size_buf = strlen(shell.buf);
     char *tmp = realloc(shell.buf,
             (size_buf + strlen(buf) + 2) * sizeof(char));
@@ -94,20 +87,19 @@ int show_prompt(int norc, int is_print)
     read_history(histpath);
     if (!norc)
         launchrc(is_print, shell.var);
-    init_libvar();
+    atexit(write_hist);
     while (1)
     {
-        char *buf = readline(get_var(shell.var, "PS1"));
-        if (buf && *buf)
+        char *buf = readline(advanced_prompt("PS1"));
+        if (!buf)
+            exec_exit(&buf);
+        if (*buf)
             add_history(buf);
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);
         shell.buf = NULL;
         free(buf);
     }
-    write_hist(histpath);
-    history_truncate_file(histpath, 500);
-
     free(histpath);
     return 0;
 }
