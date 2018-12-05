@@ -1,0 +1,6 @@
+echo 'Hello World'
+echo 'Hello' 'World'
+echo ''
+echo '' ''
+echo 'echo Hello World'
+echo ''; echo ''

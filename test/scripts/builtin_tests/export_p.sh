@@ -1,0 +1,2 @@
+coucou="test"
+export -p

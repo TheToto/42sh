@@ -1,0 +1,2 @@
+alias t=hey
+alias
