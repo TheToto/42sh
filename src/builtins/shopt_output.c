@@ -25,6 +25,9 @@ int *init_shoptlist(void)
     for (size_t i = 0; i < NB_SHOPT; i++)
         shell.shopt_states[i] = 0;
     shell.shopt_states[SRCPATH] = 1;
+    if (shell.type == S_PROMPT)
+        shell.shopt_states[EXP_ALIAS] = 1;
+
     return shell.shopt_states;
 }
 
