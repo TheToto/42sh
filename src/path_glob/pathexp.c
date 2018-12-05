@@ -21,7 +21,7 @@ static char *get_next_path(char *path, char *dir)
         dir++;
         path++;
     }
-    if (*path)
+    while (*path == '/')
         path++;
     *dir = '\0';
     return path;
@@ -37,6 +37,9 @@ static void explore_dir(char *cur_path, char *path, char *patern,
         mydir = opendir(".");
     if (!mydir)
         return;
+    short wantfile = 1;
+    if (path && path[strlen(path) - 1] == '/')
+        wantfile = 0;
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
     {
@@ -53,8 +56,16 @@ static void explore_dir(char *cur_path, char *path, char *patern,
             strcat(new_cur_path, myfile->d_name);
 
             if (!strlen(new_patern) && strcmp(myfile->d_name, ".")
-                    && strcmp(myfile->d_name, ".."))
-                push_queue(q, new_cur_path);
+                    && strcmp(myfile->d_name, "..")
+                    && (wantfile || myfile->d_type & DT_DIR))
+            {
+                if (myfile->d_name[0] != '.')
+                {
+                    if (wantfile == 0)
+                        strcat(new_cur_path, "/");
+                    push_queue(q, new_cur_path);
+                }
+            }
 
             if ((strcmp(myfile->d_name, ".") && strcmp(myfile->d_name, ".."))
                     || !strcmp(patern, myfile->d_name))
