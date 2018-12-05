@@ -6,3 +6,4 @@ ceedling
 vendor
 doc/html
 doc/latex
+.gdb_history

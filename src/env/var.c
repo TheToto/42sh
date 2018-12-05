@@ -273,7 +273,7 @@ char *get_var(struct variables *var, char *name)
         warnx("cannot get_var: no var or name provided");
         return NULL;
     }
-    if (*name && *name == '(' && *name + 1 == '(')
+    if (*name && *name == '(')
         return get_maths(name);
     //if (*name && *name == '(')
     //    return exec_subshell(name);

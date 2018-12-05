@@ -46,13 +46,15 @@ int get_dollar(char **str_org, int *is_quoted)
         return 1;
     if (*str == '(' || *str == '{')
     {
-        char target = (*str == '(') ? ')' : '}';
+        char first = *str;
+        char target = (*str++ == '(') ? ')' : '}';
         *is_quoted = 1;
         (*str_org)++;
-        for (; str[i]; i++)
+        int lvl = 1;
+        for (; str[i] && lvl; i++)
         {
-            if (str[i] == target)
-                break;
+            lvl += (*str == first);
+            lvl -= (*str == target);
         }
     }
     else
