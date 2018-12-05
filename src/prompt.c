@@ -93,7 +93,7 @@ int show_prompt(int norc, int is_print)
         char *buf = readline(get_var(shell.var, "PS1"));
         if (!buf)
             exec_exit(&buf);
-        if (buf && *buf)
+        if (*buf)
             add_history(buf);
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);

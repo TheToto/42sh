@@ -31,31 +31,8 @@ static int get_opt(char *opt)
 static int print_hist(void)
 {
     HIST_ENTRY **entry = history_list();
-    for (size_t i = 1 ; i < history_length; i++)
-        printf("%*ld  %s\n", 4, i, entry[i]->line);
-    return 0;
-}
-
-static int add_hist(char *file)
-{
-    int fd = open(file, O_RDONLY);
-    if (fd == -1)
-        return 1;
-    char *buf = calloc(4096, sizeof(char));
-    if (!buf)
-    {
-        warnx("Calloc failed in add_hist");
-        return 1;
-    }
-    ssize_t size = read(fd, buf, 4096);
-    for ( ; size; size = read(fd, buf, 4096))
-    {
-        if (size == -1)
-            return 1;
-        buf[size + 1] = '\0';
-        add_history(buf);
-    }
-    close(fd);
+    for (int i = 0 ; i < history_length; i++)
+        printf("%*d  %s\n", 4, i + 1, entry[i]->line);
     return 0;
 }
 
@@ -85,6 +62,6 @@ int exec_history(char **str)
         return 0;
     }
     if (opt == 2)
-        return add_hist(str[1]);
+        return read_history_range(str[1], 0, -1);
     return 0;
 }
