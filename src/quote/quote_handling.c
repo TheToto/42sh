@@ -4,23 +4,25 @@
 #include "quote_lexer.h"
 #include "env.h"
 #include "shell.h"
+#include "queue.h"
 
 struct shell shell;
 
 
 static void remove_quoting_inside_dquoting(char **str_org);
 
-static int handle_realloc(char **res, char *tmp, size_t len)
+static int handle_realloc(char **res, char *tmp, size_t *len, int concat)
 {
-    char *check = realloc(*res, len + strlen(tmp) + 1);
+    char *check = realloc(*res, *len + strlen(tmp) + 1);
     if (!check)
     {
         free(*res);
         return 0;
     }
-    len += strlen(tmp);
+    *len += strlen(tmp);
     *res = check;
-    strcat(*res, tmp);
+    if (concat)
+        strcat(*res, tmp);
     return 1;
 }
 
@@ -64,7 +66,7 @@ static void remove_quoting_inside_dquoting(char **str_org)
             char *tmp = get_var(shell.var, tl->str);
             if (tmp)
             {
-                if (!handle_realloc(&res, tmp, len))
+                if (!handle_realloc(&res, tmp, &len, 1))
                     return;
             }
         }
@@ -75,8 +77,28 @@ static void remove_quoting_inside_dquoting(char **str_org)
     free(str);
 }
 
-static int handle_global_dollar_and_dquote(char **res, size_t len,
-    struct token_list_quote *tl)
+static void split_space_and_push(struct queue *q, char **res, size_t *len,
+    char *tmp)
+{
+    while (*tmp)
+    {
+        while (*tmp && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
+            tmp++;
+        while (*tmp && *tmp != ' ' && *tmp != '\t' && *tmp != '\n')
+        {
+            strncat(*res, tmp, 1);
+            tmp++;
+        }
+        if (*tmp == ' ' || *tmp == '\t' || *tmp == '\n')
+        {
+            push_queue(q, *res);
+            *res = calloc(*len, 1);
+        }
+    }
+}
+
+static int handle_global_dollar_and_dquote(char **res, size_t *len,
+    struct token_list_quote *tl, struct queue *q)
 {
     char *tmp = "";
     if (tl->tok == DOLLAR)
@@ -86,12 +108,14 @@ static int handle_global_dollar_and_dquote(char **res, size_t len,
         remove_quoting_inside_dquoting(&tl->str);
         tmp = tl->str;
     }
-    if (tmp && !handle_realloc(res, tmp, len))
+    if (tmp && !handle_realloc(res, tmp, len, tl->tok != DOLLAR))
         return 0;
+    if (tmp && tl->tok == DOLLAR)
+        split_space_and_push(q, res, len, tmp);
     return 1;
 }
 
-char *remove_quoting(char *str)
+char *remove_quoting(char *str, struct queue *q)
 {
     size_t len = strlen(str);
     int has_not_dollar = 0;
@@ -106,7 +130,7 @@ char *remove_quoting(char *str)
         if (tl->tok >= QUOTED)
             strcat(res, tl->str);
         else if (tl->tok <= DQUOTED
-            && !handle_global_dollar_and_dquote(&res, len, tl))
+            && !handle_global_dollar_and_dquote(&res, &len, tl, q))
             return NULL;
         tl = tl->next;
     }
@@ -116,5 +140,6 @@ char *remove_quoting(char *str)
         free(res);
         return NULL;
     }
+    push_queue(q, res);
     return res;
 }

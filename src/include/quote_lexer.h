@@ -1,5 +1,7 @@
 #pragma once
 
+#include "queue.h"
+
 /**
 * \brief Enum of lexer tokens used for quotes processing
 */
@@ -28,7 +30,7 @@ struct lexer_quote
     struct token_list_quote *tl;
 };
 
-char *remove_quoting(char *str);
+char *remove_quoting(char *str, struct queue *q);
 
 struct lexer_quote *lexer_quote(char *str);
 void destroy_lexer_quote(struct lexer_quote *l);

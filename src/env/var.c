@@ -40,8 +40,8 @@ static void set_up_reserved(void)
     add_var(shell.var, "$", itoa(getpid(), buf_nb), 0);
     add_var(shell.var, "UID", itoa(getuid(), buf_nb), 0);
     char *pwd = get_current_dir_name();
-    if (!get_var(shell.var, "OLDPWD"))
-        add_var(shell.var, "OLDPWD", pwd, 0);
+    add_var(shell.var, "OLDPWD", "", 0);
+    add_var(shell.var, "PWD", pwd, 0);
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
     add_var(shell.var, "?", "", 0);
@@ -287,11 +287,11 @@ char *get_var(struct variables *var, char *name)
 
 void assign_prefix(struct variables *var, char *prefix)
 {
-    char name[256] =
+    char name[2048] =
     {
         0
     };
-    char value[256] =
+    char value[2048] =
     {
         0
     };
@@ -300,20 +300,22 @@ void assign_prefix(struct variables *var, char *prefix)
     prefix++;
     for (size_t i = 0; i < 256 && *prefix != '\0'; i++, *prefix++)
         value[i] = *prefix;
-    char *val = remove_quoting(value);
-    add_var(var, name, val, 0);
-    free(val);
+    char *concat = concat_quote(value);
+    add_var(var, name, concat, 0);
+    free(concat);
 }
 
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     if (shell.shopt_states[EXP_ALIAS])
         replace_aliases(scmd);
-    struct *res = init_queue();
+    struct queue *res = init_queue();
     size_t j = 0;
     for (size_t i = 0; i < scmd->elt_size; i++, j++)
     {
         remove_quoting(scmd->elements[i], res);
+        //printf("DEBUG QUEUE\n");
+        //debug_queue(res);
     }
     return dump_queue(res);
 }

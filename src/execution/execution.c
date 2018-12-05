@@ -22,6 +22,7 @@
 #include "parser.h"
 #include "ast_destroy.h"
 #include "shell.h"
+#include "queue.h"
 
 int exec_if(struct ast_node_if *n_if, struct variables *var)
 {
@@ -46,7 +47,7 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
     int res = 0;
     for (size_t i = 0; i < n_for->size; i++)
     {
-        char *cur = remove_quoting(n_for->values[i]);
+        char *cur = concat_quote(n_for->values[i]);
         add_var(var, name, cur, 0);
         free(cur);
         res = exec_node(n_for->exec, var);

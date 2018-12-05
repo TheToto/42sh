@@ -27,7 +27,7 @@ void destroy_queue(struct queue *q)
 
 void push_queue(struct queue *q, char *str)
 {
-    if (q->size == q->capacity)
+    if (q->size == q->capacity - 1)
     {
         q->capacity *= 2;
         q->queue = realloc(q->queue, q->capacity * sizeof(char*));
@@ -63,7 +63,8 @@ void sort_queue(struct queue *q)
 
 char **dump_queue(struct queue *q)
 {
-    char *res = q->queue;
+    q->queue[q->size] = NULL;
+    char **res = q->queue;
     free(q);
     return res;
 }
@@ -73,4 +74,29 @@ void debug_queue(struct queue *q)
     for (size_t i = 0; i < q->size; i++)
         printf("%s ", q->queue[i]);
     printf("\n");
+}
+
+static size_t get_total_len(struct queue *q)
+{
+    size_t acu = 0;
+    for (size_t i = 0; i < q->size; i++)
+    {
+        acu += strlen(q->queue[i]) + 1;
+    }
+}
+
+char *concat_quote(char *value)
+{
+    struct queue *q = init_queue();
+    remove_quoting(value, q);
+    char *res = calloc(get_total_len(q), sizeof(char));
+    char **dump = dump_queue(q);
+    for (size_t i = 0; dump[i]; i++)
+    {
+        strcat(res, dump[i]);
+        if (dump[i + 1])
+            strcat(res, " ");
+    }
+    free(dump);
+    return res;
 }
