@@ -23,6 +23,5 @@ int source(char **str)
         return 2;
     }
     set_up_var(str + 1);
-    launch_file(filename, 0, shell.var);
-    return 0;
+    return launch_file(filename, 0, shell.var);
 }
