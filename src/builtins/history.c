@@ -28,10 +28,12 @@ static int get_opt(char *opt)
     return -1;
 }
 
-static int print_hist(void)
+static int print_hist(int offset)
 {
     HIST_ENTRY **entry = history_list();
-    for (int i = 0 ; i < history_length; i++)
+    if (offset >= history_length)
+        offset = history_length;
+    for (int i = history_length - offset; i < history_length; i++)
         printf("%*d  %s\n", 4, i + 1, entry[i]->line);
     return 0;
 }
@@ -49,12 +51,13 @@ int exec_history(char **str)
     if (!opt)
     {
         if (!str[1])
-            return print_hist();
+            return print_hist(history_length);
         if (!atoi(str[1]) && strcmp(str[1], "0"))
         {
             warnx("history: %s: numeric value required", str[1]);
             return 1;
         }
+        return print_hist(atoi(str[1]));
     }
     else if (opt == 1)
     {
