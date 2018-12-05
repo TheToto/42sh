@@ -78,11 +78,9 @@ void set_up_var(char *args[])
         if (args[i + 1])
             strcat(star, " ");
     }
-    if (star && size == 0)
-    {
-        add_var(shell.var, "*", star, 0);
-        add_var(shell.var, "@", star, 0);
-    }
+    add_var(shell.var, "*", star, 0);
+    add_var(shell.var, "@", star, 0);
+
     free(star);
     set_up_reserved();
 }
