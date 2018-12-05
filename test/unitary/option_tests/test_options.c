@@ -1,5 +1,6 @@
 #include "unity.h"
 #include "options.h"
+#include "shopt.h"
 
 struct shell *shell;
 

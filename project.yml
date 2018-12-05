@@ -67,10 +67,13 @@
     - src/execution/exec_redirect.c
     - src/execution/exec_scmd.c
     - src/execution/execution.c;
+    - src/execution/queue.c
     - src/lexer/lexer.c;
     - src/lexer/lexer_func.c;
-    - src/parser/misc.c
+    - src/maths/maths.c
+    - src/maths/stack.c
     - src/options.c;
+    - src/parser/misc.c
     - src/parser/rule_andor.c;
     - src/parser/rule_case.c;
     - src/parser/rule_command.c;
