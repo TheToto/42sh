@@ -14,7 +14,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <err.h>
-#include <ctype.h>
 
 #include "builtins.h"
 

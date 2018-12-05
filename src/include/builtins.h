@@ -36,6 +36,13 @@ enum builtin
 size_t get_args(char **str);
 
 /**
+* Check if a string is only composed of 0
+* \param char *s  The string to check
+* \return Return 1 if it is 0, 0 otherwise
+**/
+int is_zero(char *s);
+
+/**
 * Check if it is a builtin then execute it
 * \param char **str  The string to be parsed
 * \return Return 0 if no error, else, a value different from 0
