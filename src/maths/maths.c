@@ -254,7 +254,7 @@ char *get_maths(char *str)
     int res = evaluate_maths(str);
     char *ret = calloc(get_int_len(res) + 2, sizeof(char));
     sprintf(ret, "%d", res);
-    add_var(shell.var, "RESERVED_MATH", ret, 0);
+    add_var(shell.var, "$RESERVED_MATH", ret, 0);
     free(ret);
-    return get_var(shell.var, "RESERVED_MATH");
+    return get_var(shell.var, "$RESERVED_MATH");
 }

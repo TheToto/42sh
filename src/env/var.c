@@ -21,6 +21,7 @@
 #include "shopt.h"
 #include "quote_lexer.h"
 #include "maths.h"
+#include "queue.h"
 
 extern char **environ;
 
