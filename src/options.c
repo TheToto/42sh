@@ -75,7 +75,7 @@ static void exec_cmd(char **argv, size_t i, int ast)
     }
     shell.type = S_OPTION;
     struct variables *library = init_var();
-    set_up_var(argv);
+    set_up_var(argv + i + 1);
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
     exit(res);
