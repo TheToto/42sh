@@ -34,13 +34,16 @@ static char *init_path(char *file)
     return histpath;
 }
 
-static void write_hist(char *file)
+static void write_hist(void)
 {
+    char *histpath = init_path("/.42sh_history");
     struct stat buf;
-    if (!stat(file, &buf))
-        append_history(history_length, file);
+    if (!stat(histpath, &buf))
+        append_history(history_length, histpath);
     else
-        write_history(file);
+        write_history(histpath);
+    history_truncate_file(histpath, 500);
+    free(histpath);
 }
 
 static void launchrc(int is_print, struct variables *var)
@@ -96,17 +99,14 @@ int show_prompt(int norc, int is_print)
     if (!norc)
         launchrc(is_print, shell.var);
     init_libvar();
+    atexit(write_hist);
     while (1)
     {
         char *buf = readline(get_var(shell.var, "PS1"));
         if (!buf)
             exec_exit(&buf);
         if (buf && *buf)
-        {
             add_history(buf);
-            write_hist(histpath);
-            history_truncate_file(histpath, 500);
-        }
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);
         shell.buf = NULL;
