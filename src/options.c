@@ -45,8 +45,6 @@ enum option get_option(char *opt)
 
 static int check_ast_print(char **argv)
 {
-    if (shell.shopt_states[ASTPRINT])
-        return 1;
     for (size_t i = 1; argv[i]; i++)
     {
         if (!strcmp(argv[i], "--ast-print"))
@@ -76,6 +74,7 @@ static void exec_cmd(char **argv, size_t i, int ast)
     shell.type = S_OPTION;
     struct variables *library = init_var();
     set_up_var(argv);
+    ast = shell.shopt_states[ASTPRINT] ? 1 : 0;
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
     exit(res);
@@ -91,11 +90,13 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
         {
             shell.type = S_PROMPT;
             set_up_var(argv);
+            ast = shell.shopt_states[ASTPRINT] ? 1 : 0;
             res = show_prompt(norc, ast);
         }
         else
         {
             set_up_var(argv);
+            ast = shell.shopt_states[ASTPRINT] ? 1 : 0;
             shell.type = S_INPUT;
             res = launch_pipe(ast);
         }
@@ -113,7 +114,6 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
 void options(char *argv[])
 {
     size_t i = 1;
-    shell.shopt_states = init_shoptlist();
     int ast = check_ast_print(argv);
     int norc = 0;
 
