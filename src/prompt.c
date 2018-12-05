@@ -67,17 +67,6 @@ struct token_list *show_ps2(void)
     return l->token_list;
 }
 
-static void init_libvar(void)
-{
-    if (!get_var(shell.var, "PS1"))
-        add_var(shell.var, "PS1", "[42sh@pc]$ ", 1);
-    if (!get_var(shell.var, "PS2"))
-        add_var(shell.var, "PS2", "> ", 1);
-    add_var(shell.var, "PWD", getenv("PWD"), 1);
-    add_var(shell.var, "HOME", getenv("HOME"), 1);
-    update_shellopts();
-}
-
 char *quote_ps2(void)
 {
     char *buf = readline(get_var(shell.var, "PS2"));
@@ -98,7 +87,6 @@ int show_prompt(int norc, int is_print)
     read_history(histpath);
     if (!norc)
         launchrc(is_print, shell.var);
-    init_libvar();
     atexit(write_hist);
     while (1)
     {
