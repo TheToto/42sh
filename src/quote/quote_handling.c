@@ -123,7 +123,7 @@ void remove_quoting(char *str, struct queue *q)
     char *res = calloc(1, len + 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
-        return NULL;
+        return;
     struct token_list_quote *tl = l->tl;
     while (tl->next)
     {
@@ -132,14 +132,14 @@ void remove_quoting(char *str, struct queue *q)
             strcat(res, tl->str);
         else if (tl->tok <= DQUOTED
             && !handle_global_dollar_and_dquote(&res, &len, tl, q))
-            return NULL;
+            return;
         tl = tl->next;
     }
     destroy_lexer_quote(l);
     if (!has_not_dollar && *res == 0)
     {
         free(res);
-        return NULL;
+        return;
     }
     push_queue(q, res);
     free(res);
