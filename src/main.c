@@ -26,6 +26,7 @@ struct shell shell =
     NULL,
     0,
     0,
+    0,
     0
 };
 
