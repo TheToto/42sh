@@ -60,7 +60,8 @@ int get_dollar(char **str_org, int *is_quoted)
         i--;
         char *word = calloc(strlen(str) + 1, 1);
         *word = *str;
-        while (str[i] && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
+        while (str[i]
+            && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
         {
             i++;
             word[i] = str[i];
@@ -90,6 +91,12 @@ static enum token_quote get_tok_quote(char first)
     return WORD_DEFAULT;
 }
 
+static void update_word(char **str, char *word, int index)
+{
+    word[index] = **str;
+    (*str)++;
+}
+
 static char *get_next_word(char **str, enum token_quote *tok)
 {
     char first = **str;
@@ -98,10 +105,7 @@ static char *get_next_word(char **str, enum token_quote *tok)
     *str += (**str && (**str == '\\' || **str == '$'
                 || **str == '\"' || **str == '\'' || **str == '`'));
     if (first == '\\')
-    {
-        *word = **str;
-        (*str)++;
-    }
+        update_word(str, word, 0);
     else if (first == '$')
     {
         int is_quoted = 0;
@@ -113,18 +117,13 @@ static char *get_next_word(char **str, enum token_quote *tok)
     {
         for (int i = 0 ; **str && **str != '\\' && **str != '$'
             && **str != '\"' && **str != '\'' && **str != '`'; i++)
-        {
-            word[i] = **str;
-            (*str)++;
-        }
+            update_word(str, word, i);
     }
     else
     {
-        for (int i = 0; **str && (**str != first || (*(*str - 1) == '\\' && *(*str) != '\'')); i++)
-        {
-            word[i] = **str;
-            (*str)++;
-        }
+        for (int i = 0; **str && (**str != first
+            || (*(*str - 1) == '\\' && *(*str) != '\'')); i++)
+            update_word(str, word, i);
         (*str)++;
     }
     *tok = get_tok_quote(first);
