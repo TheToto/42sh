@@ -18,8 +18,8 @@
 * \param tl the node in the list of token.
 * \param str Pointer to the word.
 * \param tok The token corresponding to the word.
-* \param origin the pointer the first character in the input.
-* \return NOTHING
+* \param origin The pointer the first character in the input.
+* \return NOTHING.
 */
 void set_tl(struct token_list *tl, char *str,
             enum token_type tok, char *origin);
@@ -60,7 +60,7 @@ enum token_type get_token_type(char *val);
 * \brief Create and initialize a lexer according to a string.
 *
 * \param str The string used to initialize a lexer.
-* \return A pointer to a lexer initialized.
+* \return a pointer to a lexer initialized.
 */
 struct lexer *lexer(char *cmd);
 
