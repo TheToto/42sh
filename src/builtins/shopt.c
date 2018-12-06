@@ -157,9 +157,11 @@ static int change_shopt(char *str, int res, int opt)
     return res;
 }
 
-static int set_unset(char *str, int opt, int res)
+static int set_unset(char *str, int opt, int res, int print)
 {
     char *msg = "shopt: cannot set and unset shell options simultaneously";
+    if (!str)
+        print_on_off(opt - 1, print);
     if (opt == 1)
     {
         int next = is_option(str);
@@ -169,7 +171,7 @@ static int set_unset(char *str, int opt, int res)
             res = 1;
         }
         else if (next)
-            res = print_on_off(opt - 1, next != 3);
+            res = print_on_off(opt - 1, print);
     }
     else if (opt == 2)
     {
@@ -180,7 +182,25 @@ static int set_unset(char *str, int opt, int res)
             res = 1;
         }
         else if (next)
-            res = print_on_off(opt - 1, next != 3);
+            res = print_on_off(opt - 1, print);
+    }
+    return res;
+}
+
+static int check_opt(char **str, int *print, int res)
+{
+    for (size_t i = 1; str[i]; i++)
+    {
+        int opt = is_option(str[i]);
+        if (!opt)
+            break;
+        if (opt == -1)
+        {
+            warnx("shopt: %s: invalid option", str[i]);
+            return 2;
+        }
+        if (opt == 3)
+            *print = 0;
     }
     return res;
 }
@@ -196,33 +216,18 @@ int shopt_exec(char **str)
         print_shopt(1, NO);
         return 0;
     }
+    res = check_opt(str, &print, res);
     for (size_t i = 1; str[i]; i++)
-    {
-        int opt = is_option(str[i]);
-        if (!opt)
-            break;
-        if (opt == -1)
-        {
-            warnx("shopt: %s: invalid option", str[i]);
-            return 2;
-        }
-        if (opt == 3)
-            print = 0;
-
-    }
-    for (size_t i = 1 ; str[i]; i++)
     {
         if (in_opt > 0)
             in_opt = is_option(str[i]);
         if (in_opt)
         {
             opt = in_opt;
-            res = set_unset(str[i + 1], opt, res);
+            res = set_unset(str[i + 1], opt, res, print);
         }
         else
             res = change_shopt(str[i], res, opt);
     }
-    if (opt == 1 || opt == 2)
-        print_on_off(opt - 1, print);
     return res;
 }
