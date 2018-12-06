@@ -34,6 +34,11 @@ static int get_next_quoted(char *str)
     int i = 0;
     for (; str[i] && str[i] != '\t' && str[i] != ' '; i++)
     {
+        if (str[i] == '#' && i)
+        {
+            if (str[i - 1] == '\n' || str[i - 1] == ';')
+                break;
+        }
         is_quoted = str[i] == '\\' && !is_quoted;
         if (str[i] == '$' && str[i + 1] == '(' && !is_quoted)
             get_next_subshell(str, &i);
