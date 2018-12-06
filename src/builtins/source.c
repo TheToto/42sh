@@ -6,6 +6,7 @@
  * \date 03-12-2018
 **/
 
+#include <stdlib.h>
 #include <err.h>
 
 #include "builtins.h"
