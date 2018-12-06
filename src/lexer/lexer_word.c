@@ -50,7 +50,7 @@ static int is_up_to_change(enum token_type *tpl, enum token_type type_tmp,
     {
         if (type != type_next)
         {
-            if (type < 10 || type > 22 || type_tmp < 33
+            if (type < 10 || (type > 22 && type != IN)|| type_tmp < 33
                     || type_tmp == 34 || tmp == 0)
             {
                 return type != NAME || (type_tmp != 38 && tmp[0] != '='
