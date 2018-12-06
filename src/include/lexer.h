@@ -11,11 +11,38 @@
 
 #include "parser.h"
 
+/**
+* \fn void set_tl (struct token_list *tl, char *str, enum token_type tok, char *origin)
+* \brief Set the a node in the list of token.
+*
+* \param tl the node in the list of token.
+* \param str Pointer to the word.
+* \param tok The token corresponding to the word.
+* \param origin the pointer the first character in the input.
+* \return NOTHING
+*/
 void set_tl(struct token_list *tl, char *str,
             enum token_type tok, char *origin);
 
+/**
+* \fn void get_next_word_token (char **str, struct token_list *tl, char *ptr)
+* \brief Set the next word in the list of token.
+*
+* \param str Pointer to the address of the string we want to parse.
+* \param tl The token_list we want to set.
+* \param ptr The pointer to the first character in the input.
+* \return NOTHING.
+*/
 void get_next_word_token(char **str, struct token_list *tl, char *ptr);
 
+/**
+* \fn char get_next_str (char **beg, char **ptr)
+* \brief Get the next string between space and tab in the input.
+*
+* \param beg Pointer to the address of the input we want to parse.
+* \param ptr Pointer to the first character in the input.
+* \return the string copied from the input.
+*/
 char *get_next_str(char **beg, char **ptr);
 
 /**
