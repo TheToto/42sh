@@ -6,9 +6,14 @@
 * Replacement of PS1 & PS2 by their real value
 */
 
+#define _DEFAULT_SOURCE
 #include <time.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <err.h>
+#include <string.h>
+#include <libgen.h>
+#include <unistd.h>
 #include "shell.h"
 #include "env.h"
 
@@ -71,6 +76,117 @@ static char *get_D_time(char *old, char *new, size_t **arr)
     }
     buffer[j] = 0;
     return get_d_time(new, size, capacity, buffer);
+}
+
+static char *get_W(char *new, size_t **arr)
+{
+    size_t *size = arr[0];
+    size_t *capacity = arr[1];
+    char *path = get_var(shell.var, "PWD");
+    if (!path)
+    {
+        free(new);
+        return NULL;
+    }
+    path = basename(path);
+    for (size_t j = 0; path[j]; j++)
+    {
+        new[*size] = path[j];
+        *size += 1;
+        if (*size == *capacity)
+            new = my_realloc(new, capacity);
+    }
+    return new;
+}
+
+static char *get_H(char *new, size_t **arr)
+{
+    size_t *size = arr[0];
+    size_t *capacity = arr[1];
+    char path[HOST_NAME_MAX] =
+    {
+        0
+    };
+    if (gethostname(path, HOST_NAME_MAX) == -1)
+    {
+        free(new);
+        return NULL;
+    }
+    for (size_t j = 0; path[j]; j++)
+    {
+        new[*size] = path[j];
+        *size += 1;
+        if (*size == *capacity)
+            new = my_realloc(new, capacity);
+    }
+    return new;
+}
+
+static char *get_h(char *new, size_t **arr)
+{
+    size_t *size = arr[0];
+    size_t *capacity = arr[1];
+    char path[HOST_NAME_MAX] =
+    {
+        0
+    };
+    if (gethostname(path, HOST_NAME_MAX) == -1)
+    {
+        free(new);
+        return NULL;
+    }
+    char *tmp = strtok(path, ".");
+    if (tmp != path)
+        *(tmp - 1) = 0;
+
+    for (size_t j = 0; path[j]; j++)
+    {
+        new[*size] = path[j];
+        *size += 1;
+        if (*size == *capacity)
+            new = my_realloc(new, capacity);
+    }
+    return new;
+}
+
+static char *get_u(char *new, size_t **arr)
+{
+    size_t *size = arr[0];
+    size_t *capacity = arr[1];
+    char *path = get_var(shell.var, "USER");
+    if (!path)
+    {
+        free(new);
+        return NULL;
+    }
+    for (size_t j = 0; path[j]; j++)
+    {
+        new[*size] = path[j];
+        *size += 1;
+        if (*size == *capacity)
+            new = my_realloc(new, capacity);
+    }
+    return new;
+}
+
+static char *get_w(char *new, size_t **arr)
+{
+    size_t *size = arr[0];
+    size_t *capacity = arr[1];
+    char *path = get_var(shell.var, "PWD");
+    if (!path)
+    {
+        free(new);
+        return NULL;
+    }
+    for (size_t j = 0; path[j]; j++)
+    {
+        new[*size] = path[j];
+        *size += 1;
+        if (*size == *capacity)
+            new = my_realloc(new, capacity);
+    }
+    return new;
 }
 
 static char *my_err(void)
@@ -145,6 +261,21 @@ static char *customize_str(char *new, char *old, size_t size, size_t capacity)
                 break;
             case 'D':
                 new = get_D_time(old, new, arr);
+                break;
+            case 'W':
+                new = get_W(new, arr);
+                break;
+            case 'w':
+                new = get_w(new, arr);
+                break;
+            case 'u':
+                new = get_u(new, arr);
+                break;
+            case 'H':
+                new = get_H(new, arr);
+                break;
+            case 'h':
+                new = get_h(new, arr);
                 break;
             default:
                 new = customize_str2(new, old, arr);

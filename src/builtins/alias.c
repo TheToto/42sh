@@ -19,7 +19,7 @@
 static char err_op(char *str)
 {
     warnx("alias: %s: invalid option", str);
-    warnx("alias: usage: alias [-p] [name[=value] ]");
+    warnx("alias: usage: alias [-p] [name[=value] ... ]");
     return -1;
 }
 
@@ -52,7 +52,7 @@ static int is_opt(char *str)
     return str[0] == '-' && str[1] && str[1] == 'p' && !str[2];
 }
 
-static void print_aliases(void)
+static void print_aliases(char flag)
 {
     struct aliases *alias = shell.alias;
     struct queue *q = init_queue();
@@ -60,7 +60,12 @@ static void print_aliases(void)
     {
         size_t size = strlen(alias->names[i]) + strlen(alias->values[i]) + 20;
         char *tmp = calloc(size, sizeof(char));
-        sprintf(tmp, "%s=\'%s\'\n", alias->names[i], alias->values[i]);
+        if (flag)
+            sprintf(tmp, "alias %s=\'%s\'\n", alias->names[i],
+                    alias->values[i]);
+        else
+            sprintf(tmp, "%s=\'%s\'\n", alias->names[i],
+                    alias->values[i]);
         push_queue(q, tmp);
         free(tmp);
     }
@@ -87,7 +92,7 @@ static void my_split(char *str, char *name, char *value)
         value[j] = str[i];
 }
 
-static int look_for(char *name)
+static int look_for(char *name, char flag)
 {
     char *res = get_alias(shell.alias, name);
     if (!res)
@@ -95,6 +100,8 @@ static int look_for(char *name)
         warnx("alias: %s: not found", name);
         return 1;
     }
+    else if (flag)
+        printf("alias %s=\'%s\'\n", name, res);
     else
         printf("%s=\'%s\'\n", name, res);
     return 0;
@@ -120,8 +127,10 @@ int exec_alias(char **str)
     char flag = alias_options(str);
     if (flag == -1)
         return 2;
-    if (flag == 1 || !str[1])
-        print_aliases();
+    if (flag == 1)
+        print_aliases(1);
+    else if (!str[1])
+        print_aliases(0);
     size_t i = 1;
     while (str[i] && is_opt(str[i]))
         i++;
@@ -132,7 +141,7 @@ int exec_alias(char **str)
         char *value = calloc(len, sizeof(char));
         my_split(str[i], name, value);
         if (value[0] == 1)
-            res |= look_for(name);
+            res |= look_for(name, flag);
         else if (value[0] == 2)
             assign(name, "");
         else

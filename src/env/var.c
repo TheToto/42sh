@@ -47,7 +47,7 @@ static void set_up_reserved(void)
     free(pwd);
     add_var(shell.var, "RANDOM", "32767", 0);
     add_var(shell.var, "?", "", 0);
-    add_var(shell.var, "PS1", "[42sh@pc]$ ", 0);
+    add_var(shell.var, "PS1", "[\\u@\\h \\W ]$ ", 0);
     add_var(shell.var, "PS2", "> ", 0);
 
     if (!get_var(shell.var, "HOME"))
