@@ -94,7 +94,7 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
         to_print[*new] = '\\';
         break;
     default:
-        //ask PS2=
+        to_print[*new] = str[*old];
         break;
     }
 }
