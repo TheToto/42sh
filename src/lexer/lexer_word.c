@@ -198,7 +198,7 @@ void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         if (((*str)[*i] == '\'' || (*str)[*i] == '\"' || (*str)[*i] == '`')
             && ((*i && (*str)[*i - 1] != '\\') || !*i))
         {
-            type = handle_quoted_word(*str, &word, i);
+            type = handle_quoted_word(*str + *i, &word, i);
             break;
         }
         word[*i] = (*str)[*i];
@@ -219,6 +219,7 @@ void get_next_word_token(char **str, struct token_list *tl, char *ptr)
             tmp, *str, word
         };
         found = should_change(&type, type_next, lstring, i);
+        word[*i + 1] = 0;
     }
     word[*i] = 0;
     set_tl(tl, word, type, ptr);
