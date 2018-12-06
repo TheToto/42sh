@@ -91,7 +91,7 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
         {
             push_queue(q, *res);
             free(*res);
-            *res = calloc(*len + 0, 1);
+            *res = calloc(*len + 1, 1);
         }
         while (*tmp && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
             tmp++;
@@ -117,7 +117,14 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
     if (tmp && !handle_realloc(res, tmp, len, tl->tok != DOLLAR))
         return 0;
     if (tmp && tl->tok == DOLLAR)
+    {
         split_space_and_push(q, res, len, tmp);
+        if (!**res && !tl->next->next)
+        {
+            free(*res);
+            return 0;
+        }
+    }
     return 1;
 }
 
@@ -137,7 +144,10 @@ void remove_quoting(char *str, struct queue *q)
             strcat(res, tl->str);
         else if (tl->tok <= DQUOTED
             && !handle_global_dollar_and_dquote(&res, &len, tl, q))
+        {
+            destroy_lexer_quote(l);
             return;
+        }
         tl = tl->next;
     }
     destroy_lexer_quote(l);
