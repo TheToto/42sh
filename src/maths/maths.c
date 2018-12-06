@@ -115,15 +115,15 @@ static int compute_op(int a, int b, int op)
     switch (op)
     {
         case '+':
-            return a + b;
+            return b + a;
         case '-':
-            return a - b;
+            return b - a;
         case '*':
-            return a * b;
+            return b * a;
         case '*' * 2:
             return int_pow(b, a);
         case '/':
-            return a / b;
+            return b / a;
         case '&':
             return b & a;
         case '&' * 2:
@@ -300,6 +300,8 @@ int get_int_len (int value)
 char *get_maths(char *str)
 {
     int res = evaluate_maths(str);
+    if (res == INT_MIN)
+        res = 0;
     char *ret = calloc(get_int_len(res) + 20, sizeof(char));
     sprintf(ret, "%d", res);
     add_var(shell.var, "$RESERVED_MATH", ret, 0);
