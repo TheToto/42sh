@@ -23,5 +23,16 @@ int source(char **str)
         return 2;
     }
     set_up_var(str + 1);
-    return launch_file(filename, 0, shell.var);
+    struct lexer *save_l = shell.lexer;
+    struct ast_node *save_ast = shell.ast;
+    int save_loop= shell.loop;
+    int save_break = shell.n_break;
+    int save_continue = shell.n_continue;
+    int res = launch_file(filename, 0, shell.var);
+    shell.lexer = save_l;
+    shell.ast = save_ast;
+    shell.loop = save_loop;
+    shell.n_break = save_break;
+    shell.n_continue = save_continue;
+    return res;
 }
