@@ -23,47 +23,48 @@ void destroy_stack(struct stack *stack)
     free(stack);
 }
 
-int is_full_stack(struct stack *stack)
+long long int is_full_stack(struct stack *stack)
 {
     return stack->size == stack->capacity;
 }
 
-int is_empty_stack(struct stack *stack)
+long long int is_empty_stack(struct stack *stack)
 {
     return stack->size == 0;
 }
 
 static void expand_stack(struct stack *stack)
 {
-    int *new_tab = realloc(stack->tab, stack->capacity * 2 * sizeof(int));
+    long long int *new_tab = realloc(stack->tab,
+            stack->capacity * 2 * sizeof(long long int));
     if (!new_tab)
         errx(1, "libstack : Failled to realloc stack");
     stack->capacity *= 2;
     stack->tab = new_tab;
 }
 
-void push_stack(struct stack *stack, int item)
+void push_stack(struct stack *stack, long long int item)
 {
     if (is_full_stack(stack))
         expand_stack(stack);
-    int to_push = stack->size;
+    long long int to_push = stack->size;
     stack->size += 1;
     stack->tab[to_push] = item;
 }
 
-int pop_stack(struct stack* stack)
+long long int pop_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
         return INT_MIN;
-    int to_remove = stack->size - 1;
+    long long int to_remove = stack->size - 1;
     stack->size -= 1;
     return stack->tab[to_remove];
 }
 
-int peak_stack(struct stack* stack)
+long long int peak_stack(struct stack* stack)
 {
     if (is_empty_stack(stack))
         return INT_MIN;
-    int to_peak = stack->size - 1;
+    long long int to_peak = stack->size - 1;
     return stack->tab[to_peak];
 }

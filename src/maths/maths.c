@@ -9,12 +9,12 @@
 #include "stack.h"
 #include "env.h"
 
-static int is_digit(char c)
+static long long int is_digit(char c)
 {
     return c >= '0' && c <= '9';
 }
 
-static int is_var(char c)
+static long long int is_var(char c)
 {
     if (c >= 'a' && c <= 'z')
         return 1;
@@ -27,7 +27,7 @@ static int is_var(char c)
     return 0;
 }
 
-static int is_num(char c)
+static long long int is_num(char c)
 {
     if (is_digit(c))
         return 1;
@@ -39,10 +39,12 @@ static int is_num(char c)
         return 1;
     if (c == '-')
         return 1;
+    if (c == '+')
+        return 1;
     return 0;
 }
 
-static int priority(int op)
+static long long int priority(long long int op)
 {
     switch (op)
     {
@@ -66,7 +68,7 @@ static int priority(int op)
     return 0;
 }
 
-static int get_operator(char *str, size_t *i, short go_forward)
+static long long int get_operator(char *str, size_t *i, short go_forward)
 {
     switch (str[*i])
     {
@@ -97,9 +99,9 @@ static int get_operator(char *str, size_t *i, short go_forward)
     return 0;
 }
 
-static int int_pow(int num, int exp)
+static long long int int_pow(long long int num, long long int exp)
 {
-    int res = 1;
+    long long int res = 1;
     while (exp)
     {
         if (exp & 1)
@@ -110,7 +112,7 @@ static int int_pow(int num, int exp)
     return res;
 }
 
-static int compute_op(int a, int b, int op)
+static long long int compute_op(long long int a, long long int b, long long int op)
 {
     switch (op)
     {
@@ -137,11 +139,11 @@ static int compute_op(int a, int b, int op)
         default:
             break;
     }
-    warnx("libmath : Malformed input, unexpected %d", op);
+    warnx("libmath : Malformed input, unexpected %lld", op);
     return INT_MIN;
 }
 
-static int apply_modif(char modif, int val)
+static long long int apply_modif(char modif, long long int val)
 {
     if (modif == '!')
         return val == 0 ? 1 : 0;
@@ -149,11 +151,13 @@ static int apply_modif(char modif, int val)
         return ~val;
     if (modif == '-')
         return -val;
+    if (modif == '+')
+        return val;
     warnx("libmath : Unknow modifier %c", modif);
     return INT_MIN;
 }
 
-static int get_thevar(char *str, size_t *i)
+static long long int get_thevar(char *str, size_t *i)
 {
     char var[2048] =
     {
@@ -174,9 +178,9 @@ static int get_thevar(char *str, size_t *i)
     return atoi(res);
 }
 
-static int get_number(char *str, size_t *i)
+static long long int get_number(char *str, size_t *i)
 {
-    int val = 0;
+    long long int val = 0;
     size_t j = *i;
     while (*i < strlen(str) && !is_digit(str[*i]) && !is_var(str[*i]))
         (*i)++;
@@ -199,14 +203,16 @@ static int get_number(char *str, size_t *i)
         if (val == INT_MIN)
             return val;
         j++;
-        for (; j < strlen(str) && str[j] == ' '; j++);
+        for (; j < strlen(str) && (str[j] == ' ' || str[j] == '\n'); j++);
     }
     return val;
 }
 
-static int destroy_maths(struct stack *values, struct stack *sign)
+static long long int destroy_maths(struct stack *values, struct stack *sign)
 {
-    int res = peak_stack(values);
+    long long int res = 0;
+    if (!is_empty_stack(values))
+        res = peak_stack(values);
     destroy_stack(values);
     destroy_stack(sign);
     return res;
@@ -214,9 +220,9 @@ static int destroy_maths(struct stack *values, struct stack *sign)
 
 static void compute_next(struct stack *values, struct stack *sign)
 {
-    int left = INT_MIN;
-    int right = INT_MIN;
-    int op = INT_MIN;
+    long long int left = INT_MIN;
+    long long int right = INT_MIN;
+    long long int op = INT_MIN;
     left = pop_stack(values);
     right = pop_stack(values);
     op = pop_stack(sign);
@@ -229,7 +235,7 @@ static void compute_next(struct stack *values, struct stack *sign)
         push_stack(values, compute_op(left, right, op));
 }
 
-static int math_error(char *str, int want_num,
+static long long int math_error(char *str, long long int want_num,
         struct stack *values, struct stack *sign)
 {
     destroy_stack(values);
@@ -242,18 +248,18 @@ static int math_error(char *str, int want_num,
 }
 
 
-int evaluate_maths(char *str)
+long long int evaluate_maths(char *str)
 {
     struct stack *values = init_stack();
     struct stack *sign = init_stack();
-    int want_num = 1;
+    long long int want_num = 1;
     for (size_t i = 0; i < strlen(str); i++)
     {
-        if (str[i] == ' ')
+        if (str[i] == ' ' || str[i] == '\n')
             continue;
         else if (str[i] == '(' && want_num)
             push_stack(sign, str[i]);
-        else if (str[i] == ')' && !want_num)
+        else if (str[i] == ')')
         {
             while (!is_empty_stack(sign) && peak_stack(sign) != '(')
                 compute_next(values, sign);
@@ -284,9 +290,9 @@ int evaluate_maths(char *str)
     return destroy_maths(values, sign);
 }
 
-int get_int_len (int value)
+long long int get_int_len (long long int value)
 {
-    int l = 1;
+    long long int l = 1;
     if (value < 0)
         value = -value;
     while(value > 9)
@@ -299,11 +305,14 @@ int get_int_len (int value)
 
 char *get_maths(char *str)
 {
-    int res = evaluate_maths(str);
+    long long int res = evaluate_maths(str);
     if (res == INT_MIN)
-        res = 0;
+    {
+        add_var(shell.var, "?", "1", 0);
+        return "";
+    }
     char *ret = calloc(get_int_len(res) + 20, sizeof(char));
-    sprintf(ret, "%d", res);
+    sprintf(ret, "%lld", res);
     add_var(shell.var, "$RESERVED_MATH", ret, 0);
     free(ret);
     return get_var(shell.var, "$RESERVED_MATH");
