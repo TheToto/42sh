@@ -1,3 +1,10 @@
+/**
+* \file stack.h
+* Stack functions
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #pragma once
 
 struct stack

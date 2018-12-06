@@ -1,3 +1,10 @@
+/**
+* \file queue.h
+* Queue functions
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #pragma once
 
 struct queue

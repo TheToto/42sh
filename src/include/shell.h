@@ -1,9 +1,9 @@
 /**
 *\file shell.h
 *\author thomas.lupin
-*\version 0.5
+*\version 0.8
 *\date 22-11-2018
-*\brief Header of shell global var
+*Header of shell global var
 */
 
 /**

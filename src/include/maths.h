@@ -1,3 +1,10 @@
+/**
+* \file maths.h
+* Handle arithmetics
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #pragma once
 
 long long int evaluate_maths(char *str);

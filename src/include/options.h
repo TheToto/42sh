@@ -2,7 +2,7 @@
 * \file options.h
 * Parse the options with the format [GNU long option] [option] script-file
 * \author sabrina.meng thomas.lupin
-* \version 0.5
+* \version 0.8
 * \date 27-11-2018
 */
 #pragma once

@@ -1,7 +1,7 @@
 /**
 * \file env.h
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 16-11-2018
 * \brief Management of shell variables header
 */
@@ -67,15 +67,15 @@ struct aliases
 struct variables *init_var(void);
 
 /**
- * @fn add_var
- * @brief Add a new variable to the array
- * @details Look if a variable with the same name already exist and replace its
- * value when appropriated. Otherwise, realloc if size too small and allocate
- * the definition at first available cell in the array.
- * @param var the pre-created array of definitions
- * @param name the name of the variable
- * @param value the value of the variable
- * @return return the newly allocated structure
+* @fn add_var
+* @brief Add a new variable to the array
+* @details Look if a variable with the same name already exist and replace its
+* value when appropriated. Otherwise, realloc if size too small and allocate
+* the definition at first available cell in the array.
+* @param var the pre-created array of definitions
+* @param name the name of the variable
+* @param value the value of the variable
+* @return return the newly allocated structure
  */
 void add_var(struct variables *var, char *name, char *value, char exported);
 
@@ -87,20 +87,20 @@ void add_var(struct variables *var, char *name, char *value, char exported);
 void destroy_var(struct variables *var);
 
 /**
- * @fn del_var
- * Remove the name variables from the library if exists
- * @param var pointer to the library of variables to destroy
- * @param name variable to remove
- */
+* @fn del_var
+* Remove the name variables from the library if exists
+* @param var pointer to the library of variables to destroy
+* @param name variable to remove
+*/
 void del_var(struct variables *var, char *name);
 
 /**
- * @fn get_var
- * Look for the variable with name \a name in the array \var
- * @param var library to look in
- * @param name variable researched
- * @return NULL if not found, its value otherwise
- */
+* @fn get_var
+* Look for the variable with name \a name in the array \var
+* @param var library to look in
+* @param name variable researched
+* @return NULL if not found, its value otherwise
+*/
 char *get_var(struct variables *var, char *name);
 
 /**
