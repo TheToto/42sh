@@ -1,0 +1,4 @@
+dotglob        	off
+sourcepath     	off
+nullglob       	off
+extglob        	off

@@ -83,7 +83,6 @@ void set_up_var(char *args[])
     add_var(shell.var, "@", star, 0);
 
     free(star);
-    set_up_reserved();
 }
 
 static void *my_realloc(void *p, size_t *size)
@@ -163,6 +162,7 @@ struct variables *init_var(void)
     new->capacity = 8;
     shell.var = new;
     import_exported(new);
+    set_up_reserved();
     return new;
 }
 

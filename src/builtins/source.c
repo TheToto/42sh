@@ -23,6 +23,7 @@ int source(char **str)
         return 2;
     }
     set_up_var(str + 1);
+    // Save also $0...$n $* $@
     struct lexer *save_l = shell.lexer;
     struct ast_node *save_ast = shell.ast;
     int save_loop= shell.loop;

@@ -91,7 +91,7 @@ static void print_on_off(int state)
             char *str = get_shopt_str(i);
             int len = 19 - strlen(str);
             printf("%s%*s\n", str, len,
-                    shell.shopt_states[i] ? "on" : "off");
+                    shell.shopt_states[i] ? "\ton" : "\toff");
         }
     }
 }
@@ -174,7 +174,7 @@ int shopt_exec(char **str)
             {
                 len = 19 - strlen(str[i]);
                 printf("%s%*s\n", str[i], len,
-                        shell.shopt_states[shopt] ? "on" : "off");
+                        shell.shopt_states[shopt] ? "\ton" : "\toff");
             }
         }
     }
