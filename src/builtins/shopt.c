@@ -166,6 +166,7 @@ int shopt_exec(char **str)
     else if (!opt)
     {
         int len;
+        int res = 0;
         for (size_t i = 1; str[i]; i++)
         {
             shopt = get_shopt(str[i]);
@@ -177,9 +178,11 @@ int shopt_exec(char **str)
                 len -= shell.shopt_states[shopt] ? 1 : 0;
                 printf("%s%*s\n", str[i], len,
                         shell.shopt_states[shopt] ? "\ton" : "\toff");
+                if (!shell.shopt_states[shopt])
+                    res = 1;
             }
         }
-        return 1;
+        return res;
     }
     update_shellopts();
     return 0;
