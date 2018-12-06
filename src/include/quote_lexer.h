@@ -1,3 +1,10 @@
+/**
+* \file quote_lexer.h
+* Handle quotes in the lexer
+* \author Arthur Busuttil
+* \version 0.8
+* \date 06-12-2018
+**/
 #pragma once
 
 #include "queue.h"
