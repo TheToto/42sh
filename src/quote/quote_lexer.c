@@ -123,9 +123,13 @@ static char *get_next_word(char **str, enum token_quote *tok)
     }
     else
     {
+        int is_quoted = 0;
         for (int i = 0; **str && (**str != first
-            || (*(*str - 1) == '\\' && *(*str) != '\'')); i++)
+            || (is_quoted && *(*str) != '\'')); i++)
+        {
+            is_quoted = !is_quoted && *(*str) == '\\';
             update_word(str, word, i);
+        }
         (*str)++;
     }
     *tok = get_tok_quote(first);

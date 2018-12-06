@@ -117,22 +117,26 @@ static int get_next_qword(char *str, char **word_org)
     cur[1] = 0;
     int i = 0;
     enum token_type tok = WORD;
+    int is_quoted = 0;
     while (*cur && (tok >= NAME || tok == 33))
     {
-        if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
+        is_quoted = *cur == '\\' && !is_quoted;
+        if (str[i] == '\'' && !is_quoted)
         {
             update_qword(str, word, &i);
             while (str[i] && (str[i] != '\''))
                 update_qword(str, word, &i);
             update_qword(str, word, &i);
         }
-        else if ((str[i] == '\"' || str[i] == '`')
-            && !(i > 0 && str[i - 1] == '\\'))
+        else if ((str[i] == '\"' || str[i] == '`') && !is_quoted)
         {
             char c = str[i];
             update_qword(str, word, &i);
-            while (str[i] && (str[i] != c || (i > 0 && str[i - 1] == '\\')))
+            while (str[i] && (str[i] != c || is_quoted))
+            {
+                is_quoted = str[i] == '\\' && !is_quoted;
                 update_qword(str, word, &i);
+            }
             update_qword(str, word, &i);
         }
         else
