@@ -80,6 +80,8 @@ static void my_split(char *str, char *name, char *value)
     for (; str[i] && str[i] != '='; i++)
         name[i] = str[i];
     value[0] = str[i] ? 0 : 1;
+    if (str[i] && !str[i + 1])
+        value[0] = 2;
     i = str[i] ? i + 1 : i;
     for (size_t j = 0; str[i]; i++, j++)
         value[j] = str[i];
@@ -131,6 +133,8 @@ int exec_alias(char **str)
         my_split(str[i], name, value);
         if (value[0] == 1)
             res |= look_for(name);
+        else if (value[0] == 2)
+            assign(name, "");
         else
             assign(name, value);
         free(name);
