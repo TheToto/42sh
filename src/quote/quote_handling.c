@@ -80,20 +80,25 @@ static void remove_quoting_inside_dquoting(char **str_org)
 static void split_space_and_push(struct queue *q, char **res, size_t *len,
     char *tmp)
 {
+    if (!strlen(*res) && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
+    {
+        while (*tmp && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
+            tmp++;
+    }
     while (*tmp)
     {
+        if (*tmp == ' ' || *tmp == '\t' || *tmp == '\n')
+        {
+            push_queue(q, *res);
+            free(*res);
+            *res = calloc(*len + 0, 1);
+        }
         while (*tmp && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
             tmp++;
         while (*tmp && *tmp != ' ' && *tmp != '\t' && *tmp != '\n')
         {
             strncat(*res, tmp, 1);
             tmp++;
-        }
-        if (*tmp == ' ' || *tmp == '\t' || *tmp == '\n')
-        {
-            push_queue(q, *res);
-            free(*res);
-            *res = calloc(*len + 1, 1);
         }
     }
 }
