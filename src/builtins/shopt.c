@@ -147,7 +147,7 @@ void update_shellopts(void)
             }
         }
     }
-    add_var(shell.var, "SHELLOPTS", str, shell.shopt_states[EXP_ALIAS]);
+    add_var(shell.var, "SHELLOPTS", str, 0);
     free(str);
 }
 
