@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "builtins.h"
 #include "env.h"
@@ -40,7 +41,9 @@ static int cd_arg(char *arg)
     if (!strcmp(arg, "-"))
     {
         char *tmp = strdup(get_var(shell.var, "PWD"));
-        add_var(shell.var, "PWD", get_var(shell.var, "OLDPWD"), 1);
+        char *oldpwd = get_var(shell.var, "OLDPWD");
+        if (oldpwd && oldpwd[0])
+            add_var(shell.var, "PWD", oldpwd, 1);
         add_var(shell.var, "OLDPWD", tmp, 1);
         free(tmp);
         if (chdir(get_var(shell.var, "PWD")) == -1)
@@ -48,6 +51,7 @@ static int cd_arg(char *arg)
             warnx("cd : cannot change directory");
             return 1;
         }
+        printf("%s\n", get_var(shell.var, "PWD"));
     }
     else
     {
