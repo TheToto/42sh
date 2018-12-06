@@ -163,7 +163,7 @@ static int get_next_qword(char *str, char **word_org)
     }
     return i;
 }
-
+/*
 static int get_assignment_value(char *str)
 {
     char cur[2] = { 0 };
@@ -192,7 +192,7 @@ static int get_assignment_value(char *str)
     }while (*cur && tok > 32 && tok != 34);
     return i + 1;
 }
-
+*/
 enum token_type handle_quoted_word(char *str, char **word, size_t *i)
 {
             int res = get_next_qword(str, word);
@@ -200,11 +200,12 @@ enum token_type handle_quoted_word(char *str, char **word, size_t *i)
             return WORD_EXT;
 }
 
-enum token_type handle_assignment_word(char **str, char *word, size_t *i)
+enum token_type handle_assignment_word(char *str, char **word, size_t *i)
 {
-    int len = get_assignment_value((*str + *i + 2));
-    strncat(word, (*str + *i + 2), len);
-    *i += len;
+    //int len = get_assignment_value((*str + *i + 2));
+    //strncat(word, (*str + *i + 2), len);
+    int len = get_next_qword(str, word);
+    *i += len + 2;
     return ASSIGNMENT_WORD;
 }
 
@@ -228,7 +229,7 @@ void get_next_word_token(char **str, struct token_list *tl, char *ptr)
         enum token_type type_next = get_token_type(word);
         if (type_next == ASSIGNMENT_WORD)
         {
-            type = handle_assignment_word(str, word, i);
+            type = handle_assignment_word(*str + *i + 2, &word, i);
             break;
         }
         char tmp[] =
