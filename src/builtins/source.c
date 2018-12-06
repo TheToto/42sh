@@ -35,5 +35,7 @@ int source(char **str)
     shell.loop = save_loop;
     shell.n_break = save_break;
     shell.n_continue = save_continue;
+    if (res == 2 && shell.type != S_PROMPT)
+        exit(2);
     return res;
 }

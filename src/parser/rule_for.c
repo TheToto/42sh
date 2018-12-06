@@ -36,7 +36,8 @@ struct ast_node *rule_for(struct token_list **tok)
     {
         NEXT_TOK(tok);
         ask_ps2(tok);
-        while (TOK_TYPE(tok) == WORD)
+        while (TOK_STR(tok)
+                && (TOK_TYPE(tok) != NEW_LINE && TOK_TYPE(tok) != SEMICOLON))
         {
             add_value_for(for_node, TOK_STR(tok));
             NEXT_TOK(tok);
