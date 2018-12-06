@@ -133,6 +133,14 @@ static long long int compute_op(long long int a, long long int b,
         case '*' * 2:
             return int_pow(b, a);
         case '/':
+            if (a == 0)
+            {
+                warnx("libmath : Cannot divide by 0");
+                if (shell.type != S_PROMPT)
+                    exit(1);
+                else
+                    return 0;
+            }
             return b / a;
         case '&':
             return b & a;
