@@ -34,6 +34,7 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     else
     {
         warnx("Need a '(' at function declaration");
+        free(name_func);
         return NULL;
     }
     if (TOK_TYPE(tok) == PARENTHESIS_OFF)
@@ -41,13 +42,17 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     else
     {
         warnx("Need a ')' at function declaration");
+        free(name_func);
         return NULL;
     }
     remove_new_line(tok);
     ask_ps2(tok);
     struct ast_node *body = rule_shell_command(tok);
     if (!body)
+    {
+        free(name_func);
         return NULL;
+    }
     struct ast_node *res = create_ast_node_fctdec(name_func, body);
     free(name_func);
     return res;
