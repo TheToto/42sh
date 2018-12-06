@@ -145,6 +145,7 @@ static int handle_n(char **str)
 static void my_split(char *str, char *name, char *value)
 {
     size_t i = 0;
+    size_t j = 0;
     size_t size = 255;
     for (; str[i] && str[i] != '='; i++)
     {
@@ -152,14 +153,16 @@ static void my_split(char *str, char *name, char *value)
         if (i >= size)
             name = my_realloc(name, &size);
     }
+    name[i] = '\0';
     i += str[i] == '=';
     size = 255;
-    for (size_t j = 0; str[i]; i++, j++)
+    for (; str[i]; i++, j++)
     {
         value[j] = str[i];
         if (i >= size)
             name = my_realloc(name, &size);
     }
+    value[j] = '\0';
 }
 
 static int handle_export(char **str)
