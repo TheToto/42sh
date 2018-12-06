@@ -133,7 +133,7 @@ void options(char *argv[])
             norc = 1;
         else if (opt == VERSION)
         {
-                printf("Version 0.5\n");
+                printf("Version 0.8\n");
                 exit(0);
         }
     }
