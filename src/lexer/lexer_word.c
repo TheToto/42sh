@@ -146,7 +146,6 @@ static int get_next_qword(char *str, char **word_org)
             in[2] = 1;
             char first = str[i + 1];
             update_qword(str, word, &i);
-            //update_qword(str, word, &i);
             while (str[i]
                 && ((first == '(' && in[1]) || (first == '{' && in[2])))
             {
@@ -163,36 +162,7 @@ static int get_next_qword(char *str, char **word_org)
     }
     return i;
 }
-/*
-static int get_assignment_value(char *str)
-{
-    char cur[2] = { 0 };
-    *cur = *str;
-    enum token_type tok = get_token_type(cur);
-    int i = 0;
-    int in_quote = 0;
-    char quote = 0;
-    do
-    {
-        *cur = str[i];
-        if (i && str[i] && ((str[i - 1] == '\\' && quote != '\'')
-            || (in_quote && *cur != quote)))
-        {
-            i++;
-            continue;
-        }
-        *cur = str[i];
-        if (*cur == '"' || *cur == '\'' || *cur == '`')
-        {
-            in_quote = !in_quote;
-            quote = *cur;
-        }
-        tok = get_token_type(cur);
-        i++;
-    }while (*cur && tok > 32 && tok != 34);
-    return i + 1;
-}
-*/
+
 enum token_type handle_quoted_word(char *str, char **word, size_t *i)
 {
             int res = get_next_qword(str, word);
@@ -202,8 +172,6 @@ enum token_type handle_quoted_word(char *str, char **word, size_t *i)
 
 enum token_type handle_assignment_word(char *str, char **word, size_t *i)
 {
-    //int len = get_assignment_value((*str + *i + 2));
-    //strncat(word, (*str + *i + 2), len);
     int len = get_next_qword(str, word);
     *i += len + 2;
     return ASSIGNMENT_WORD;
