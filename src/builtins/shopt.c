@@ -190,6 +190,7 @@ int shopt_exec(char **str)
     int opt = 0;
     int in_opt = 1;
     int res = 0;
+    int print = 1;
     if (!str[1])
     {
         print_shopt(1, NO);
@@ -205,9 +206,11 @@ int shopt_exec(char **str)
             warnx("shopt: %s: invalid option", str[i]);
             return 2;
         }
+        if (opt == 3)
+            print = 0;
 
     }
-    for (size_t i = 1; str[i]; i++)
+    for (size_t i = 1 ; str[i]; i++)
     {
         if (in_opt > 0)
             in_opt = is_option(str[i]);
@@ -219,5 +222,7 @@ int shopt_exec(char **str)
         else
             res = change_shopt(str[i], res, opt);
     }
+    if (opt == 1 || opt == 2)
+        print_on_off(opt - 1, print);
     return res;
 }
