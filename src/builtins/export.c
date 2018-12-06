@@ -99,22 +99,20 @@ static int handle_p(char flags)
     if (flags > 1)
         return 0;
     struct queue *q = init_queue();
-    for (size_t i = 0; environ[i]; i++)
+    struct variables *var = shell.var;
+    for (size_t i = 0; i < var->size; i++)
     {
-        char *name = strdup(environ[i]);
-        char *value;
-        size_t i = 0;
-        for (; name[i] && name[i] != '='; i++);
-        if (name[i])
-        {
-            value = name + i + 1;
-            name[i] = 0;
-        }
-        size_t size = strlen(name) + strlen(value) + 20;
-        char *tmp = calloc(size, sizeof(char));
-        sprintf(tmp, "export %s=\"%s\"\n", name, value);
+        if (!var->lib[i]->exported)
+            continue;
+        size_t len = strlen(var->lib[i]->name) +
+            strlen(var->lib[i]->value) + 20;
+        char *tmp = calloc(len, sizeof(char));
+        if (var->lib[i]->exported == 1)
+            sprintf(tmp, "export %s=\"%s\"\n", var->lib[i]->name,
+                    var->lib[i]->value);
+        else
+            sprintf(tmp, "export %s\n", var->lib[i]->name);
         push_queue(q, tmp);
-        free(name);
         free(tmp);
     }
     sort_queue_alias(q);
@@ -154,6 +152,8 @@ static void my_split(char *str, char *name, char *value)
             name = my_realloc(name, &size);
     }
     name[i] = '\0';
+    if (str[i] && str[i] == '=' && !str[i + 1])
+        value[j++] = 1;
     i += str[i] == '=';
     size = 255;
     for (; str[i]; i++, j++)
@@ -174,7 +174,9 @@ static int handle_export(char **str)
             char *name = calloc(255, sizeof(char));
             char *value = calloc(255, sizeof(char));
             my_split(str[i], name, value);
-            if (*value)
+            if (*value && value[0] == 1 && !value[1])
+                add_var(shell.var, name, "", 1);
+            else if (*value)
                 add_var(shell.var, name, value, 1);
             else
                 add_var(shell.var, name, value, 2);

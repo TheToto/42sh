@@ -123,10 +123,8 @@ static void import_exported(struct variables *var)
        }
 
         value[k] = '\0';
-        if (value[0])
-            add_var(var, name, value, 1);
-        else
-            add_var(var, name, value, 2);
+        add_var(var, name, value, 1);
+
         free(name);
         free(value);
     }
@@ -207,6 +205,8 @@ void add_var(struct variables *var, char *name, char *value, char exported)
             unsetenv(name);
             cur->exported = 0;
         }
+        if (cur->exported == 2 && exported == 1)
+            cur->exported = exported;
         return;
     }
     if (pos == var->capacity)
