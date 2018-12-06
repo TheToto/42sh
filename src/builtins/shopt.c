@@ -89,15 +89,14 @@ static void print_on_off(int state)
         if (shell.shopt_states[i] == state)
         {
             char *str = get_shopt_str(i);
-            int len = 19 - strlen(str);
-            len -= shell.shopt_states[shell.shopt_states[i]] ? 1 : 0;
-            printf("%s%*s\n", str, len,
-                    shell.shopt_states[i] ? "\ton" : "\toff");
+            int len = 15 - strlen(str);
+            printf("%s%*s\t%s\n", str, len, "",
+                    shell.shopt_states[i] ? "on" : "off");
         }
     }
 }
 
-static void shopt_option(char **str, int opt)
+static int shopt_option(char **str, int opt)
 {
     enum shopt shopt = get_shopt(str[2]);
     if (shopt == NO && opt != 3)
@@ -108,11 +107,12 @@ static void shopt_option(char **str, int opt)
         {
             shopt = get_shopt(str[i]);
             if (shopt == OTHER)
-                err_shopt();
+                return err_shopt();
             else
                 shell.shopt_states[shopt] = opt == 1 ? 0 : 1;
         }
     }
+    return 0;
 }
 
 void update_shellopts(void)
@@ -162,7 +162,7 @@ int shopt_exec(char **str)
     else if (opt == -1 || (opt == 3 && n > 1))
         return 1;
     else if (opt > 0)
-        shopt_option(str, opt);
+        return shopt_option(str, opt);
     else if (!opt)
     {
         int len;
@@ -174,10 +174,9 @@ int shopt_exec(char **str)
                 return err_shopt();
             else
             {
-                len = 19 - strlen(str[i]);
-                len -= shell.shopt_states[shopt] ? 1 : 0;
-                printf("%s%*s\n", str[i], len,
-                        shell.shopt_states[shopt] ? "\ton" : "\toff");
+                len = 15 - strlen(str[i]);
+                printf("%s%*s\t%s\n", str[i], len, "",
+                        shell.shopt_states[shopt] ? "on" : "off");
                 if (!shell.shopt_states[shopt])
                     res = 1;
             }
