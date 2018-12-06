@@ -36,32 +36,35 @@ static void update_dollar_exception(char cur, char next, char tmp, size_t *i)
 static int is_up_to_change(enum token_type *tpl, enum token_type type_tmp,
     char **lstring, size_t *i)
 {
+    static int escaped = 0;
     char *tmp = lstring[0];
     char *word = lstring[2];
     enum token_type type = tpl[0];
     enum token_type type_next = tpl[1];
-    if (word[*i] != '\\')
+    escaped = word[*i] == '\\' && !escaped;
+    if (escaped)
     {
-        if (!i[1] && !i[2] && type_tmp != NOT)
+        return 0;
+    }
+    if (!i[1] && !i[2] && type_tmp != NOT)
+    {
+        if (type != type_next)
         {
-            if (type != type_next)
-            {
-                if (type < 10 || type > 22 || type_tmp < 33
+            if (type < 10 || type > 22 || type_tmp < 33
                     || type_tmp == 34 || tmp == 0)
-                {
-                    return type != NAME || (type_tmp != 38 && tmp[0] != '='
-                           && type_tmp != 36);
-                }
-            }
-            else if (type == WORD && type_tmp < NAME && type_tmp != 33
-                     && tmp[0] != '=')
             {
-                return 1;
+                return type != NAME || (type_tmp != 38 && tmp[0] != '='
+                        && type_tmp != 36);
             }
-            else if (type == ASSIGNMENT_WORD && type_tmp < NAME
-                     && type_tmp != IO_NUMBER)
-                return 1;
         }
+        else if (type == WORD && type_tmp < NAME && type_tmp != 33
+                && tmp[0] != '=')
+        {
+            return 1;
+        }
+        else if (type == ASSIGNMENT_WORD && type_tmp < NAME
+                && type_tmp != IO_NUMBER)
+            return 1;
     }
     return 0;
 }
