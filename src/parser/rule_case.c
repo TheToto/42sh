@@ -53,6 +53,7 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
     {
         warnx("Need ')' after a case item");
         destroy_ast(case_node);
+        destroy_queue(q);
         return 0;
     }
     NEXT_TOK(tok);
@@ -65,6 +66,7 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
         if (!exec)
         {
             destroy_ast(case_node);
+            destroy_queue(q);
             return 0;
         }
     }
@@ -73,6 +75,7 @@ static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
         if (exec)
             destroy_ast(exec);
         destroy_ast(case_node);
+        destroy_queue(q);
         warnx("Missing ';;' at end of case item");
         return 0;
     }
