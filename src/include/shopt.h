@@ -55,8 +55,9 @@ enum shopt get_shopt(char *arg);
 
 /**
 * Prints an error message on stderr in case of wrong usage of [-+]O
+* \return Return 2
 */
-void err_shopt(void);
+int err_shopt(void);
 
 /**
 * Prints the state of the shopt variables

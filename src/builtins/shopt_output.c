@@ -52,7 +52,7 @@ static void reset_shopt(enum shopt shopt)
     }
 }
 
-void err_shopt(void)
+int err_shopt(void)
 {
     char *msg = "Invalid arguments for [-+]O option\n\
       Usage: [-+]O shopt_variable\n\
@@ -69,6 +69,7 @@ void err_shopt(void)
         warnx("%s", msg);
     else
         errx(2, "%s", msg);
+    return 2;
 }
 
 void print_shopt(int is_builtin, enum shopt shopt)

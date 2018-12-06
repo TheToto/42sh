@@ -170,7 +170,7 @@ int shopt_exec(char **str)
         {
             shopt = get_shopt(str[i]);
             if (shopt == OTHER)
-                err_shopt();
+                return err_shopt();
             else
             {
                 len = 19 - strlen(str[i]);
@@ -179,6 +179,7 @@ int shopt_exec(char **str)
                         shell.shopt_states[shopt] ? "\ton" : "\toff");
             }
         }
+        return 1;
     }
     update_shellopts();
     return 0;
