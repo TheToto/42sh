@@ -72,7 +72,7 @@ static void exec_cmd(char **argv, size_t i, int ast)
     }
     shell.type = S_OPTION;
     struct variables *library = init_var();
-    set_up_var(argv + i + 1);
+    set_up_var(argv + i);
     ast = shell.shopt_states[ASTPRINT] ? 1 : ast;
     int res = exec_main(argv[i], ast, library);
     destroy_var(library);
@@ -103,9 +103,9 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     else
     {
         shell.type = S_FILE;
-        set_up_var(argv + 1);
+        set_up_var(argv + i);
         ast = shell.shopt_states[ASTPRINT] ? 1 : ast;
-        res = launch_file(argv[1], ast, var);
+        res = launch_file(argv[i], ast, var);
     }
     destroy_var(var);
     exit(res);
