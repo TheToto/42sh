@@ -15,14 +15,14 @@
 
 static char *get_next_path(char *path, char *dir)
 {
+    while (*path == '/')
+        path++;
     while (path && *path && *path != '/')
     {
         *dir = *path;
         dir++;
         path++;
     }
-    while (*path == '/')
-        path++;
     *dir = '\0';
     return path;
 }
@@ -38,7 +38,7 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     if (!mydir)
         return;
     short wantfile = 1;
-    if (path && path[strlen(path) - 1] == '/')
+    if (path && path[0] && path[strlen(path) - 1] == '/')
         wantfile = 0;
     struct dirent *myfile;
     while((myfile = readdir(mydir)) != NULL)
