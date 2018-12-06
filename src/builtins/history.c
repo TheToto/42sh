@@ -16,6 +16,7 @@
 #include <err.h>
 
 #include "builtins.h"
+#include "shell.h"
 
 static int get_opt(char *opt)
 {
