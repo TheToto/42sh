@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include "shell.h"
 #include "env.h"
+#include "queue.h"
 
 static char err_op(char *str)
 {
@@ -54,10 +55,19 @@ static int is_opt(char *str)
 static void print_aliases(void)
 {
     struct aliases *alias = shell.alias;
+    struct queue *q = init_queue();
     for (size_t i = 0; i < alias->size; i++)
     {
-        printf("%s=\'%s\'\n", alias->names[i], alias->values[i]);
+        size_t size = strlen(alias->names[i]) + strlen(alias->values[i]) + 20;
+        char *tmp = calloc(size, sizeof(char));
+        sprintf(tmp, "%s=\'%s\'\n", alias->names[i], alias->values[i]);
+        push_queue(q, tmp);
+        free(tmp);
     }
+    sort_queue_alias(q);
+    for (size_t i = 0; i < q->size; i++)
+        printf(q->queue[i]);
+    destroy_queue(q);
 }
 
 static void my_split(char *str, char *name, char *value)

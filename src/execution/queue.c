@@ -60,6 +60,33 @@ void sort_queue(struct queue *q)
     }
 }
 
+void sort_queue_alias(struct queue *q)
+{
+    for (size_t i = 0; i < q->size; i++)
+    {
+        for (size_t j = 0; j < (q->size - i - 1); j++)
+        {
+            char *chr1 = strchr(q->queue[j], '=');
+            if (chr1)
+                *chr1 = 2;
+            char *chr2 = strchr(q->queue[j], '=');
+            if (chr2)
+                *chr2 = 2;
+            if (strcmp(q->queue[j], q->queue[j + 1]) > 0)
+            {
+                char *temp = q->queue[j];
+                q->queue[j] = q->queue[j + 1];
+                q->queue[j + 1] = temp;
+            }
+            if (chr1)
+                *chr1 = '=';
+            if (chr2)
+                *chr2 = '=';
+
+        }
+    }
+}
+
 char **dump_queue(struct queue *q)
 {
     q->queue[q->size] = NULL;
