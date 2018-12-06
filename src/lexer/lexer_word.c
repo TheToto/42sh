@@ -177,8 +177,12 @@ enum token_type handle_quoted_word(char *str, char **word, size_t *i)
 
 enum token_type handle_assignment_word(char *str, char **word, size_t *i)
 {
-    int len = get_next_qword(str, word);
-    *i += len + 2;
+    if (*str != ' ' && *str != '\t' && *str != '\n')
+    {
+        int len = get_next_qword(str, word);
+        *i += len;
+    }
+    *i += 2;
     return ASSIGNMENT_WORD;
 }
 
