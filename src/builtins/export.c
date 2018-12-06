@@ -89,8 +89,10 @@ static char treat_export(char **str, char *p, char *n)
             return -1;
         }
     }
-    if (i == 1)
+    if (i == 1 || (*p && i == 2))
         *p = 1;
+    else
+        *p = 0;
     return res;
 }
 
