@@ -149,6 +149,8 @@ char *get_alias(struct aliases *alias, char *name)
 
 void replace_aliases(struct ast_node_scmd *node)
 {
+    if (!node->elements[0])
+        return;
     char *expand = get_alias(shell.alias, node->elements[0]);
     if (!expand)
         return;
