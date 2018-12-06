@@ -14,6 +14,7 @@
 #include "shell.h"
 #include "builtins.h"
 #include "env.h"
+#include "queue.h"
 
 extern char **environ;
 
@@ -97,6 +98,7 @@ static int handle_p(char flags)
 {
     if (flags > 1)
         return 0;
+    struct queue *q = init_queue();
     for (size_t i = 0; environ[i]; i++)
     {
         char *name = strdup(environ[i]);
@@ -108,9 +110,17 @@ static int handle_p(char flags)
             value = name + i + 1;
             name[i] = 0;
         }
-        printf("export %s=\"%s\"\n", name, value);
+        size_t size = strlen(name) + strlen(value) + 20;
+        char *tmp = calloc(size, sizeof(char));
+        sprintf(tmp, "export %s=\"%s\"\n", name, value);
+        push_queue(q, tmp);
         free(name);
+        free(tmp);
     }
+    sort_queue_alias(q);
+    for (size_t i = 0; i < q->size; i++)
+        printf(q->queue[i]);
+    destroy_queue(q);
     return 0;
 }
 
