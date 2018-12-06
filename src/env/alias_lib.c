@@ -13,6 +13,9 @@
 #include "env.h"
 #include "ast.h"
 #include "shell.h"
+#include "lexer.h"
+#include "queue.h"
+#include "parser.h"
 
 static void get_pos(struct aliases *alias, char *name, size_t *i)
 {
@@ -144,116 +147,37 @@ char *get_alias(struct aliases *alias, char *name)
     return NULL;
 }
 
-static char **my_realloc(char **ptr, size_t *size)
-{
-    char **new = realloc(ptr, 2 * sizeof(char*) * (*size));
-    if (!new)
-        err(1, "replace_aliases: cannot realloc char**");
-    ptr = new;
-    *size *= 2;
-    return new;
-}
-
-static char *char_realloc(char *ptr, size_t *size)
-{
-    char *new = realloc(ptr, 2 * sizeof(char) * (*size));
-    if (!new)
-        err(1, "replace_aliases: cannot realloc char*");
-    ptr = new;
-    *size *= 2;
-    return new;
-}
-
-static void expand_scmd(struct ast_node_scmd *node, char **tab, size_t size)
-{
-    if (size == 0)
-    {
-        free(node->elements[0]);
-        for (size_t i = 0; i < node->elt_size - 1; i++)
-        {
-            node->elements[i] = node->elements[i + 1];
-        }
-        node->elt_size -= 1;
-        node->elements[size] = 0;
-    }
-    else if (size == 1)
-    {
-        free(node->elements[0]);
-        node->elements[0] = tab[0];
-    }
-    else
-    {
-        node->elt_size += size;
-
-        if (node->elt_size >= node->elt_capacity)
-        {
-            size_t n_capacity = node->elt_size + 1;
-            node->elements = my_realloc(node->elements,&n_capacity);
-            node->elt_capacity = n_capacity;
-        }
-        free(node->elements[0]);
-        node->elements[0] = NULL;
-        for (size_t i = node->elt_size - 1; i > size; i--)
-            node->elements[i - 1] = node->elements[i - size];//shifting args
-
-        for (size_t i = 0; i < size; i++)//inserting new args
-            node->elements[i] = tab[i];
-        node->elt_size -= 1;
-    }
-    free(tab);
-}
-
 void replace_aliases(struct ast_node_scmd *node)
 {
-    if (node->elt_size == 0)
-        return;
-    char **tab = calloc(8, sizeof(char*));
-    if (!tab)
-        err(1, "replace_aliases: cannot calloc array of char*");
-    size_t c_size = 0;
-    size_t c_capacity = 8;
     char *expand = get_alias(shell.alias, node->elements[0]);
     if (!expand)
-    {
-        free(tab);
         return;
-    }
-    char *target = calloc(8, sizeof(char));
-    size_t t_capacity = 8;
-    size_t t_size = 0;
-    if (!target)
-        err(1, "replace_aliases: cannot calloc char*");
-    size_t j = 0;
-    for (size_t i = 0; expand[i]; i++)
+    struct lexer *save_l = shell.lexer;
+    struct lexer *l = lexer(expand);
+    struct token_list *save = l->token_list;
+    struct token_list **tok = &save;
+    char **tab = calloc(100, sizeof(char*));
+    if (!tab)
+        err(1, "replace_aliases: cannot calloc array of char*");
+    size_t i = 0;
+    for (; TOK_STR(tok); i++)
     {
-        if (expand[i] != ' ')
-        {
-            target[j] = expand[i];
-            t_size++;
-            if (t_size == t_capacity)
-                target = char_realloc(target, &t_capacity);
-            j++;
-        }
-        else
-        {
-            tab[c_size] = strdup(target);
-            c_size++;
-            free(target);
-            target = calloc(8, sizeof(char));
-            t_size = 0;
-            t_capacity = 8;
-            j = 0;
-            if (c_size == c_capacity)
-                tab = my_realloc(tab, &c_capacity);
-            while (expand[i + 1] && expand[i + 1] == ' ')
-                i++;
-        }
+        tab[i] = TOK_STR(tok);
+        NEXT_TOK(tok);
     }
-    if (expand[0])
+    struct queue *q = init_queue();
+    for (size_t j = 0; j < i; j++)
+        push_queue(q, tab[j]);
+    for (size_t k = 1; node->elements[k]; k++)
     {
-        tab[c_size] = strdup(target);
-        free(target);
-        c_size++;
+        push_queue(q, node->elements[k]);
+        free(node->elements[k]);
     }
-    expand_scmd(node, tab, c_size);
+    node->elt_size += i - 1;
+    free(node->elements[0]);
+    free(node->elements);
+    free(tab);
+    lexer_destroy(l);
+    shell.lexer = save_l;
+    node->elements = dump_queue(q);
 }
