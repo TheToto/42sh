@@ -22,7 +22,6 @@ int exec_exit(char **str)
     size_t n = get_args(str);
     char *arg = str[1];
     int val;
-    printf("exit\n");
     if (!n)
         val = atoi(get_var(shell.var, "?"));
     else
