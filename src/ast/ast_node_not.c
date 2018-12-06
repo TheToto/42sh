@@ -49,6 +49,6 @@ void print_ast_not(struct ast_node_not *node, size_t *num, FILE *fd)
     size_t save = *num;
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    fprintf(fd, "%lu->%lu;\n", save, *num);
     print_ast_node(node->child, num, fd);
 }

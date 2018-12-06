@@ -54,10 +54,10 @@ void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num,
     size_t save = *num;
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    fprintf(fd, "%lu->%lu;\n", save, *num);
     print_ast_node(node->left_child, num, fd);
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    fprintf(fd, "%lu->%lu;\n", save, *num);
     print_ast_node(node->right_child, num, fd);
 }

@@ -101,10 +101,10 @@ void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
 
     for (size_t i = 0; i < node->size; i++)
     {
-        fprintf(fd, "%lu -> %lu;\n%lu [label = \"%s\"];\n", save, *num, *num,
+        fprintf(fd, "%lu->%lu;\n%lu [label = \"%s\"];\n", save, *num, *num,
                 node->words[i]);
         *num += 1;
     }
-    fprintf(fd, "%lu -> %lu;\n", save, *num);
+    fprintf(fd, "%lu->%lu;\n", save, *num);
     print_ast_node(node->node, num, fd);
 }

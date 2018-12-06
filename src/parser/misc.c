@@ -22,7 +22,7 @@ void debug_token(struct token_list **tok)
     while (t)
     {
         if (t->str)
-            printf("%s -> ", t->str);
+            printf("%s : ", t->str);
         else
             printf("EOF");
         t = t->next;

@@ -57,17 +57,17 @@ void print_ast_if(struct ast_node_if *node, size_t *num, FILE *fd)
     size_t save = *num;
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu[label= \"true\"];\n", save, *num);
+    fprintf(fd, "%lu->%lu[label= \"true\"];\n", save, *num);
     print_ast_node(node->e_true, num, fd);
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu[label= \"condition\"];\n", save, *num);
+    fprintf(fd, "%lu->%lu[label= \"condition\"];\n", save, *num);
     print_ast_node(node->condition, num, fd);
 
     if (node->e_false)
     {
         *num += 1;
-        fprintf(fd, "%lu -> %lu[label= \"false\"];\n", save, *num);
+        fprintf(fd, "%lu->%lu[label= \"false\"];\n", save, *num);
         print_ast_node(node->e_false, num, fd);
     }
 }

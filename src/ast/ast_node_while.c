@@ -55,10 +55,10 @@ void print_ast_while(struct ast_node_while *node, size_t *num, FILE *fd)
     size_t save = *num;
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu[label= \"condition\"];\n", save, *num);
+    fprintf(fd, "%lu->%lu[label= \"condition\"];\n", save, *num);
     print_ast_node(node->condition, num, fd);
 
     *num += 1;
-    fprintf(fd, "%lu -> %lu[label= \"do\"];\n", save, *num);
+    fprintf(fd, "%lu->%lu[label= \"do\"];\n", save, *num);
     print_ast_node(node->exec, num, fd);
 }
