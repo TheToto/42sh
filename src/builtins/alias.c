@@ -66,7 +66,7 @@ static void print_aliases(void)
     }
     sort_queue_alias(q);
     for (size_t i = 0; i < q->size; i++)
-        printf(q->queue[i]);
+        printf("%s", q->queue[i]);
     destroy_queue(q);
 }
 
