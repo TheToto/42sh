@@ -34,7 +34,7 @@ static int print_hist(int offset)
     if (offset >= history_length)
         offset = history_length;
     for (int i = history_length - offset; i < history_length; i++)
-        printf("%*d  %s\n", 4, i + 1, entry[i]->line);
+        printf("%*d  %s\n", 5, i + 1, entry[i]->line);
     return 0;
 }
 
