@@ -195,8 +195,11 @@ void add_var(struct variables *var, char *name, char *value, char exported)
 
     if (!found)
     {
-        free(cur->value);
-        cur->value = strdup(value);
+        if (value != cur->value)
+        {
+            free(cur->value);
+            cur->value = strdup(value);
+        }
         if (cur->exported)
             setenv(name, value, 1);
         if (exported == 3)
@@ -213,7 +216,7 @@ void add_var(struct variables *var, char *name, char *value, char exported)
         errx(1, "cannot malloc new word in add_var");
     new->name = strdup(name);
     new->exported = exported;
-    if (exported)
+    if (new->exported)
         setenv(name, value, 1);
     new->value = strdup(value);
     var->size += 1;
