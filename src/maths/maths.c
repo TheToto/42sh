@@ -7,15 +7,31 @@
 #include "shell.h"
 #include "env.h"
 #include "stack.h"
+#include "env.h"
 
 static int is_digit(char c)
 {
     return c >= '0' && c <= '9';
 }
 
+static int is_var(char c)
+{
+    if (c >= 'a' && c <= 'z')
+        return 1;
+    if (c >= 'A' && c <= 'Z')
+        return 1;
+    if (c == '_')
+        return 1;
+    if (c == '$')
+        return 1;
+    return 0;
+}
+
 static int is_num(char c)
 {
     if (is_digit(c))
+        return 1;
+    if (is_var(c))
         return 1;
     if (c == '!')
         return 1;
@@ -137,19 +153,47 @@ static int apply_modif(char modif, int val)
     return INT_MIN;
 }
 
+static int get_thevar(char *str, size_t *i)
+{
+    char var[2048] =
+    {
+        0
+    };
+    if (str[*i] == '$')
+        (*i)++;
+    for (size_t j = 0; *i < strlen(str)
+            && (is_var(str[*i]) || is_digit(str[*i])); j++)
+    {
+        var[j] = str[*i];
+        (*i)++;
+    }
+    (*i)--;
+    char *res = get_var(shell.var, var);
+    if (!res)
+        return 0;
+    return atoi(res);
+}
+
 static int get_number(char *str, size_t *i)
 {
     int val = 0;
     size_t j = *i;
-    while (*i < strlen(str) && !is_digit(str[*i]))
+    while (*i < strlen(str) && !is_digit(str[*i]) && !is_var(str[*i]))
         (*i)++;
-    while (*i < strlen(str) && is_digit(str[*i]))
+    if (is_var(str[*i]))
     {
-        val = (val * 10) + (str[*i] - '0');
-        (*i)++;
+        val = get_thevar(str, i);
     }
-    (*i)--;
-    while (j < strlen(str) && !is_digit(str[j]))
+    else
+    {
+        while (*i < strlen(str) && is_digit(str[*i]))
+        {
+            val = (val * 10) + (str[*i] - '0');
+            (*i)++;
+        }
+        (*i)--;
+    }
+    while (j < strlen(str) && !is_digit(str[j]) && !is_var(str[j]))
     {
         val = apply_modif(str[j], val);
         if (val == INT_MIN)
@@ -243,6 +287,8 @@ int evaluate_maths(char *str)
 int get_int_len (int value)
 {
     int l = 1;
+    if (value < 0)
+        value = -value;
     while(value > 9)
     {
         l++;
@@ -254,7 +300,7 @@ int get_int_len (int value)
 char *get_maths(char *str)
 {
     int res = evaluate_maths(str);
-    char *ret = calloc(get_int_len(res) + 2, sizeof(char));
+    char *ret = calloc(get_int_len(res) + 20, sizeof(char));
     sprintf(ret, "%d", res);
     add_var(shell.var, "$RESERVED_MATH", ret, 0);
     free(ret);
