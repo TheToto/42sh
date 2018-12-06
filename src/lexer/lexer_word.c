@@ -139,6 +139,23 @@ static int get_next_qword(char *str, char **word_org)
             }
             update_qword(str, word, &i);
         }
+        else if (str[i] == '$' && (str[i + 1] == '(' || str[i + 1] == '{')&& !is_quoted)
+        {
+            size_t in[3];
+            in[1] = 1;
+            in[2] = 1;
+            char first = str[i + 1];
+            update_qword(str, word, &i);
+            update_qword(str, word, &i);
+            while (str[i]
+                && ((first == '(' && in[1]) || (first == '{' && in[2])))
+            {
+                if (!is_quoted)
+                    update_dollar_exception(str[i], str[i + 1], first, in);
+                is_quoted = str[i] == '\\' && !is_quoted;
+                update_qword(str, word, &i);
+            }
+        }
         else
             update_qword(str, word, &i);
         cur[0] = str[i];
