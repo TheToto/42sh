@@ -146,12 +146,12 @@ static int get_next_qword(char *str, char **word_org)
             in[2] = 1;
             char first = str[i + 1];
             update_qword(str, word, &i);
-            update_qword(str, word, &i);
+            //update_qword(str, word, &i);
             while (str[i]
                 && ((first == '(' && in[1]) || (first == '{' && in[2])))
             {
                 if (!is_quoted)
-                    update_dollar_exception(str[i], str[i + 1], first, in);
+                    update_dollar_exception(str[i], str[i + 1], str[i + 1], in);
                 is_quoted = str[i] == '\\' && !is_quoted;
                 update_qword(str, word, &i);
             }
