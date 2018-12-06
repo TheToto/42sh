@@ -111,13 +111,35 @@ static void launch_sh(char *argv[], int i, int ast, int norc)
     exit(res);
 }
 
+static void check_opt(char *argv[])
+{
+    for (size_t i = 1; argv[i]; i++)
+    {
+        if (argv[i][0] == '-' || argv[i][0] == '+')
+        {
+            enum option opt = get_option(argv[i]);
+            if (opt == NONE)
+            {
+                errx(2, "%s: invalid option\
+                \nUsage: ./42sh [GNU long option] [option] [file]\
+                \nGNU long options:\
+                \n    --norc\
+                \n    --ast-print\
+                \n    --version\
+                \nShell options:\
+                \n    -c <command> or [-+]O shopt_option", argv[i]);
+            }
+        }
+    }
+}
+
 void options(char *argv[])
 {
     size_t i = 1;
     shell.alias = init_alias();
     int ast = check_ast_print(argv);
     int norc = 0;
-
+    check_opt(argv);
     for (; argv[i]; i++)
     {
         if (argv[i][0] != '-' && argv[i][0] != '+')
