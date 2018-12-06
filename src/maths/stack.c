@@ -59,7 +59,7 @@ void push_stack(struct stack *stack, long long int item)
     stack->tab[to_push] = item;
 }
 
-long long int pop_stack(struct stack* stack)
+long long int pop_stack(struct stack *stack)
 {
     if (is_empty_stack(stack))
         return INT_MIN;
@@ -68,7 +68,7 @@ long long int pop_stack(struct stack* stack)
     return stack->tab[to_remove];
 }
 
-long long int peak_stack(struct stack* stack)
+long long int peak_stack(struct stack *stack)
 {
     if (is_empty_stack(stack))
         return INT_MIN;

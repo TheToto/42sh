@@ -15,7 +15,7 @@
 static char err_op(char *str)
 {
     warnx("unalias: %s: invalid option", str);
-    warnx("unalias: usage: unalias [-a] name [name ... ]");
+    warnx("unalias: usage: unalias [-a] name [name ]");
     return -1;
 }
 
@@ -41,7 +41,7 @@ static char unalias_options(char **str)
 
     }
     if (res == -1)
-        warnx("unalias: usage: unalias [-a] name [name ...]");
+        warnx("unalias: usage: unalias [-a] name [name]");
     return res;
 }
 

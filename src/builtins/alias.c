@@ -19,7 +19,7 @@
 static char err_op(char *str)
 {
     warnx("alias: %s: invalid option", str);
-    warnx("alias: usage: alias [-p] [name[=value] ... ]");
+    warnx("alias: usage: alias [-p] [name[=value] ]");
     return -1;
 }
 

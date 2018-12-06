@@ -70,7 +70,7 @@ int get_dollar(char **str_org, int *is_quoted)
         char *word = calloc(strlen(str) + 1, 1);
         *word = *str;
         while (str[i]
-            && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
+                && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
         {
             i++;
             word[i] = str[i];
@@ -125,14 +125,14 @@ static char *get_next_word(char **str, enum token_quote *tok)
     else if (first != '\"' && first != '\'' && first != '`')
     {
         for (int i = 0 ; **str && **str != '\\' && **str != '$'
-            && **str != '\"' && **str != '\'' && **str != '`'; i++)
+                && **str != '\"' && **str != '\'' && **str != '`'; i++)
             update_word(str, word, i);
     }
     else
     {
         int is_quoted = 0;
         for (int i = 0; **str && (**str != first
-            || (is_quoted && *(*str) != '\'')); i++)
+                    || (is_quoted && *(*str) != '\'')); i++)
         {
             is_quoted = !is_quoted && *(*str) == '\\';
             update_word(str, word, i);

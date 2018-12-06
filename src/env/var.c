@@ -99,28 +99,28 @@ static void import_exported(struct variables *var)
 {
     for (size_t i = 0; environ[i]; i++)
     {
-       size_t size = 255;
-       char *name = calloc(255, sizeof(char));
-       size_t j = 0;
-       for (; environ[i][j] && environ[i][j] != '='; j++)
-       {
+        size_t size = 255;
+        char *name = calloc(255, sizeof(char));
+        size_t j = 0;
+        for (; environ[i][j] && environ[i][j] != '='; j++)
+        {
             name[j] = environ[i][j];
             if (i >= size - 1)
                 name = my_realloc(name, &size);
-       }
-       name[j] = '\0';
-       char *value = calloc(255, sizeof(char));
-       size = 255;
-       if (environ[i][j])
-           j++;
+        }
+        name[j] = '\0';
+        char *value = calloc(255, sizeof(char));
+        size = 255;
+        if (environ[i][j])
+            j++;
 
-       size_t k = 0;
-       for (; environ[i][j]; j++, k++)
-       {
-           value[k] = environ[i][j];
-           if (k >= size - 1)
-               value = my_realloc(value, &size);
-       }
+        size_t k = 0;
+        for (; environ[i][j]; j++, k++)
+        {
+            value[k] = environ[i][j];
+            if (k >= size - 1)
+                value = my_realloc(value, &size);
+        }
 
         value[k] = '\0';
         add_var(var, name, value, 1);

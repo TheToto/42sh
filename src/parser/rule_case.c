@@ -42,7 +42,9 @@ static int add_to_node(struct token_list **tok, struct queue *q)
 static int rule_case_item(struct token_list **tok, struct ast_node *case_node)
 {
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
+    {
         NEXT_TOK(tok);
+    }
     struct queue *q = init_queue();
     if (!add_to_node(tok, q))
     {

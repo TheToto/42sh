@@ -28,33 +28,31 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
         err(1, "cannot pipe in exec_pipe");
     int pid = fork();
     int pid2 = -1;
-    switch (pid)
+    if (pid == -1)
     {
-    case -1:
         err(1, "cannot fork in exec_pipe");
-        break;
-    case 0:
+    }
+    else if (pid == 0)
+    {
         close(fildes[1]);
         dup2(fildes[0], STDIN_FILENO);
         res = exec_node(n->rs, var);
         exit(res);
-        break;
-    default:
+    }
+    else
+    {
         pid2 = fork();
-        switch (pid2)
+        if (pid2 == -1)
         {
-        case -1:
             err(1, "cannot fork in exec_pipe");
-            break;
-        case 0:
+        }
+        else if (pid2 == 0)
+        {
             close(fildes[0]);
             dup2(fildes[1], STDOUT_FILENO);
             res = exec_node(n->ls, var);
             close(fildes[1]);
             exit(res);
-            break;
-        default:
-            break;
         }
 
         int status2 = 0;
@@ -69,8 +67,6 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
         while (waitpid(pid, &status, 0) != pid)
             continue;
         res = WEXITSTATUS(status);
-
-        break;
     }
     return res;
 }

@@ -13,7 +13,7 @@
 #include "shell.h"
 
 void set_tl(struct token_list *tl, char *str,
-    enum token_type tok, char *origin)
+        enum token_type tok, char *origin)
 {
     tl->str_origin = origin;
     tl->str = str;
@@ -26,7 +26,7 @@ void set_tl(struct token_list *tl, char *str,
 static void update_dollar_exception(char cur, char next, char tmp, size_t *i)
 {
     if ((cur == '$' && (next == '(' || next == '{'))
-        || i[1] || i[2])
+            || i[1] || i[2])
     {
         i[1] += (tmp == '(') ? 1 : (cur == ')') ? -1 : 0;
         i[2] += (tmp == '{') ? 1 : (cur == '}') ? -1 : 0;
@@ -34,7 +34,7 @@ static void update_dollar_exception(char cur, char next, char tmp, size_t *i)
 }
 
 static int is_up_to_change(enum token_type *tpl, enum token_type type_tmp,
-    char **lstring, size_t *i)
+        char **lstring, size_t *i)
 {
     static int escaped = 0;
     char *tmp = lstring[0];
@@ -70,7 +70,7 @@ static int is_up_to_change(enum token_type *tpl, enum token_type type_tmp,
 }
 
 static int should_change(enum token_type *type,
-    enum token_type type_next, char **lstring, size_t *i)
+        enum token_type type_next, char **lstring, size_t *i)
 {
     char *tmp = lstring[0];
     char *str = lstring[1];
@@ -143,7 +143,7 @@ static int get_next_qword(char *str, char **word_org)
             update_qword(str, word, &i);
         }
         else if (str[i] == '$' && (str[i + 1] == '(' || str[i + 1] == '{')
-                 && !is_quoted)
+                && !is_quoted)
         {
             size_t in[3];
             in[1] = 1;
@@ -151,11 +151,11 @@ static int get_next_qword(char *str, char **word_org)
             char first = str[i + 1];
             update_qword(str, word, &i);
             while (str[i]
-                && ((first == '(' && in[1]) || (first == '{' && in[2])))
+                    && ((first == '(' && in[1]) || (first == '{' && in[2])))
             {
                 if (!is_quoted)
                     update_dollar_exception(str[i], str[i + 1], str[i + 1],
-                                            in);
+                            in);
                 is_quoted = str[i] == '\\' && !is_quoted;
                 update_qword(str, word, &i);
             }
@@ -170,9 +170,9 @@ static int get_next_qword(char *str, char **word_org)
 
 enum token_type handle_quoted_word(char *str, char **word, size_t *i)
 {
-            int res = get_next_qword(str, word);
-            *i += res;
-            return WORD_EXT;
+    int res = get_next_qword(str, word);
+    *i += res;
+    return WORD_EXT;
 }
 
 enum token_type handle_assignment_word(char *str, char **word, size_t *i)
@@ -189,13 +189,16 @@ enum token_type handle_assignment_word(char *str, char **word, size_t *i)
 void get_next_word_token(char **str, struct token_list *tl, char *ptr)
 {
     char *word = calloc(1, strlen(*str) + 1);
-    size_t i[3] = { 0 };
+    size_t i[3] =
+    {
+        0
+    };
     int found = 0;
     enum token_type type = WORD;
     for (; !found && *i < strlen(*str); (*i)++)
     {
         if (((*str)[*i] == '\'' || (*str)[*i] == '\"' || (*str)[*i] == '`')
-            && ((*i && (*str)[*i - 1] != '\\') || !*i))
+                && ((*i && (*str)[*i - 1] != '\\') || !*i))
         {
             type = handle_quoted_word(*str + *i, &word, i);
             break;

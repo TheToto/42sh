@@ -39,23 +39,23 @@ int exec_while(struct ast_node_while *n_while, struct variables *var)
     shell.loop += 1;
     while (exec_node(n_while->condition, var) == 0)
     {
-            res = exec_node(n_while->exec, var);
-            if (shell.n_continue == -1 || shell.n_break == -1)
-                break;
-            if (shell.n_continue > 1 && shell.loop > 1)
-            {
-                shell.n_continue -= 1;
-                break;
-            }
-            else if (shell.n_continue == 1)
-                shell.n_continue -= 1;
-            else if (shell.n_break)
-            {
-                shell.n_break -= 1;
-                if (shell.loop == 1)
-                    shell.n_break = 0;
-                break;
-            }
+        res = exec_node(n_while->exec, var);
+        if (shell.n_continue == -1 || shell.n_break == -1)
+            break;
+        if (shell.n_continue > 1 && shell.loop > 1)
+        {
+            shell.n_continue -= 1;
+            break;
+        }
+        else if (shell.n_continue == 1)
+            shell.n_continue -= 1;
+        else if (shell.n_break)
+        {
+            shell.n_break -= 1;
+            if (shell.loop == 1)
+                shell.n_break = 0;
+            break;
+        }
     }
     shell.loop -= 1;
     return res;
@@ -149,7 +149,6 @@ int exec_node(struct ast_node *node, struct variables *var)
 
 int exec_main(char *str, int is_print, struct variables *library)
 {
-    //printf("exec: %s\n", str);
     struct lexer *l = lexer(str);
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&copy);
@@ -167,7 +166,6 @@ int exec_main(char *str, int is_print, struct variables *library)
     if (is_print)
         makedot(ast, "ast.dot");
 
-    //printf("\nExecution result:\n");
     int res = exec_node(ast, library);
 
     shell.ast = NULL;

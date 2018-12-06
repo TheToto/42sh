@@ -45,12 +45,13 @@ static int print_hist(int offset, char *next)
 
 int exec_history(char **str)
 {
-    using_history();
+    if (shell.type != S_PROMPT)
+        using_history();
     int opt = get_opt(str[1]);
     if (opt == -1)
     {
         warnx("history: %s: invalid option\
-        \nusage: history [-c] [n] or history -r filename", str[1]);
+                \nusage: history [-c] [n] or history -r filename", str[1]);
         return 2;
     }
     if (!opt)
@@ -75,5 +76,8 @@ int exec_history(char **str)
         if (err)
             return 1;
     }
+    if (shell.type != S_PROMPT)
+        using_history();
+
     return 0;
 }

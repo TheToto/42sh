@@ -33,7 +33,9 @@ void debug_token(struct token_list **tok)
 void remove_new_line(struct token_list **tok)
 {
     while (TOK_TYPE(tok) == NEW_LINE)
+    {
         NEXT_TOK(tok);
+    }
 }
 
 void ask_ps2(struct token_list **tok)

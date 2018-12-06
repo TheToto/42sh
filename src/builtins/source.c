@@ -19,8 +19,8 @@ int source(char **str)
     char *filename = str[1];
     if (!filename)
     {
-        warnx("%s: filename argument required\
-        \n%s: usage: %s filename [arguments]", str[0], str[0], str[0]);
+        warnx("%s: filename arg required\n%s: usage: %s filename [arguments]",
+                str[0], str[0], str[0]);
         return 2;
     }
     set_up_var(str + 1);

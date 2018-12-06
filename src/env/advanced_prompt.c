@@ -95,29 +95,28 @@ static char *my_err(void)
 static char *customize_str2(char *new, char *old, size_t **arr)
 {
     size_t *size = arr[0];
-    //size_t *capacity = arr[1];
     size_t *i = arr[2];
     switch (old[*i])
     {
-        case 'e':
-            new[*size] = 33;
-            *size += 1;
-            break;
-        case 'n':
-            new[*size] = 10;
-            *size += 1;
-            break;
-        case 'r':
-            new[*size] = 15;
-            *size += 1;
-            break;
-        case '\\':
-            new[*size] = '\\';
-            *size += 1;
-            break;
-        default:
-            free(new);
-            return NULL;
+    case 'e':
+        new[*size] = 33;
+        *size += 1;
+        return new;
+    case 'n':
+        new[*size] = 10;
+        *size += 1;
+        return new;
+    case 'r':
+        new[*size] = 15;
+        *size += 1;
+        return new;
+    case '\\':
+        new[*size] = '\\';
+        *size += 1;
+        return new;
+    default:
+        free(new);
+        return NULL;
     }
     return new;
 }
@@ -138,17 +137,17 @@ static char *customize_str(char *new, char *old, size_t size, size_t capacity)
             };
             switch (old[i])
             {
-                case 'a':
-                    new[size++] = 7;
-                    break;
-                case 'd':
-                    new = get_d_time(new, &size, &capacity, "%a %b %d");
-                    break;
-                case 'D':
-                    new = get_D_time(old, new, arr);
-                    break;
-                default:
-                    new = customize_str2(new, old, arr);
+            case 'a':
+                new[size++] = 7;
+                break;
+            case 'd':
+                new = get_d_time(new, &size, &capacity, "%a %b %d");
+                break;
+            case 'D':
+                new = get_D_time(old, new, arr);
+                break;
+            default:
+                new = customize_str2(new, old, arr);
             }
         }
         else
@@ -172,4 +171,3 @@ char *advanced_prompt(char *psn)
     free(new);
     return get_var(shell.var,"$RESERVED_PSN");
 }
-

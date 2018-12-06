@@ -48,7 +48,7 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     if (path && path[0] && path[strlen(path) - 1] == '/')
         wantfile = 0;
     struct dirent *myfile;
-    while((myfile = readdir(mydir)) != NULL)
+    while ((myfile = readdir(mydir)) != NULL)
     {
         if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {

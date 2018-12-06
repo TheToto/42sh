@@ -15,7 +15,6 @@
 
 struct shell shell;
 
-
 static void remove_quoting_inside_dquoting(char **str_org);
 
 static int handle_realloc(char **res, char *tmp, size_t *len, int concat)
@@ -34,16 +33,16 @@ static int handle_realloc(char **res, char *tmp, size_t *len, int concat)
 }
 
 static void handle_single_quote_in_dquote(char *res,
-    struct token_list_quote *tl)
+        struct token_list_quote *tl)
 {
-            strcat(res, "'");
-            remove_quoting_inside_dquoting(&tl->str);
-            strcat(res, tl->str);
-            strcat(res, "'");
+    strcat(res, "'");
+    remove_quoting_inside_dquoting(&tl->str);
+    strcat(res, tl->str);
+    strcat(res, "'");
 }
 
 static void handle_back_slash_in_dquote(char *res,
-    struct token_list_quote *tl)
+        struct token_list_quote *tl)
 {
     if (*tl->str != '$' && *tl->str != '`' && *tl->str != '\n'
             && *tl->str != '"' && *tl->str != '\\')
@@ -85,7 +84,7 @@ static void remove_quoting_inside_dquoting(char **str_org)
 }
 
 static void split_space_and_push(struct queue *q, char **res, size_t *len,
-    char *tmp)
+        char *tmp)
 {
     if (!strlen(*res) && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
     {
@@ -111,7 +110,7 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
 }
 
 static int handle_global_dollar_and_dquote(char **res, size_t *len,
-    struct token_list_quote *tl, struct queue *q)
+        struct token_list_quote *tl, struct queue *q)
 {
     char *tmp = "";
     if (tl->tok == DOLLAR)
@@ -150,7 +149,7 @@ void remove_quoting(char *str, struct queue *q)
         if (tl->tok >= QUOTED)
             strcat(res, tl->str);
         else if (tl->tok <= DQUOTED
-            && !handle_global_dollar_and_dquote(&res, &len, tl, q))
+                && !handle_global_dollar_and_dquote(&res, &len, tl, q))
         {
             destroy_lexer_quote(l);
             return;

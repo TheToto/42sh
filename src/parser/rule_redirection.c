@@ -77,7 +77,9 @@ static int set_default_io(struct token_list **tok)
 static int skip_token_line(struct token_list **tok)
 {
     while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
+    {
         NEXT_TOK(tok);
+    }
     if (TOK_TYPE(tok) == END_OF_FILE)
     {
         warnx("End of heredoc missing");
@@ -105,7 +107,7 @@ static int compute_lines_heredoc(struct token_list **tok,
         add_elt_heredoc(redir, curLine);
         if (nextLine)
             *nextLine = '\n';
-        curLine = nextLine ? (nextLine+1) : NULL;
+        curLine = nextLine ? (nextLine + 1) : NULL;
     }
     if (curLine == NULL)
     {
@@ -158,7 +160,9 @@ static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
         return heredoc_prompt(redir, word);
     struct token_list *save = *tok;
     while (TOK_TYPE(tok) != END_OF_FILE && TOK_TYPE(tok) != NEW_LINE)
+    {
         NEXT_TOK(tok);
+    }
     if (TOK_TYPE(tok) == END_OF_FILE)
     {
         warnx("Heredoc missing");

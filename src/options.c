@@ -68,8 +68,7 @@ static void exec_cmd(char **argv, size_t i, int ast)
 {
     if (!(argv[++i] && argv[i][0] != '-'))
     {
-        errx(1, "Invalid arguments for -c option\n\
-          Usage: -c <command>");
+        errx(1, "Invalid arguments for -c option\nUsage: -c <command>");
     }
     shell.type = S_OPTION;
     struct variables *library = init_var();
@@ -123,11 +122,8 @@ static void check_opt(char *argv[])
             {
                 errx(2, "%s: invalid option\
                 \nUsage: ./42sh [GNU long option] [option] [file]\
-                \nGNU long options:\
-                \n    --norc\
-                \n    --ast-print\
-                \n    --version\
-                \nShell options:\
+                \nGNU long options:\n    --norc\n    --ast-print\
+                \n    --version\nShell options:\
                 \n    -c <command> or [-+]O shopt_option", argv[i]);
             }
         }

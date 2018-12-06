@@ -55,22 +55,22 @@ static long long int priority(long long int op)
 {
     switch (op)
     {
-        case '&':
-        case '&' * 2:
-        case '|':
-        case '|' * 2:
-        case '^':
-            return 1;
-        case '+':
-        case '-':
-            return 2;
-        case '*':
-        case '/':
-            return 3;
-        case '*' * 2:
-            return 4;
-        default:
-            break;
+    case '&':
+    case '&' * 2:
+    case '|':
+    case '|' * 2:
+    case '^':
+        return 1;
+    case '+':
+    case '-':
+        return 2;
+    case '*':
+    case '/':
+        return 3;
+    case '*' * 2:
+        return 4;
+    default:
+        break;
     }
     return 0;
 }
@@ -79,29 +79,29 @@ static long long int get_operator(char *str, size_t *i, short go_forward)
 {
     switch (str[*i])
     {
-        case '*':
-            if (str[*i + 1] == '*')
-            {
-                *i += go_forward;
-                return '*' * 2;
-            }
-            return '*';
-        case '&':
-            if (str[*i + 1] == '&')
-            {
-                *i += go_forward;
-                return '&' * 2;
-            }
-            return '&';
-        case '|':
-            if (str[*i + 1] == '|')
-            {
-                *i += go_forward;
-                return '|' * 2;
-            }
-            return '|';
-        default:
-            return str[*i];
+    case '*':
+        if (str[*i + 1] == '*')
+        {
+            *i += go_forward;
+            return '*' * 2;
+        }
+        return '*';
+    case '&':
+        if (str[*i + 1] == '&')
+        {
+            *i += go_forward;
+            return '&' * 2;
+        }
+        return '&';
+    case '|':
+        if (str[*i + 1] == '|')
+        {
+            *i += go_forward;
+            return '|' * 2;
+        }
+        return '|';
+    default:
+        return str[*i];
     }
     return 0;
 }
@@ -124,36 +124,36 @@ static long long int compute_op(long long int a, long long int b,
 {
     switch (op)
     {
-        case '+':
-            return b + a;
-        case '-':
-            return b - a;
-        case '*':
-            return b * a;
-        case '*' * 2:
-            return int_pow(b, a);
-        case '/':
-            if (a == 0)
-            {
-                warnx("libmath : Cannot divide by 0");
-                if (shell.type != S_PROMPT)
-                    exit(1);
-                else
-                    return 0;
-            }
-            return b / a;
-        case '&':
-            return b & a;
-        case '&' * 2:
-            return b && a;
-        case '|':
-            return b | a;
-        case '|' * 2:
-            return b || a;
-        case '^':
-            return b ^ a;
-        default:
-            break;
+    case '+':
+        return b + a;
+    case '-':
+        return b - a;
+    case '*':
+        return b * a;
+    case '*' * 2:
+        return int_pow(b, a);
+    case '/':
+        if (a == 0)
+        {
+            warnx("libmath : Cannot divide by 0");
+            if (shell.type != S_PROMPT)
+                exit(1);
+            else
+                return 0;
+        }
+        return b / a;
+    case '&':
+        return b & a;
+    case '&' * 2:
+        return b && a;
+    case '|':
+        return b | a;
+    case '|' * 2:
+        return b || a;
+    case '^':
+        return b ^ a;
+    default:
+        break;
     }
     warnx("libmath : Malformed input, unexpected %lld", op);
     return INT_MIN;
@@ -263,7 +263,6 @@ static long long int math_error(char *str, long long int want_num,
     return INT_MIN;
 }
 
-
 long long int evaluate_maths(char *str)
 {
     struct stack *values = init_stack();
@@ -311,7 +310,7 @@ long long int get_int_len (long long int value)
     long long int l = 1;
     if (value < 0)
         value = -value;
-    while(value > 9)
+    while (value > 9)
     {
         l++;
         value /= 10;

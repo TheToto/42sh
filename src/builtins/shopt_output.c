@@ -52,21 +52,17 @@ static void reset_shopt(enum shopt shopt)
 
 int err_shopt(void)
 {
-    char *msg = "Invalid arguments for [-+]O option\n\
-      Usage: [-+]O shopt_variable\n\
-      Shopt variables:\n\
-            ast_print\n\
-            dotglob\n\
-            expand_aliases\n\
-            extglob\n\
-            nocaseglob\n\
-            nullglob\n\
-            sourcepath\n\
-            xpg_echo";
+    char *msg1 = "Invalid arguments for [-+]O option\n";
+    char *msg2 = "    Usage: [-+]O shopt_variable\n"
+    char *msg3 = "    Shopt variables:\n"
+    char *msg4 = "        ast_print\n        dotglob\n"
+    char *msg5 = "        expand_aliases\n        extglob\n"
+    char *msg6 = "        nocaseglob\n        nullglob\n"
+    char *msg7 = "        sourcepath\n        xpg_echo";
     if (shell.type == S_PROMPT)
-        warnx("%s", msg);
+        warnx("%s%s%s%s%s%s%s", msg1, msg2, msg3, msg4, msg5, msg6, msg7);
     else
-        errx(2, "%s", msg);
+        errx(2, "%s%s%s%s%s%s%s", msg1, msg2, msg3, msg4, msg5, msg6, msg7);
     return 2;
 }
 

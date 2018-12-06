@@ -68,11 +68,11 @@ struct ast_node *rule_else_clause(struct token_list **tok)
     }
     if (TOK_TYPE(tok) != ELIF)
     {
-        warnx("No else, no elfi at else clause");
+        warnx("No else, no elif at else clause");
         return NULL;
     }
 
-    NEXT_TOK(tok); // skip ELFI
+    NEXT_TOK(tok); // skip ELIF
     ask_ps2(tok);
     struct ast_node *condition = rule_compound_list(tok, THEN);
     if (!condition)

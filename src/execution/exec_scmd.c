@@ -43,7 +43,7 @@ static void add_params(char **expanded, struct variables *var)
         size += strlen(expanded[nb]) + 1;
     }
     add_var(var, "#", itoa(nb - 1, buf_nb), 0);
-    for(; nb < 100; nb++)
+    for (; nb < 100; nb++)
         add_var(var, itoa(nb, buf_nb), "", 0);
     // $@ $*
     char *star = calloc(size + 1, sizeof(char));

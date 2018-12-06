@@ -19,7 +19,9 @@ struct ast_node *rule_funcdec(struct token_list **tok)
 {
     char *name_func;
     if (TOK_TYPE(tok) == WORD && !strcmp(TOK_STR(tok), "function"))
+    {
         NEXT_TOK(tok);
+    }
     ask_ps2(tok);
     if (TOK_TYPE(tok) == WORD)
         name_func = strdup(TOK_STR(tok));
@@ -30,7 +32,9 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     }
     NEXT_TOK(tok);
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
+    {
         NEXT_TOK(tok);
+    }
     else
     {
         warnx("Need a '(' at function declaration");

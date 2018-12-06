@@ -24,17 +24,17 @@ static char get_flags(char **str)
         {
             switch (str[i][1])
             {
-                case 'n':
-                    n = 1;
-                    break;
-                case 'e':
-                    e = 2;
-                    break;
-                case 'E':
-                    E = 4;
-                    break;
-                default:
-                    return n + e + E;
+            case 'n':
+                n = 1;
+                break;
+            case 'e':
+                e = 2;
+                break;
+            case 'E':
+                E = 4;
+                break;
+            default:
+                return n + e + E;
             }
         }
         else
@@ -45,8 +45,8 @@ static char get_flags(char **str)
 
 static int not_opt(char *str)
 {
-    return !(str[0] == '-' && str[1] && !str[2] && (str[1] == 'n'
-                || str[1] == 'e' || str[1] =='E'));
+    return !(str[0] == '-' && str[1] && !str[2]
+            && (str[1] == 'n' || str[1] == 'e' || str[1] == 'E'));
 }
 
 
@@ -63,39 +63,39 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
     *old += 1;
     switch (str[*old])
     {
-        case 'a':
-            to_print[*new] = 7;
-            break;
-        case 'b':
-            handle_b(new);
-            break;
-        case 'e':
-            to_print[*new] = 27;
-            break;
-        case 'E':
-            to_print[*new] = 27;
-            break;
-        case 'f':
-            to_print[*new] = 12;
-            break;
-        case 'n':
-            to_print[*new] = '\n';
-            break;
-        case 'r':
-            to_print[*new] = 13;
-            break;
-        case 't':
-            to_print[*new] = 9;
-            break;
-        case 'v':
-            to_print[*new] = 11;
-            break;
-        case '\\':
-            to_print[*new] = '\\';
-            break;
-        default:
-            //ask PS2=
-            break;
+    case 'a':
+        to_print[*new] = 7;
+        break;
+    case 'b':
+        handle_b(new);
+        break;
+    case 'e':
+        to_print[*new] = 27;
+        break;
+    case 'E':
+        to_print[*new] = 27;
+        break;
+    case 'f':
+        to_print[*new] = 12;
+        break;
+    case 'n':
+        to_print[*new] = '\n';
+        break;
+    case 'r':
+        to_print[*new] = 13;
+        break;
+    case 't':
+        to_print[*new] = 9;
+        break;
+    case 'v':
+        to_print[*new] = 11;
+        break;
+    case '\\':
+        to_print[*new] = '\\';
+        break;
+    default:
+        //ask PS2=
+        break;
     }
 }
 
@@ -124,8 +124,8 @@ int echo(char **str)
                 {
                     if (str[i][old + 1] && str[i][old] == 'c')
                     {
-                       flags += (flags & 1) == 0 ? 1: 0;
-                       break;
+                        flags += (flags & 1) == 0 ? 1: 0;
+                        break;
                     }
                     handle_escape(str[i], to_print, &old, &new);
                 }
