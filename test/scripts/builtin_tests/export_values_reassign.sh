@@ -1,3 +1,5 @@
+export -n '_'
+
 export hello="world"
 export coucou="salut"
 export | wc -l > nb
