@@ -26,7 +26,7 @@ int source(char **str)
     // Save also $0...$n $* $@
     struct lexer *save_l = shell.lexer;
     struct ast_node *save_ast = shell.ast;
-    int save_loop= shell.loop;
+    int save_loop = shell.loop;
     int save_break = shell.n_break;
     int save_continue = shell.n_continue;
     int res = launch_file(filename, 0, shell.var);

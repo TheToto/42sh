@@ -50,10 +50,7 @@ static int is_option(char *opt)
     else if (!strcmp(opt, "-q"))
         return 3;
     else if (opt[0] == '-')
-    {
-        warnx("Invalid shell option name");
         return -1;
-    }
     return 0;
 }
 
@@ -82,8 +79,10 @@ static char *get_shopt_str(enum shopt shopt)
     }
 }
 
-static void print_on_off(int state)
+static int print_on_off(int state, int print)
 {
+    if (!print)
+        return 0;
     for (size_t i = 0; i < NB_SHOPT; i++)
     {
         if (shell.shopt_states[i] == state)
@@ -92,24 +91,6 @@ static void print_on_off(int state)
             int len = 15 - strlen(str);
             printf("%s%*s\t%s\n", str, len, "",
                     shell.shopt_states[i] ? "on" : "off");
-        }
-    }
-}
-
-static int shopt_option(char **str, int opt)
-{
-    enum shopt shopt = get_shopt(str[2]);
-    if (shopt == NO && opt != 3)
-        print_on_off(opt - 1);
-    else if (opt != 3)
-    {
-        for (size_t i = 2; str[i]; i++)
-        {
-            shopt = get_shopt(str[i]);
-            if (shopt == OTHER)
-                return err_shopt();
-            else
-                shell.shopt_states[shopt] = opt == 1 ? 0 : 1;
         }
     }
     return 0;
@@ -151,38 +132,92 @@ void update_shellopts(void)
     free(str);
 }
 
+static int change_shopt(char *str, int res, int opt)
+{
+    enum shopt shopt = get_shopt(str);
+    if (shopt == OTHER)
+    {
+        warnx("shopt %s: invalid shell option name", str);
+        res = 1;
+    }
+    else if (opt == 1 || opt == 2)
+        shell.shopt_states[shopt] = opt - 1;
+    else if (!opt || opt == 3)
+    {
+        if (opt != 3)
+        {
+            char *s = get_shopt_str(shopt);
+            int len = 15 - strlen(s);
+            printf("%s%*s\t%s\n", s, len, "",
+                    shell.shopt_states[shopt] ? "on" : "off");
+        }
+        if (!shell.shopt_states[shopt])
+            res = 1;
+    }
+    return res;
+}
+
+static int set_unset(char *str, int opt, int res)
+{
+    char *msg = "shopt: cannot set and unset shell options simultaneously";
+    if (opt == 1)
+    {
+        int next = is_option(str);
+        if (next == 2)
+        {
+            warnx(msg);
+            res = 1;
+        }
+        else if (next)
+            res = print_on_off(opt - 1, next != 3);
+    }
+    else if (opt == 2)
+    {
+        int next = is_option(str);
+        if (next == 1)
+        {
+            warnx(msg);
+            res = 1;
+        }
+        else if (next)
+            res = print_on_off(opt - 1, next != 3);
+    }
+    return res;
+}
+
 int shopt_exec(char **str)
 {
-    size_t n = get_args(str);
-    char *arg = str[1];
-    int opt = is_option(arg);
-    enum shopt shopt;
-    if (!n)
-        print_shopt(1, NO);
-    else if (opt == -1 || (opt == 3 && n > 1))
-        return 1;
-    else if (opt > 0)
-        return shopt_option(str, opt);
-    else if (!opt)
+    int opt = 0;
+    int in_opt = 1;
+    int res = 0;
+    if (!str[1])
     {
-        int len;
-        int res = 0;
-        for (size_t i = 1; str[i]; i++)
-        {
-            shopt = get_shopt(str[i]);
-            if (shopt == OTHER)
-                return err_shopt();
-            else
-            {
-                len = 15 - strlen(str[i]);
-                printf("%s%*s\t%s\n", str[i], len, "",
-                        shell.shopt_states[shopt] ? "on" : "off");
-                if (!shell.shopt_states[shopt])
-                    res = 1;
-            }
-        }
-        return res;
+        print_shopt(1, NO);
+        return 0;
     }
-    update_shellopts();
-    return 0;
+    for (size_t i = 1; str[i]; i++)
+    {
+        int opt = is_option(str[i]);
+        if (!opt)
+            break;
+        if (opt == -1)
+        {
+            warnx("shopt: %s: invalid option", str[i]);
+            return 2;
+        }
+
+    }
+    for (size_t i = 1; str[i]; i++)
+    {
+        if (in_opt > 0)
+            in_opt = is_option(str[i]);
+        if (in_opt)
+        {
+            opt = in_opt;
+            res = set_unset(str[i + 1], opt, res);
+        }
+        else
+            res = change_shopt(str[i], res, opt);
+    }
+    return res;
 }
