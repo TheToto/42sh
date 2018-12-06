@@ -30,30 +30,36 @@ static void get_next_subshell(char *str, int *cur)
 
 static int get_next_quoted(char *str)
 {
+    int is_quoted = 0;
     int i = 0;
     for (; str[i] && str[i] != '\t' && str[i] != ' '; i++)
     {
-        if (str[i] == '$' && str[i + 1] == '(')
+        is_quoted = str[i] == '\\' && !is_quoted;
+        if (str[i] == '$' && str[i + 1] == '(' && !is_quoted)
             get_next_subshell(str, &i);
-        else if (str[i] == '\'' && !(i > 0 && str[i - 1] == '\\'))
+        else if (str[i] == '\'' && !is_quoted)
         {
             i++;
             while (str[i] && (str[i] != '\''))
                 i++;
         }
-        else if (str[i] == '\"' && !(i > 0 && str[i - 1] == '\\'))
+        else if (str[i] == '\"' && !is_quoted)
         {
             i++;
-            while (str[i]
-                && (str[i] != '\"' || (i > 0 && str[i - 1] == '\\')))
+            while (str[i] && (str[i] != '\"' || is_quoted))
+            {
+                is_quoted = str[i] == '\\' && !is_quoted;
                 i++;
+            }
         }
-        else if (str[i] == '`' && !(i > 0 && str[i - 1] == '\\'))
+        else if (str[i] == '`' && !is_quoted)
         {
             i++;
-            while (str[i]
-                && (str[i] != '`' || (i > 0 && str[i - 1] == '\\')))
+            while (str[i] && (str[i] != '`' || is_quoted))
+            {
+                is_quoted = str[i] == '\\' && !is_quoted;
                 i++;
+            }
         }
     }
     return i;
