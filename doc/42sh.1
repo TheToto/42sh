@@ -280,13 +280,97 @@ if specified). The format is:
         [\fIn\fR]<>\fIword\fR
 
 .SH ALIASES
-Not handled yet.
+Aliases allow to assign a special command to a keyword. If this keyword is called as a command (first argument of the string), it will be replace by its aliased value before being executed.
+Be aware that all variables/commands even the vitals ones for the 42sh can be aliased, leading to an undefined behavior.
+
+To set aliases, please refer to the builtins alias/unalias.
 
 .SH READLINE
 The promting of the shell is using readline and its library. This allows the users to have an history of its commands.
 
 .SH SHELL BUILTIN COMMANDS
-not handled yet.
+Builtins command are intern commands of the 42sh. They are not forked and executed inside the shell.
+.TP
+.BR .\ filename\ [arguments]
+.TP
+.BR source\ filename\ [arguments]
+Read and execute commands from
+\fIfilename\fR
+in the current shell environment and return the exit status of the last command executed from 
+\fIfilename\fR.
+If filename does not contain a slash, filenames in PATH are used to find the directory containing filename. The file searched for in PATH need not be executable. If the sourcepath option to the shopt builtin command is turned off, the PATH is not searched. If any arguments are supplied, they become the positional parameters when 
+\fIfilename\fR
+is executed. Otherwise the positional parameters are unchanged.
+
+.TP
+.BR alias\ [\-p]\ [\fIname\fR[=\fIvalue\fR]\ ...]
+Alias without args or with -p will print the list of aliases.
+Alias with only \fIname\fR
+specified will look for an existating alias named as precised and print it if found.
+Alias with \fIname\fR
+and \fIvalue\fR
+will create a new alias.
+
+.TP
+.BR break\ [\fIn\fR]
+Break will exit within a for, while or until. If \fIn\fR
+is specified, it will exit on \fIn\fR
+levels.
+
+.TP
+.BR cd\ [\fIdir\fR]
+Change the current directory to the specified \fIdir\fR.
+If no \fIdir\fR
+is specified, it will change the current directory to HOME.
+If \fIdir\fR
+is '\-' it will change the directory to OLD_PWD.
+
+.TP
+.BR continue\ [\fIn\fR]
+Continue will force a for, while or until to iterate on the next step. If \fIn\fR
+is specified, it will continue on \fIn\fR
+levels.
+
+.TP
+.BR echo\ [\-neE]\ [\fIarg\fR\ ...]
+Print on the standard output (or its current file descriptor) the \fIargs\fR
+followed by a newline.
+If the \-n option is specified, no newline will be printed at the end of \fIargs\fR
+by echo.
+If the \-E option is specified (which is the default behavior), no escaped character will be interpreted in \fIargs\fR.
+If the \-e option is specified, escaped characters will be interpreted.
+
+.TP
+.BR exit\ [\fIn\fR]
+Force the shell to exit with a status of \fIn\fR.
+If \fIn\fR is not specified, it will exit with the exit status of the last command executed.
+
+.TP
+.BR export\ [\-fn]\ [\fIname\fR[=\fIword\fR]]\ ...
+.BR export\ \-p
+The specified \fname\fR are declared as variables and set for export in the environment. If no \fIname\fR
+is given or the \-p option is specified, a list of exported vriables will be printed.
+Otherwise, the value will be attributed, with a \fIvalue\fR or not.
+
+.TP
+.BR history\ [n]
+.TP
+.BR history\ \-c
+.TP
+.BR history\ \-r\ [filename]
+Without options, it will print the history.
+With an argument \fIn\fR,
+it will print the last \fIn\fR
+lines of the history.
+The \-c option cleans the history.
+The \-r option reads the content of filename and append it to the history.
+
+.TP
+.BR unalias\ [\-a]\ [\fIname\fR\ ...]
+Remove \fIname\fR
+if specified.
+If the \-a option is specified, all alias will be removed.
+
 
 .SH SEE ALSO
 bash(1)
@@ -307,7 +391,9 @@ Thomas LUPIN        (thomas.lupin@epita.fr)
 .SH BUG REPORT
 If you find a bug in 42sh, please report with addidionnals information such as environnement, compiler used, command use, date, version and a short description to:
         louis.holleville@epita.fr
-
+ | wc -l > nb
+cat nb
+rm nb
 You are not guaranted that someone answers someday.
 
 .SH BUGS
