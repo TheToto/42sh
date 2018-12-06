@@ -165,7 +165,7 @@ static int set_unset(char *str, int opt, int res)
         int next = is_option(str);
         if (next == 2)
         {
-            warnx(msg);
+            warnx("%s", msg);
             res = 1;
         }
         else if (next)
@@ -176,7 +176,7 @@ static int set_unset(char *str, int opt, int res)
         int next = is_option(str);
         if (next == 1)
         {
-            warnx(msg);
+            warnx("%s", msg);
             res = 1;
         }
         else if (next)
