@@ -28,8 +28,13 @@ static int get_opt(char *opt)
     return -1;
 }
 
-static int print_hist(int offset)
+static int print_hist(int offset, char *next)
 {
+    if (next)
+    {
+        warnx("history: too many arguments");
+        return 1;
+    }
     HIST_ENTRY **entry = history_list();
     if (offset >= history_length)
         offset = history_length;
@@ -51,13 +56,13 @@ int exec_history(char **str)
     if (!opt)
     {
         if (!str[1])
-            return print_hist(history_length);
+            return print_hist(history_length, NULL);
         if (!atoi(str[1]) && !is_zero(str[1]))
         {
             warnx("history: %s: numeric value required", str[1]);
             return 1;
         }
-        return print_hist(atoi(str[1]));
+        return print_hist(atoi(str[1]), str[2]);
     }
     else if (opt == 1)
     {
