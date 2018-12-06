@@ -39,7 +39,7 @@ static struct ast_node_case *create_ast_node_case_intern(char *value)
     new->nodes = asts;
     new->capacity = 8;
     new->size = 0;
-    new->value = value;
+    new->value = strdup(value);
     return new;
 }
 
@@ -115,6 +115,7 @@ void destroy_ast_node_case(struct ast_node_case *node)
     }
     free(node->cases);
     free(node->nodes);
+    free(node->value);
     free(node);
 }
 
