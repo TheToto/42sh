@@ -1,9 +1,9 @@
 /**
 *\file rule_if.c
 *\author thomas.lupin
-*\version 0.5
+*\version 0.8
 *\date 22-11-2018
-*\brief If rule function
+*If rule function
 */
 #include <err.h>
 #include <stdio.h>

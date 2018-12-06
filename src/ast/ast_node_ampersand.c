@@ -1,7 +1,7 @@
 /**
 * \file ast_node_ampersand.c
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 14-11-2018
 * \brief Management of ampersand(&)
 */
@@ -48,7 +48,8 @@ void destroy_ast_node_ampersand(struct ast_node_ampersand *node)
     free(node);
 }
 
-void print_ast_ampersand(struct ast_node_ampersand *node, size_t *num, FILE *fd)
+void print_ast_ampersand(struct ast_node_ampersand *node, size_t *num,
+                         FILE *fd)
 {
     fprintf(fd, "%lu [label=\"&\"];\n", *num);
     size_t save = *num;

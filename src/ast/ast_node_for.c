@@ -1,7 +1,7 @@
 /**
 * \file ast_node_for.c
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 14-11-2018
 * \brief Management of for
 */
@@ -44,8 +44,7 @@ struct ast_node *create_ast_node_for(char *value, struct ast_node *exec)
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node_for *under_node = create_ast_node_for_intern(value,
-            exec);
+    struct ast_node_for *under_node = create_ast_node_for_intern(value, exec);
     if (!under_node)
     {
         free(new);

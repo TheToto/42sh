@@ -95,7 +95,8 @@ void add_alias(struct aliases *alias, char *name, char *value)
     }
     if (alias->size == alias->capacity)
     {
-        char **new = realloc(alias->names, 2 * sizeof(char*) * alias->capacity);
+        char **new = realloc(alias->names, 2 * sizeof(char*)
+                             * alias->capacity);
         if (!new)
         {
             err(1, "cannot realloc new names array in struct aliases");

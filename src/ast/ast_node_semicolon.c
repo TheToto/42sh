@@ -1,7 +1,7 @@
 /**
 * \file ast_node_semicolon.c
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 14-11-2018
 * \brief Management of semicolons (;)
 */
@@ -47,7 +47,8 @@ void destroy_ast_node_semicolon(struct ast_node_semicolon *node)
     free(node);
 }
 
-void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num, FILE *fd)
+void print_ast_semicolon(struct ast_node_semicolon *node, size_t *num,
+                         FILE *fd)
 {
     fprintf(fd, "%lu [label= \";\"];\n", *num);
     size_t save = *num;

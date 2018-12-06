@@ -1,9 +1,9 @@
 /**
- * \file cd.c
- * Execute the cd builtin
- * \author sabrina.meng
- * \version 0.8
- * \date 30-11-2018
+* \file cd.c
+* Execute the cd builtin
+* \author sabrina.meng
+* \version 0.8
+* \date 30-11-2018
 **/
 
 #define _GNU_SOURCE

@@ -1,9 +1,9 @@
 /**
- * \file echo.c
- * Execute the echo builtin
- * \author sabrina.meng louis.holleville
- * \version 0.8
- * \date 02-12-2018
+* \file echo.c
+* Execute the echo builtin
+* \author sabrina.meng louis.holleville
+* \version 0.8
+* \date 02-12-2018
 **/
 
 #define _DEFAULT_SOURCE

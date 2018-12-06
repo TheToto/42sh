@@ -1,3 +1,10 @@
+/**
+* \file quote_handling.c
+* Handle quotes
+* \author Arthur Busuttil
+* \version 0.8
+* \date 06-12-2018
+**/
 #include <stdlib.h>
 #include <string.h>
 

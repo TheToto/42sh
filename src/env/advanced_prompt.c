@@ -22,7 +22,8 @@ static char *my_realloc(char *ptr, size_t *capacity)
     return new;
 }
 
-static char *get_d_time(char *new, size_t *size, size_t *capacity, char *format)
+static char *get_d_time(char *new, size_t *size, size_t *capacity,
+                        char *format)
 {
     time_t rawtime;
     struct tm *timeinfo;

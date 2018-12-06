@@ -1,9 +1,9 @@
 /**
- * \file source.c
- * Execute the source | . builtins
- * \authors sabrina.meng
- * \version 0.8
- * \date 03-12-2018
+* \file source.c
+* Execute the source | . builtins
+* \authors sabrina.meng
+* \version 0.8
+* \date 03-12-2018
 **/
 
 #include <stdlib.h>

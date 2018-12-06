@@ -142,7 +142,8 @@ static int get_next_qword(char *str, char **word_org)
             }
             update_qword(str, word, &i);
         }
-        else if (str[i] == '$' && (str[i + 1] == '(' || str[i + 1] == '{')&& !is_quoted)
+        else if (str[i] == '$' && (str[i + 1] == '(' || str[i + 1] == '{')
+                 && !is_quoted)
         {
             size_t in[3];
             in[1] = 1;
@@ -153,7 +154,8 @@ static int get_next_qword(char *str, char **word_org)
                 && ((first == '(' && in[1]) || (first == '{' && in[2])))
             {
                 if (!is_quoted)
-                    update_dollar_exception(str[i], str[i + 1], str[i + 1], in);
+                    update_dollar_exception(str[i], str[i + 1], str[i + 1],
+                                            in);
                 is_quoted = str[i] == '\\' && !is_quoted;
                 update_qword(str, word, &i);
             }

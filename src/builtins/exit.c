@@ -1,9 +1,9 @@
 /**
- * \file exit.c
- * Execute the exit builtin
- * \authors sabrina.meng
- * \version 0.8
- * \date 30-11-2018
+* \file exit.c
+* Execute the exit builtin
+* \authors sabrina.meng
+* \version 0.8
+* \date 30-11-2018
 **/
 
 #define _GNU_SOURCE

@@ -1,3 +1,10 @@
+/**
+* \file stack.c
+* Stack functions
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #include <stdlib.h>
 #include <err.h>
 #include <limits.h>

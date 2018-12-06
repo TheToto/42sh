@@ -1,9 +1,9 @@
 /**
 *\file rule_simple_command.c
 *\author thomas.lupin
-*\version 0.5
+*\version 0.8
 *\date 22-11-2018
-*\brief Simple command rule function
+*Simple command rule function
 */
 #include <err.h>
 #include <stdio.h>

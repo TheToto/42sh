@@ -1,9 +1,9 @@
 /**
- * \file exec_builtins.c
- * Execute the builtins
- * \authors sabrina.meng
- * \version 0.8
- * \date 29-11-2018
+* \file exec_builtins.c
+* Execute the builtins
+* \authors sabrina.meng
+* \version 0.8
+* \date 29-11-2018
 **/
 
 #define _GNU_SOURCE

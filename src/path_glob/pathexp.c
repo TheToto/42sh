@@ -1,3 +1,10 @@
+/**
+* \file pathexp.c
+* Handle the path expansion
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -51,7 +58,8 @@ static void explore_dir(char *cur_path, char *path, char *patern,
             char *alt_path = get_next_path(new_path, new_patern);
 
             strcat(new_cur_path, cur_path);
-            if (strlen(new_cur_path) && new_cur_path[strlen(new_cur_path) - 1] != '/')
+            if (strlen(new_cur_path)
+                && new_cur_path[strlen(new_cur_path) - 1] != '/')
                 strcat(new_cur_path, "/");
             strcat(new_cur_path, myfile->d_name);
 

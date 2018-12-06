@@ -1,7 +1,7 @@
 /**
 * \file ast_node_while.c
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 14-11-2018
 * \brief Management of whiles
 */

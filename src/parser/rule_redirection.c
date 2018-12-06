@@ -1,9 +1,9 @@
 /**
 *\file rule_redirection.c
 *\author thomas.lupin
-*\version 0.5
+*\version 0.8
 *\date 22-11-2018
-*\brief Redirection rule function
+*Redirection rule function
 */
 #define _GNU_SOURCE
 #include <err.h>

@@ -1,9 +1,9 @@
 /**
 *\file rule_pipe.c
 *\author thomas.lupin
-*\version 0.5
+*\version 0.8
 *\date 22-11-2018
-*\brief Pipe rule function
+*Pipe rule function
 */
 #include <err.h>
 #include <stdio.h>

@@ -1,3 +1,10 @@
+/**
+* \file queue.c
+* Queue functions
+* \author thomas.lupin
+* \version 0.8
+* \date 02-12-2018
+**/
 #define _GNU_SOURCE
 #include <stdlib.h>
 #include <string.h>

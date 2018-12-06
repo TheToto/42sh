@@ -1,3 +1,10 @@
+/**
+* \file quote_lexer.c
+* Handle quotes in the lexer
+* \author Arthur Busuttil
+* \version 0.8
+* \date 06-12-2018
+**/
 #include <stdlib.h>
 #include <string.h>
 #include <fnmatch.h>

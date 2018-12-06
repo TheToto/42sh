@@ -1,3 +1,10 @@
+/**
+* \file maths.c
+* Handle arithmetics
+* \author thomas.lupin
+* \version 0.8
+* \date 06-12-2018
+**/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -112,7 +119,8 @@ static long long int int_pow(long long int num, long long int exp)
     return res;
 }
 
-static long long int compute_op(long long int a, long long int b, long long int op)
+static long long int compute_op(long long int a, long long int b,
+                                long long int op)
 {
     switch (op)
     {

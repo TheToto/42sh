@@ -1,7 +1,7 @@
 /**
 * \file ast_node_case.c
 * \author louis.holleville
-* \version 0.3
+* \version 0.8
 * \date 14-11-2018
 * \brief Management of case
 */
@@ -128,7 +128,8 @@ void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
     for (size_t i = 0; i < node->size; i++)
     {
         *num += 1;
-        fprintf(fd, "%lu -> %lu[label= \"%s\"];\n", save, *num, node->cases[i]);
+        fprintf(fd, "%lu -> %lu[label= \"%s\"];\n", save, *num,
+                node->cases[i]);
         print_ast_node(node->nodes[i], num, fd);
     }
 }
