@@ -1,8 +1,14 @@
 export hello="world"
 export coucou="salut"
-export
+export | wc -l > nb
+cat nb
+
 export coucou="ola"
-export
+export | wc -l > nb
+cat nb
+
 export coucou=""
 export coucou
-export
+export| wc -l > nb
+cat nb
+rm nb

@@ -1,3 +1,5 @@
 hello=world
 export ola=$hello
-export
+export| wc -l > nb
+cat nb
+rm nb

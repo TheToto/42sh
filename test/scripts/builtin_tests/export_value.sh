@@ -1,2 +1,4 @@
 export coucou="Hello world"
-export
+export | wc -l > nb
+cat nb
+rm nb

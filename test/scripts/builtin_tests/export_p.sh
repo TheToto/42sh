@@ -1,2 +1,4 @@
 coucou="test"
-export -p
+export -p | wc -l > nb
+cat nb
+rm nb

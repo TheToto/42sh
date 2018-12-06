@@ -1,4 +1,6 @@
 export hello="world"
 export acu="faible"
 export ing1="superior"
-export
+export | wc -l > nb
+cat nb
+rm nb

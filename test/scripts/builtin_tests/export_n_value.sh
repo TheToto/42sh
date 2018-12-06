@@ -1,4 +1,3 @@
 export coucou="world"
 export -n coucou
-export coucou
-export
+export | grep coucou

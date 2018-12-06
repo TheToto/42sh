@@ -1,2 +1,2 @@
 export coucou=""
-export
+export | grep coucou
