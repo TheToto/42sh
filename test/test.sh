@@ -31,7 +31,7 @@ while test $# -gt 0; do
             fi
             while test $# -gt 0 -a "$1" != ";"; do
                 case $1 in
-                    ast | lexer | parser | option);;
+                    ast | lexer | parser | option | builtin | quote );;
                     * )
                         printf $RED"\nERROR: invalid category: $1\n\n"$RESET
                         exit 1;;
