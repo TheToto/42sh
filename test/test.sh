@@ -16,7 +16,7 @@ if test "$1" = "check"; then
     cd ..
 fi
 
-list_of_category="ast_tests lexer_tests parser_tests option_tests builtin_tests quote_tests"
+list_of_category="ast_tests lexer_tests parser_tests option_tests builtin_tests quote_tests arithmetic_tests"
 timeout="10000d"
 sanity=0
 

@@ -15,7 +15,7 @@
 * [x] Advanced tests
 * [x] Test suite options
 * [x] Setup timeout
-* [ ] Test until
+* [x] Test until
 
 # CODING STYLE
 * [ ] Indent DOXYGEN with 0 space
