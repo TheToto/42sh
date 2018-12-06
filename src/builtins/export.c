@@ -126,11 +126,19 @@ static int handle_p(char flags)
 
 static int handle_n(char **str)
 {
+    size_t count = 0;
     for (size_t i = 1; str[i]; i++)
     {
         if (str[i][0] != '-')
-            del_var(shell.var, str[i]);
+        {
+            count++;
+            char *var = get_var(shell.var, str[i]);
+            if (var)
+                add_var(shell.var, str[i], var, 3);
+        }
     }
+    if (count == 0)
+        return handle_p(0);
     return 0;
 }
 
@@ -167,7 +175,6 @@ static int handle_export(char **str)
                 add_var(shell.var, name, value, 1);
             else
                 add_var(shell.var, name, value, 2);
-            setenv(name, value, 1);
             free(name);
             free(value);
         }

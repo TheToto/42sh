@@ -197,7 +197,13 @@ void add_var(struct variables *var, char *name, char *value, char exported)
     {
         free(cur->value);
         cur->value = strdup(value);
-        cur->exported = exported;
+        if (cur->exported)
+            setenv(name, value, 1);
+        if (exported == 3)
+        {
+            unsetenv(name);
+            cur->exported = 0;
+        }
         return;
     }
     if (pos == var->capacity)
@@ -207,9 +213,12 @@ void add_var(struct variables *var, char *name, char *value, char exported)
         errx(1, "cannot malloc new word in add_var");
     new->name = strdup(name);
     new->exported = exported;
+    if (exported)
+        setenv(name, value, 1);
     new->value = strdup(value);
     var->size += 1;
     var->lib[pos] = new;
+
 }
 
 void destroy_var(struct variables *var)
