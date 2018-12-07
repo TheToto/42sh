@@ -56,7 +56,7 @@ static void set_up_reserved(void)
         add_var(shell.var, "HOME", getenv("HOME"), 0);
     shell.shopt_states = init_shoptlist();
     update_shellopts();
-    add_var(shell.var, "IFS", " \\t\\n", 0);
+    add_var(shell.var, "IFS", " \t\n", 0);
 }
 
 void set_up_var(char *args[])
@@ -334,15 +334,80 @@ void assign_prefix(struct variables *var, char *prefix)
     free(concat);
 }
 
+void check_string_at(char *in, struct queue *q)
+{
+    for (size_t i = 0; in[i];)
+    {
+        if (in[i] == '\'')
+        {
+            i++;
+            while (in[i] && in[i] != '\'')
+                i++;
+        }
+        else if (in[i] == '"')
+        {
+            i++;
+            while (in[i] && in[i] != '"')
+            {
+                if (in[i] == '$' && in[i + 1] == '@')
+                {
+                    char *dup = strdup(in);
+                    in[i + 1] = '1';
+                    in[i + 2] = '"';
+                    in[i + 3] = '\0';
+                    push_queue(q, in);
+                    char *last = get_var(shell.var, "#");
+                    if (!last)
+                        return;
+                    for (char k = '2'; k < last[0]; k++)
+                    {
+                        char *toadd = calloc(10, sizeof(char));
+                        sprintf(toadd, "\"$%c\"", k);
+                        push_queue(q, toadd);
+                        free(toadd);
+                    }
+                    dup[i - 1] = '"';
+                    dup[i + 1] = last[0];
+                    push_queue(q, &dup[i - 1]);
+                    free(dup);
+                    return;
+                }
+                else if (in[i + 1] && in[i] == '\\')
+                    i++;
+                i++;
+            }
+        }
+        else
+        {
+            i++;
+        }
+    }
+    push_queue(q, in);
+}
+
+char **check_at(char **input)
+{
+    struct queue *q = init_queue();
+    for (size_t i = 0; input[i]; i++)
+    {
+        check_string_at(input[i], q);
+        free(input[i]);
+    }
+    free(input);
+    return dump_queue(q);
+}
+
 char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     if (shell.shopt_states[EXP_ALIAS])
         replace_aliases(scmd);
+    char **ated = check_at(scmd->elements);
+    scmd->elements = ated;
     struct queue *qot = init_queue();
     size_t j = 0;
-    for (size_t i = 0; i < scmd->elt_size; i++, j++)
+    for (size_t i = 0; ated[i]; i++, j++)
     {
-        remove_quoting(scmd->elements[i], qot);
+        remove_quoting(ated[i], qot);
     }
     struct queue *res = init_queue();
     for (size_t i = 0; i < qot->size; i++)

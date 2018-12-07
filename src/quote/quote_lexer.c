@@ -118,6 +118,8 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
     char *word = calloc(1, len + 1);
     *str += (**str && (**str == '\\' || **str == '$'
                 || **str == '\"' || **str == '\'' || **str == '`'));
+    if (!**str)
+        return word;
     if (first == '\\')
         update_word(str, word, 0);
     else if (first == '$')
@@ -143,7 +145,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
             update_word(str, word, i);
         }
         *is_complete = **str != 0;
-        (*str)++;
+        (*str) += **str != 0;
     }
     *tok = get_tok_quote(first);
     return word;

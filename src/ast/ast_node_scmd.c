@@ -130,7 +130,7 @@ void add_element_scmd(struct ast_node *node, char *element)
 
 void destroy_ast_node_scmd(struct ast_node_scmd *node)
 {
-    for (size_t i = 0; i < node->elt_size; i++)
+    for (size_t i = 0; node->elements[i]; i++)
         free(node->elements[i]);
     for (size_t i = 0; i < node->pre_size; i++)
         free(node->prefix[i]);
@@ -145,7 +145,7 @@ void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
     for (size_t i = 0; i < node->pre_size; i++)
         fprintf(fd, "%s ", node->prefix[i]);
 
-    for (size_t i = 0; i < node->elt_size; i++)
+    for (size_t i = 0; node->elements[i]; i++)
         fprintf(fd, "%s ", node->elements[i]);
 
     fprintf(fd, "\"];\n");
