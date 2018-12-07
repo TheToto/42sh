@@ -7,12 +7,15 @@
 */
 
 #define _DEFAULT_SOURCE
+#define _GNU_SOURCE
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 
+#include "ast.h"
 #include "subshell.h"
+#include "execution.h"
 
 int core_exec_subshell(struct ast_node *sub_root, struct variables *var,
         char *output)
@@ -23,6 +26,6 @@ int core_exec_subshell(struct ast_node *sub_root, struct variables *var,
     int res = exec_node(sub_root, var);
 
     dup2(save, STDOUT_FILENO);
-    output = fd_to_str(fd);//is malloced
+    output = fd_to_string(fd);//is malloced
     return res;
 }

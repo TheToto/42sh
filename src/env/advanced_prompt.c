@@ -231,8 +231,8 @@ static char *customize_str2(char *new, char *old, size_t **arr)
         *size += 1;
         return new;
     default:
-        free(new);
-        return NULL;
+        new[*size] = old[*i];
+        *size += 1;
     }
     return new;
 }
