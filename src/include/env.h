@@ -192,3 +192,4 @@ void replace_aliases(struct ast_node_scmd *node);
 * @return return the string corretly expanded
 */
 char *advanced_prompt(char *psn);
+char **replace_var_for(struct ast_node_for *n_for);

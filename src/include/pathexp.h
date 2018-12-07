@@ -8,3 +8,4 @@
 #pragma once
 
 struct queue *expand_path(char *path);
+char *remove_backslash(char *old);

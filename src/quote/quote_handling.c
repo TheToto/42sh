@@ -44,7 +44,7 @@ static void handle_single_quote_in_dquote(char *res,
 static void handle_back_slash_in_dquote(char *res,
         struct token_list_quote *tl)
 {
-    strncat(res, "\\", 1);
+    strcat(res, "\\");
     if (*tl->str != '$' && *tl->str != '`' && *tl->str != '\n'
             && *tl->str != '"' && *tl->str != '\\')
         strcat(res, "\\");
@@ -68,7 +68,7 @@ static void remove_quoting_inside_dquoting(char **str_org)
         {
             for (int i = 0; tl->str[i]; i++)
             {
-                strncat(res, "\\", 1);
+                strcat(res, "\\");
                 strncat(res, tl->str + i, 1);
             }
         }
@@ -87,7 +87,7 @@ static void remove_quoting_inside_dquoting(char **str_org)
                     return;
                 for (int i = 0; tmp[i]; i++)
                 {
-                    strncat(res, "\\", 1);
+                    strcat(res, "\\");
                     strncat(res, tmp + i, 1);
                 }
             }
@@ -167,7 +167,7 @@ static int path_exp_handling_all(char **res, char *str, size_t *len)
     *res = check;
     while (*str)
     {
-        strncat(*res, "\\", 1);
+        strcat(*res, "\\");
         strncat(*res, str, 1);
         str++;
     }

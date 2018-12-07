@@ -101,8 +101,12 @@ static char *expand_tilde(char *path, char *cur_path, char *save)
     }
     else if (path[0] == '~' && path[1] == '-' && (path[2] == '/' || !path[2]))
     {
-        strcat(cur_path, get_var(shell.var, "OLDPWD"));
-        path += 2;
+        char *oldpwd = get_var(shell.var, "OLDPWD");
+        if (oldpwd && strlen(oldpwd))
+        {
+            strcat(cur_path, get_var(shell.var, "OLDPWD"));
+            path += 2;
+        }
     }
     if (*path == '/')
     {
@@ -113,6 +117,22 @@ static char *expand_tilde(char *path, char *cur_path, char *save)
     strcat(save, cur_path);
     strcat(save, path);
     return path;
+}
+
+char *remove_backslash(char *old)
+{
+    if (!old)
+        return NULL;
+    char *new = calloc(strlen(old) + 1, sizeof(char));
+    size_t j = 0;
+    for (size_t i = 0; old[i]; i++, j++)
+    {
+        if (old[i] == '\\')
+            i++;
+        new[j] = old[i];
+    }
+    free(old);
+    return new;
 }
 
 struct queue *expand_path(char *path)
@@ -131,7 +151,10 @@ struct queue *expand_path(char *path)
         sort_queue(q);
     }
     if (q->size == 0)
+    {
+        save = remove_backslash(save);
         push_queue(q, save);
+    }
 
     free(cur_path);
     free(save);

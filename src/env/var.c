@@ -352,3 +352,21 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
     destroy_queue(qot);
     return dump_queue(res);
 }
+
+char **replace_var_for(struct ast_node_for *n_for)
+{
+    struct queue *qot = init_queue();
+    size_t j = 0;
+    for (size_t i = 0; i < n_for->size; i++, j++)
+    {
+        remove_quoting(n_for->values[i], qot);
+    }
+    struct queue *res = init_queue();
+    for (size_t i = 0; i < qot->size; i++)
+    {
+        struct queue *tmp = expand_path(qot->queue[i]);
+        fusion_queue(res, tmp);
+    }
+    destroy_queue(qot);
+    return dump_queue(res);
+}

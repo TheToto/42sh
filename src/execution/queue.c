@@ -12,6 +12,7 @@
 
 #include "queue.h"
 #include "quote_lexer.h"
+#include "pathexp.h"
 
 
 struct queue *init_queue(void)
@@ -127,6 +128,7 @@ char *concat_quote(char *value)
     char **dump = dump_queue(q);
     for (size_t i = 0; dump[i]; i++)
     {
+        dump[i] = remove_backslash(dump[i]);
         strcat(res, dump[i]);
         if (dump[i + 1])
             strcat(res, " ");

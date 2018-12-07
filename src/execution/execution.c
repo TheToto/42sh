@@ -66,11 +66,10 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
     char *name = n_for->value;
     int res = 0;
     shell.loop += 1;
-    for (size_t i = 0; i < n_for->size; i++)
+    char **array = replace_var_for(n_for);
+    for (size_t i = 0; array[i]; i++)
     {
-        char *cur = concat_quote(n_for->values[i]);
-        add_var(var, name, cur, 0);
-        free(cur);
+        add_var(var, name, array[i], 0);
         res = exec_node(n_for->exec, var);
         if (shell.n_continue == -1 || shell.n_break == -1)
             break;
@@ -90,6 +89,9 @@ int exec_for(struct ast_node_for *n_for, struct variables *var)
         }
     }
     shell.loop -= 1;
+    for (size_t i = 0; array[i]; i++)
+        free(array[i]);
+    free(array);
     return res;
 }
 
