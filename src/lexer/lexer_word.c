@@ -121,7 +121,7 @@ static int get_next_qword(char *str, char **word_org)
     int i = 0;
     enum token_type tok = WORD;
     int is_quoted = 0;
-    while (*cur && (tok >= NAME || tok == 33))
+    while (str[i] && (tok >= NAME || tok == 33))
     {
         is_quoted = *cur == '\\' && !is_quoted;
         if (str[i] == '\'' && !is_quoted)
@@ -129,7 +129,8 @@ static int get_next_qword(char *str, char **word_org)
             update_qword(str, word, &i);
             while (str[i] && (str[i] != '\''))
                 update_qword(str, word, &i);
-            update_qword(str, word, &i);
+            if (str[i])
+                update_qword(str, word, &i);
         }
         else if ((str[i] == '\"' || str[i] == '`') && !is_quoted)
         {
@@ -140,7 +141,8 @@ static int get_next_qword(char *str, char **word_org)
                 is_quoted = str[i] == '\\' && !is_quoted;
                 update_qword(str, word, &i);
             }
-            update_qword(str, word, &i);
+            if (str[i])
+                update_qword(str, word, &i);
         }
         else if (str[i] == '$' && (str[i + 1] == '(' || str[i + 1] == '{')
                 && !is_quoted)
@@ -162,6 +164,8 @@ static int get_next_qword(char *str, char **word_org)
         }
         else
             update_qword(str, word, &i);
+        if (!str[i])
+            break;
         cur[0] = str[i];
         tok = get_token_type(cur);
     }
