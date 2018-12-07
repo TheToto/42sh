@@ -19,20 +19,21 @@
 
 int exec_exit(char **str)
 {
-    size_t n = get_args(str);
-    char *arg = str[1];
-    int val;
-    if (!n)
+    int val = 0;
+    if (!str[1])
         val = atoi(get_var(shell.var, "?"));
     else
     {
-        val = atoi(arg) % 255;
-        if (!val && !is_zero(arg))
+        val = atoi(str[1]) % 255;
+        if (!val && !is_zero(str[1]))
+        {
+            warnx("exit: %s: numeric argument required", str[1]);
             val = 2;
-        else if (n != 1)
+        }
+        else if (str[2])
         {
             warnx("exit : too many arguments");
-            return 0;
+            return 1;
         }
     }
     exit(val);
