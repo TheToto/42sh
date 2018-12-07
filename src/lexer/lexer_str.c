@@ -68,6 +68,8 @@ static int get_next_quoted(char *str)
                 i++;
             }
         }
+        if (!str[i])
+            break;
     }
     return i;
 }
