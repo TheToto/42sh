@@ -14,14 +14,15 @@
 
 #include "subshell.h"
 
-
+int core_exec_subshell(struct ast_node *sub_root, struct variables *var,
+        char *output)
 {
     int fd = open("/tmp", O_TMPFILE | O_RDWR);
     int save = dup(STDOUT_FILENO);
     dup2(fd, STDOUT_FILENO);
-    //execution
+    int res = exec_node(sub_root, var);
 
     dup2(save, STDOUT_FILENO);
-    char *my_str = fd_to_str(fd);//is malloced
-    close(fd);
+    output = fd_to_str(fd);//is malloced
+    return res;
 }
