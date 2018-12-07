@@ -42,8 +42,10 @@ void destroy_lexer_quote(struct lexer_quote *l)
     free(l);
 }
 
-static int get_dollar(char **str_org, int *is_quoted, int *is_sub)
+static int get_dollar(char **str_org, int *is_quoted, int *is_sub
+    , int *is_complete)
 {
+    *is_complete = 1;
     char *str = *str_org;
     char tmp[2];
     tmp[0] = *str;
@@ -64,6 +66,7 @@ static int get_dollar(char **str_org, int *is_quoted, int *is_sub)
             lvl += (*str == first);
             lvl -= (*str == target);
         }
+        *is_complete = str[i] != '0';
     }
     else
     {
@@ -107,7 +110,8 @@ static void update_word(char **str, char *word, int index)
     (*str)++;
 }
 
-static char *get_next_word(char **str, enum token_quote *tok, int *is_sub)
+static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
+    int *is_complete)
 {
     char first = **str;
     size_t len = strlen(*str);
@@ -119,7 +123,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub)
     else if (first == '$')
     {
         int is_quoted = 0;
-        int res = get_dollar(str, &is_quoted, is_sub);
+        int res = get_dollar(str, &is_quoted, is_sub, is_complete);
         strncat(word, *str, res - is_quoted);
         (*str) += res;
     }
@@ -138,6 +142,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub)
             is_quoted = !is_quoted && *(*str) == '\\';
             update_word(str, word, i);
         }
+        *is_complete = **str != 0;
         (*str)++;
     }
     *tok = get_tok_quote(first);
@@ -152,7 +157,8 @@ struct lexer_quote *lexer_quote(char *str)
     struct token_list_quote *tl = l->tl;
     while (*str)
     {
-        char *str_new = get_next_word(&str, &tl->tok, &tl->is_sub);
+        char *str_new = get_next_word(&str, &tl->tok, &tl->is_sub
+            , &tl->is_complete);
         tl->str = str_new;
         tl->next = calloc(1, sizeof(*tl->next));
         tl = tl->next;

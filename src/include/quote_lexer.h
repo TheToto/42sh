@@ -30,6 +30,7 @@ struct token_list_quote
     enum token_quote tok;
     struct token_list_quote *next;
     int is_sub;
+    int is_complete;
 };
 
 ///Lexer used for quotes processing

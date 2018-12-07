@@ -38,7 +38,8 @@ static void handle_single_quote_in_dquote(char *res,
     strcat(res, "\\'");
     remove_quoting_inside_dquoting(&tl->str);
     strcat(res, tl->str);
-    strcat(res, "\\'");
+    if (tl->is_complete)
+        strcat(res, "\\'");
 }
 
 static void handle_back_slash_in_dquote(char *res,
