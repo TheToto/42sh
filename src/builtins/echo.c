@@ -72,9 +72,6 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
     case 'e':
         to_print[*new] = 27;
         break;
-    case 'E':
-        to_print[*new] = 27;
-        break;
     case 'f':
         to_print[*new] = 12;
         break;
@@ -102,7 +99,7 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
 static void my_printf(char *to_print, char **str, size_t i)
 {
     printf("%s", to_print);
-    if (str[i + 1] && not_opt(str[i + 1]))
+    if (str[i + 1])
         printf(" ");
     free(to_print);
 }
@@ -111,9 +108,12 @@ int echo(char **str)
 {
     char flags = get_flags(str);
     flags = (((flags & 4) == 4) && ((flags & 2) == 2)) ? flags - 2 : flags;
+    int notopt = 1;
     for (size_t i = 1; str[i]; i++)
     {
-        if (not_opt(str[i]))
+        if (!notopt)
+            notopt = not_opt(str[i]);
+        if (notopt)
         {
             char *to_print = calloc(strlen(str[i]) + 2, sizeof(char));
             size_t old = 0;

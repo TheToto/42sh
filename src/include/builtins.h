@@ -1,7 +1,7 @@
 /**
 * \file builtins.h
 * Execute the builtins
-* \authors sabrina.meng louis.hollevill
+* \authors sabrina.meng louis.holleville
 * \version 0.8
 * \date 30-11-2018
 **/
