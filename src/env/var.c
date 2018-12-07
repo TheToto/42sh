@@ -339,6 +339,7 @@ void check_string_at(char *in, struct queue *q)
     {
         if (in[i] == '\'')
         {
+            i++;
             while (in[i] && in[i] != '\'')
                 i++;
         }
@@ -360,7 +361,7 @@ void check_string_at(char *in, struct queue *q)
                     for (char k = '2'; k < last[0]; k++)
                     {
                         char *toadd = calloc(10, sizeof(char));
-                        sprintf(toadd, "\"%c\"", k);
+                        sprintf(toadd, "\"$%c\"", k);
                         push_queue(q, toadd);
                         free(toadd);
                     }
