@@ -54,8 +54,8 @@ static void handle_back_slash_in_dquote(char *res,
 static void remove_quoting_inside_dquoting(char **str_org)
 {
     char *str = *str_org;
-    size_t len = strlen(str);
-    char *res = calloc(1, 2 * len + 1);
+    size_t len = strlen(str) * 2 + 1;
+    char *res = calloc(len , 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
         return;
@@ -119,6 +119,8 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
             tmp++;
         while (*tmp && *tmp != ' ' && *tmp != '\t' && *tmp != '\n')
         {
+            if (*tmp == '\\')
+                strcat(*res, "\\");
             strncat(*res, tmp, 1);
             tmp++;
         }
@@ -178,7 +180,7 @@ void remove_quoting(char *str, struct queue *q)
 {
     size_t len = strlen(str);
     int has_not_dollar = 0;
-    char *res = calloc(1, len + 1);
+    char *res = calloc(1, 2 * len + 1);
     struct lexer_quote *l = lexer_quote(str);
     if (!l)
         return;
