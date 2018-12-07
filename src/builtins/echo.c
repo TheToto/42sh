@@ -108,12 +108,12 @@ int echo(char **str)
 {
     char flags = get_flags(str);
     flags = (((flags & 4) == 4) && ((flags & 2) == 2)) ? flags - 2 : flags;
-    int notopt = 1;
+    int in_opt = 1;
     for (size_t i = 1; str[i]; i++)
     {
-        if (!notopt)
-            notopt = not_opt(str[i]);
-        if (notopt)
+        if (in_opt)
+            in_opt = !not_opt(str[i]);
+        if (!in_opt)
         {
             char *to_print = calloc(strlen(str[i]) + 2, sizeof(char));
             size_t old = 0;
