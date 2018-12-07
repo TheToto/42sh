@@ -79,7 +79,11 @@ static void remove_quoting_inside_dquoting(char **str_org)
         {
             char *tmp = NULL;
             if (!tl->is_sub)
+            {
                 tmp = get_var(shell.var, tl->str);
+                if (!*tl->str)
+                    tmp = "$";
+            }
             else
                 tmp = get_sub_and_maths(tl->str);
             if (tmp)
@@ -135,7 +139,11 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
     if (tl->tok == DOLLAR)
     {
         if (!tl->is_sub)
+        {
             tmp = get_var(shell.var, tl->str);
+            if (!*tl->str)
+                tmp = "$";
+        }
         else
             tmp = get_sub_and_maths(tl->str);
     }
