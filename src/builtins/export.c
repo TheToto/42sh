@@ -21,7 +21,7 @@ extern char **environ;
 static char err_param(char *str)
 {
     warnx("'%s' is not a valid identifier", str);
-    warnx("usage: export[-n] [name[=value] ...] or export -p");
+    warnx("usage: export[-n] [name[=value] ] or export -p");
     return -1;
 }
 
