@@ -20,9 +20,11 @@ static void get_next_subshell(char *str, int *cur)
     if (!str[i + 1] || !str[i + 2])
         return;
     i += 2;
-    while (str[i] != ')' && lvl)
+    int is_quoted = 0;
+    while (lvl)
     {
-        lvl += (str[i] == '(') ? 1 : (str[i] == ')') ? -1 : 0;
+        lvl += !is_quoted && (str[i] == '(') ? 1 : (str[i] == ')') ? -1 : 0;
+        is_quoted = str[i] == '\\' && !is_quoted;
         i++;
     }
     *cur = i;
