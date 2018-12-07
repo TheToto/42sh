@@ -25,6 +25,7 @@
 #include "maths.h"
 #include "queue.h"
 #include "pathexp.h"
+#include "subshell.h"
 
 extern char **environ;
 
@@ -282,7 +283,7 @@ char *get_sub_and_maths(char *name)
 {
     if (*name && !fnmatch("(*(*))", name, FNM_EXTMATCH))
         return get_maths(name);
-    else if (*name)
+    else if (*name && !fnmatch("(*)", name, FNM_EXTMATCH))
     {
         return NULL;
     }

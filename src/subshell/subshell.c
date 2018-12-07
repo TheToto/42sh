@@ -17,15 +17,21 @@
 #include "subshell.h"
 #include "execution.h"
 
-int core_exec_subshell(struct ast_node *sub_root, struct variables *var,
-        char *output)
+static int lauch_subshell()
+{
+
+}
+
+static int redirect_subshell(char *input, char *output)
 {
     int fd = open("/tmp", O_TMPFILE | O_RDWR);
     int save = dup(STDOUT_FILENO);
     dup2(fd, STDOUT_FILENO);
-    int res = exec_node(sub_root, var);
+    int res = lauch_subshell;
 
     dup2(save, STDOUT_FILENO);
     output = fd_to_string(fd);//is malloced
     return res;
 }
+
+
