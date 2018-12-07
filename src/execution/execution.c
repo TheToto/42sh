@@ -155,10 +155,9 @@ int exec_main(char *str, int is_print, struct variables *library)
     struct token_list *copy = l->token_list;
     struct ast_node *ast = rule_input(&copy);
     shell.ast = ast;
-
+    lexer_destroy(shell.lexer);
     if (!ast)
     {
-        lexer_destroy(shell.lexer);
         warnx("Error in parsing");
         if (shell.type == S_OPTION)
             return 1;
@@ -172,7 +171,6 @@ int exec_main(char *str, int is_print, struct variables *library)
 
     shell.ast = NULL;
     destroy_ast(ast);
-    lexer_destroy(shell.lexer);
 
     return res;
 }
