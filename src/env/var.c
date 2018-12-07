@@ -55,7 +55,7 @@ static void set_up_reserved(void)
         add_var(shell.var, "HOME", getenv("HOME"), 0);
     shell.shopt_states = init_shoptlist();
     update_shellopts();
-    add_var(shell.var, "IFS", " \\t\\n", 0);
+    add_var(shell.var, "IFS", " \t\n", 0);
 }
 
 void set_up_var(char *args[])
