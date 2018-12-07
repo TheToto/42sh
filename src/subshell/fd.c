@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <err.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static char *my_recalloc(char *p, size_t *capacity, size_t *size)
 {
@@ -31,6 +32,9 @@ char *fd_to_string(int fd)
     size_t size = 0;
     size_t capacity = 255;
     char *res = calloc(256, sizeof(char));
+    if (!res)
+        err(1, "subshell: fd_to_string: cannot calloc");
+    lseek(fd, 0, SEEK_SET);
     char tmp[2] =
     {
         0
@@ -41,5 +45,6 @@ char *fd_to_string(int fd)
         if (size == capacity)
             res = my_recalloc(res, &capacity, &size);
     }
+    close(fd);
     return res;
 }
