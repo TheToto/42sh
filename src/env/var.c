@@ -351,14 +351,18 @@ void check_string_at(char *in, struct queue *q)
             {
                 if (in[i] == '$' && in[i + 1] == '@')
                 {
+                    //si # 0 ou 1 do nothing
+                    char *last = get_var(shell.var, "#");
+                    if (!last || last[0] == '0' || last[0] == '1')
+                    {
+                        push_queue(q, in);
+                        return;
+                    }
                     char *dup = strdup(in);
                     in[i + 1] = '1';
                     in[i + 2] = '"';
                     in[i + 3] = '\0';
                     push_queue(q, in);
-                    char *last = get_var(shell.var, "#");
-                    if (!last)
-                        return;
                     for (char k = '2'; k < last[0]; k++)
                     {
                         char *toadd = calloc(10, sizeof(char));
