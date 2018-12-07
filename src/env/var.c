@@ -286,9 +286,13 @@ char *get_var(struct variables *var, char *name)
     }
     //if (*name && *name == '(')
 #include <fnmatch.h>
-    if (!fnmatch("(*(*))", name, FNM_EXTMATCH))
+    if (*name && !fnmatch("(*(*))", name, FNM_EXTMATCH))
         return get_maths(name);
-    //if (*name && *name == '(')
+    else if (*name && fnmatch("*([^ ])", name, FNM_EXTMATCH))
+    {
+        printf("SUBSHELL\n");
+        return NULL;
+    }
     //    return exec_subshell(name);
 
 

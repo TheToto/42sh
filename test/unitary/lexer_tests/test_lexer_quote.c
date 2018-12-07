@@ -33,7 +33,50 @@ void test_quote_lexer_dollar(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("var", tl->str);
+    TEST_ASSERT_NOT_NULL(tl->next);
+    TEST_ASSERT_EQUAL_INT(0, tl->tok);
+    tl = tl->next;
+    TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_NULL(tl->str);
+    TEST_ASSERT_NULL(tl->next);
+    TEST_ASSERT_EQUAL_INT(0, tl->tok);
+    destroy_lexer_quote(l);
+    printf("END\n");
+}
+
+void test_quote_lexer_arithmetic(void)
+{
+    printf("-Testing: arithmetic expension-\n");
+    printf("BEGINNING");
+    struct lexer_quote *l = lexer_quote("$(( 1 +1 ))");
+    TEST_ASSERT_NOT_NULL(l);
+    struct token_list_quote *tl = l->tl;
+    TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(1, tl->is_sub);
+    TEST_ASSERT_EQUAL_STRING("( 1 +1 )", tl->str);
+    TEST_ASSERT_NOT_NULL(tl->next);
+    TEST_ASSERT_EQUAL_INT(0, tl->tok);
+    tl = tl->next;
+    TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_NULL(tl->str);
+    TEST_ASSERT_NULL(tl->next);
+    TEST_ASSERT_EQUAL_INT(0, tl->tok);
+    destroy_lexer_quote(l);
+    printf("END\n");
+}
+
+void test_quote_lexer_subshell(void)
+{
+    printf("-Testing: arithmetic expension-\n");
+    printf("BEGINNING");
+    struct lexer_quote *l = lexer_quote("$(echo test)");
+    TEST_ASSERT_NOT_NULL(l);
+    struct token_list_quote *tl = l->tl;
+    TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(1, tl->is_sub);
+    TEST_ASSERT_EQUAL_STRING("echo test", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(0, tl->tok);
     tl = tl->next;
@@ -53,6 +96,7 @@ void test_double_quote(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("hello goodbye", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(1, tl->tok);
@@ -73,6 +117,7 @@ void test_back_quote(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("echo 1", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(2, tl->tok);
@@ -93,6 +138,7 @@ void test_simple_quote(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("hi bye", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(3, tl->tok);
@@ -113,6 +159,7 @@ void test_back_slash(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("n", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(4, tl->tok);
@@ -133,6 +180,7 @@ void test_word(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("word_normal", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(5, tl->tok);
@@ -154,36 +202,43 @@ void test_all_collapsed(void)
     TEST_ASSERT_NOT_NULL(l);
     struct token_list_quote *tl = l->tl;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("word", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(5, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("dollar", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(0, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("double quote", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(1, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("single quote", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(3, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("back quote", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(2, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_EQUAL_STRING("n", tl->str);
     TEST_ASSERT_NOT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(4, tl->tok);
     tl = tl->next;
     TEST_ASSERT_NOT_NULL(tl);
+    TEST_ASSERT_EQUAL_INT(0, tl->is_sub);
     TEST_ASSERT_NULL(tl->str);
     TEST_ASSERT_NULL(tl->next);
     TEST_ASSERT_EQUAL_INT(0, tl->tok);
