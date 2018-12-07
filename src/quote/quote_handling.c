@@ -114,7 +114,12 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
 {
     char *tmp = "";
     if (tl->tok == DOLLAR)
-        tmp = get_var(shell.var, tl->str);
+    {
+        if (!tl->is_sub)
+            tmp = get_var(shell.var, tl->str);
+        else
+            tmp = get_sub_and_maths(tl->str);
+    }
     else
     {
         remove_quoting_inside_dquoting(&tl->str);

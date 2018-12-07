@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <fnmatch.h>
 
 #include "builtins.h"
 #include "env.h"
@@ -277,6 +278,17 @@ void del_var(struct variables *var, char *name)
     unsetenv(name);
 }
 
+char *get_sub_and_maths(char *name)
+{
+    if (*name && !fnmatch("(*(*))", name, FNM_EXTMATCH))
+        return get_maths(name);
+    else if (*name)
+    {
+        return NULL;
+    }
+    return NULL;
+}
+
 char *get_var(struct variables *var, char *name)
 {
     if (!var || !name)
@@ -284,17 +296,6 @@ char *get_var(struct variables *var, char *name)
         warnx("cannot get_var: no var or name provided");
         return NULL;
     }
-    //if (*name && *name == '(')
-#include <fnmatch.h>
-    if (*name && !fnmatch("(*(*))", name, FNM_EXTMATCH))
-        return get_maths(name);
-    else if (*name && fnmatch("*([^ ])", name, FNM_EXTMATCH))
-    {
-        printf("SUBSHELL\n");
-        return NULL;
-    }
-    //    return exec_subshell(name);
-
 
     struct var *cur;
     size_t i = 0;

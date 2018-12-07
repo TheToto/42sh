@@ -95,6 +95,14 @@ void destroy_var(struct variables *var);
 void del_var(struct variables *var, char *name);
 
 /**
+* @fn get_sub_and_maths
+* Execute expression in subshell or in math.
+* @param exp The expression.
+* @return NULL if not found, its value otherwise
+*/
+char *get_sub_and_maths(char *exp);
+
+/**
 * @fn get_var
 * Look for the variable with name \a name in the array \var
 * @param var library to look in

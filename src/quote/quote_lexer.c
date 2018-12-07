@@ -53,7 +53,7 @@ static int get_dollar(char **str_org, int *is_quoted, int *is_sub)
         return 1;
     if (*str == '(' || *str == '{')
     {
-        *is_sub = 1;
+        *is_sub = *str == '(';
         char first = *str;
         char target = (*str++ == '(') ? ')' : '}';
         *is_quoted = 1;
