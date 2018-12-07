@@ -119,7 +119,10 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
     *str += (**str && (**str == '\\' || **str == '$'
                 || **str == '\"' || **str == '\'' || **str == '`'));
     if (!**str)
+    {
+        *tok = get_tok_quote(first);
         return word;
+    }
     if (first == '\\')
         update_word(str, word, 0);
     else if (first == '$')
