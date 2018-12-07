@@ -130,6 +130,7 @@ struct ast_node *rule_case(struct token_list **tok)
     if (TOK_TYPE(tok) != IN)
     {
         warnx("Need a IN keyword in case statement");
+        free(comp);
         return NULL;
     }
     NEXT_TOK(tok);
