@@ -21,7 +21,7 @@ static void get_next_subshell(char *str, int *cur)
         return;
     i += 2;
     int is_quoted = 0;
-    while (lvl)
+    while (str[i] && lvl)
     {
         lvl += !is_quoted && (str[i] == '(') ? 1 : (str[i] == ')') ? -1 : 0;
         is_quoted = str[i] == '\\' && !is_quoted;
