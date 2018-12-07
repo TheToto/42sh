@@ -1,6 +1,6 @@
 /**
 * \file source.c
-* Execute the source | . builtins
+* Execute the source | '.' builtins
 * \authors sabrina.meng
 * \version 0.8
 * \date 03-12-2018

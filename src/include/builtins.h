@@ -78,7 +78,7 @@ int echo(char **str);
 int exec_export(char **str);
 
 /**
-* Execute the source | . builtins
+* Execute the source | '.' builtins
 * \param char **str  The string to be parsed
 * \return Return 2 if no filename is given,
 * 1 if filename doesn't exist, else 0
