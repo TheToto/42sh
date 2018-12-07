@@ -336,7 +336,7 @@ void assign_prefix(struct variables *var, char *prefix)
 
 void check_string_at(char *in, struct queue *q)
 {
-    for (size_t i = 0; in[i];)
+    for (size_t i = 0; in && in[i];)
     {
         if (in[i] == '\'')
         {
@@ -405,13 +405,12 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
 {
     if (shell.shopt_states[EXP_ALIAS])
         replace_aliases(scmd);
-    char **ated = check_at(scmd->elements);
-    scmd->elements = ated;
+    scmd->elements = check_at(scmd->elements);
     struct queue *qot = init_queue();
     size_t j = 0;
-    for (size_t i = 0; ated[i]; i++, j++)
+    for (size_t i = 0; scmd->elements[i]; i++, j++)
     {
-        remove_quoting(ated[i], qot);
+        remove_quoting(scmd->elements[i], qot);
     }
     struct queue *res = init_queue();
     for (size_t i = 0; i < qot->size; i++)
@@ -425,6 +424,7 @@ char **replace_var_scmd(struct ast_node_scmd *scmd)
 
 char **replace_var_for(struct ast_node_for *n_for)
 {
+    n_for->values = check_at(n_for->values);
     struct queue *qot = init_queue();
     size_t j = 0;
     for (size_t i = 0; i < n_for->size; i++, j++)

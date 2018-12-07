@@ -24,7 +24,7 @@ static struct ast_node_for *create_ast_node_for_intern(char *value,
         warnx("cannot malloc in ast_node_for_intern");
         return NULL;
     }
-    char **arr= malloc(8 * sizeof(char*));
+    char **arr= calloc(8, sizeof(char*));
     if (!arr)
     {
         free(new);
@@ -68,7 +68,7 @@ void add_value_for(struct ast_node *node, char *value)
         return;
     }
     struct ast_node_for *cur = node->son;
-    if (cur->size == cur->capacity)
+    if (cur->size == cur->capacity - 1)
     {
         char **new = realloc(cur->values, 2 * cur->capacity * sizeof(char*));
         if (!new)
@@ -80,13 +80,14 @@ void add_value_for(struct ast_node *node, char *value)
         cur->capacity *= 2;
     }
     cur->values[cur->size] = strdup(value);
+    cur->values[cur->size + 1] = NULL;
     cur->size += 1;
 }
 
 void destroy_ast_node_for(struct ast_node_for *node)
 {
     free(node->value);
-    for (size_t i = 0; i < node->size; i++)
+    for (size_t i = 0; node->values[i]; i++)
         free(node->values[i]);
     destroy_ast(node->exec);
     free(node->values);
