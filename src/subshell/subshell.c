@@ -34,7 +34,6 @@ static void lauch_subshell(char *input)
     }
     else if (pid == 0)
     {
-        my_abort();
         if (shell.ast)
             destroy_ast(shell.ast);
         if (shell.var)
@@ -43,6 +42,7 @@ static void lauch_subshell(char *input)
             lexer_destroy(shell.lexer);
         if (shell.buf)
             free(shell.buf);
+        shell.buf = input;
         shell.type = S_OPTION;
         struct variables *lib = init_var();
         int res = exec_main(input, 0, lib);
