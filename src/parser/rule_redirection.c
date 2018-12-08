@@ -141,8 +141,7 @@ static int heredoc_prompt(struct ast_node *redir, char *word)
 {
     while (1)
     {
-        fprintf(stderr, advanced_prompt("PS2"));
-        char *buf = readline("");
+        char *buf = readline(get_var(shell.var, "PS2"));
         if (!strcmp(word, buf))
         {
             free(buf);

@@ -67,16 +67,13 @@ static void catch_ctrlc(int signo)
         puts("");
         rl_on_new_line();
         rl_replace_line("", 0);
-        // ABORT PS2
-        fprintf(stderr, "%s", advanced_prompt("PS1"));
         rl_redisplay();
     }
 }
 
 struct token_list *show_ps2(void)
 {
-    fprintf(stderr, advanced_prompt("PS2"));
-    char *buf = readline("");
+    char *buf = readline(get_var(shell.var, "PS2"));
     lexer_destroy(shell.lexer);
     struct lexer *l = lexer(buf);
     free(buf);
@@ -85,8 +82,7 @@ struct token_list *show_ps2(void)
 
 char *quote_ps2(void)
 {
-    fprintf(stderr, advanced_prompt("PS2"));
-    char *buf = readline("");
+    char *buf = readline(advanced_prompt("PS2"));
     size_t size_buf = strlen(shell.buf);
     char *tmp = calloc(size_buf + strlen(buf) + 2, sizeof(char));
     strcat(tmp, shell.buf);
@@ -116,8 +112,7 @@ int show_prompt(int norc, int is_print)
 
     while (1)
     {
-        fprintf(stderr, "%s", advanced_prompt("PS1"));
-        char *buf = readline("");
+        char *buf = readline(advanced_prompt("PS1"));
         if (!buf)
             exec_exit(NULL);
         if (*buf)
