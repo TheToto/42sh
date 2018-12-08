@@ -7,6 +7,7 @@
 **/
 #include <stdlib.h>
 #include <string.h>
+#include <fnmatch.h>
 
 #include "quote_lexer.h"
 #include "env.h"
@@ -15,7 +16,7 @@
 
 struct shell shell;
 
-static void remove_quoting_inside_dquoting(char **str_org);
+static void remove_quoting_inside_dquoting(char **str_org, struct queue *q);
 
 static int handle_realloc(char **res, char *tmp, size_t *len, int concat)
 {
@@ -33,10 +34,10 @@ static int handle_realloc(char **res, char *tmp, size_t *len, int concat)
 }
 
 static void handle_single_quote_in_dquote(char *res,
-        struct token_list_quote *tl)
+        struct token_list_quote *tl, struct queue *q)
 {
     strcat(res, "\\'");
-    remove_quoting_inside_dquoting(&tl->str);
+    remove_quoting_inside_dquoting(&tl->str, q);
     strcat(res, tl->str);
     if (tl->is_complete)
         strcat(res, "\\'");
@@ -50,58 +51,6 @@ static void handle_back_slash_in_dquote(char *res,
             && *tl->str != '"' && *tl->str != '\\')
         strcat(res, "\\");
     strcat(res, tl->str);
-}
-
-static void remove_quoting_inside_dquoting(char **str_org)
-{
-    char *str = *str_org;
-    size_t len = strlen(str) * 2 + 1;
-    char *res = calloc(len , 1);
-    struct lexer_quote *l = lexer_quote(str);
-    if (!l)
-        return;
-    struct token_list_quote *tl = l->tl;
-    while (tl->next)
-    {
-        if (tl->tok == BACK_SLASHED)
-            handle_back_slash_in_dquote(res, tl);
-        else if (tl->tok > QUOTED)
-        {
-            for (int i = 0; tl->str[i]; i++)
-            {
-                strcat(res, "\\");
-                strncat(res, tl->str + i, 1);
-            }
-        }
-        else if (tl->tok == QUOTED)
-            handle_single_quote_in_dquote(res, tl);
-        else if (tl->tok < DQUOTED)
-        {
-            char *tmp = NULL;
-            if (!tl->is_sub)
-            {
-                tmp = get_var(shell.var, tl->str);
-                if (!*tl->str)
-                    tmp = "$";
-            }
-            else
-                tmp = get_sub_and_maths(tl->str);
-            if (tmp)
-            {
-                if (!handle_realloc(&res, tmp, &len, 2))
-                    return;
-                for (int i = 0; tmp[i]; i++)
-                {
-                    strcat(res, "\\");
-                    strncat(res, tmp + i, 1);
-                }
-            }
-        }
-        tl = tl->next;
-    }
-    destroy_lexer_quote(l);
-    *str_org = res;
-    free(str);
 }
 
 static void split_space_and_push(struct queue *q, char **res, size_t *len,
@@ -132,12 +81,72 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
     }
 }
 
+static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
+{
+    char *str = *str_org;
+    size_t len = strlen(str) * 2 + 1;
+    char *res = calloc(len , 1);
+    struct lexer_quote *l = lexer_quote(str);
+    if (!l)
+        return;
+    struct token_list_quote *tl = l->tl;
+    while (tl->next)
+    {
+        if (tl->tok == BACK_SLASHED)
+            handle_back_slash_in_dquote(res, tl);
+        else if (tl->tok > QUOTED)
+        {
+            for (int i = 0; tl->str[i]; i++)
+            {
+                strcat(res, "\\");
+                strncat(res, tl->str + i, 1);
+            }
+        }
+        else if (tl->tok == QUOTED)
+            handle_single_quote_in_dquote(res, tl, q);
+        else if (tl->tok <= DQUOTED || tl->tok == BACK_QUOTED)
+        {
+            int is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
+            char *tmp = NULL;
+            if (!tl->is_sub)
+            {
+                tmp = get_var(shell.var, tl->str);
+                if (!*tl->str)
+                    tmp = "$";
+            }
+            else
+                tmp = get_sub_and_maths(tl->str);
+            if (tmp)
+            {
+                if (!handle_realloc(&res, tmp, &len, 2))
+                    return;
+                else
+                {
+                for (int i = 0; tmp[i]; i++)
+                    {
+                        strcat(res, "\\");
+                        strncat(res, tmp + i, 1);
+                    }
+                }
+                if (is_subsh)
+                    free(tmp);
+            }
+        }
+        tl = tl->next;
+    }
+    destroy_lexer_quote(l);
+    *str_org = res;
+    free(str);
+}
+
 static int handle_global_dollar_and_dquote(char **res, size_t *len,
         struct token_list_quote *tl, struct queue *q)
 {
+    int is_subsh = 0;
     char *tmp = "";
-    if (tl->tok == DOLLAR)
+    if (tl->tok == DOLLAR || tl->tok == BACK_QUOTED)
     {
+        is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
         if (!tl->is_sub)
         {
             tmp = get_var(shell.var, tl->str);
@@ -149,12 +158,12 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
     }
     else
     {
-        remove_quoting_inside_dquoting(&tl->str);
+        remove_quoting_inside_dquoting(&tl->str, q);
         tmp = tl->str;
     }
-    if (tmp && !handle_realloc(res, tmp, len, tl->tok != DOLLAR))
+    if (tmp && !handle_realloc(res, tmp, len, tl->tok == DQUOTED))
         return 0;
-    if (tmp && tl->tok == DOLLAR)
+    if (tmp && (tl->tok == DOLLAR || tl->tok == BACK_QUOTED))
     {
         split_space_and_push(q, res, len, tmp);
         if (!**res && !tl->next->next)
@@ -162,6 +171,8 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
             free(*res);
             return 0;
         }
+        if (is_subsh)
+            free(tmp);
     }
     return 1;
 }
@@ -201,7 +212,7 @@ void remove_quoting(char *str, struct queue *q)
             strcat(res, tl->str);
         else if (tl->tok >= QUOTED)
             path_exp_handling_all(&res, tl->str, &len);
-        else if (tl->tok <= DQUOTED
+        else if (tl->tok <= BACK_QUOTED
                 && !handle_global_dollar_and_dquote(&res, &len, tl, q))
         {
             destroy_lexer_quote(l);

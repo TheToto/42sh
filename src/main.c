@@ -38,7 +38,7 @@ void my_abort(void)
         destroy_var(shell.var);
     if (shell.lexer)
         lexer_destroy(shell.lexer);
-    if (shell.buf)
+    if (shell.buf && shell.type != S_OPTION)
         free(shell.buf);
     if (shell.shopt_states)
         free(shell.shopt_states);

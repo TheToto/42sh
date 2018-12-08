@@ -205,6 +205,8 @@ void get_next_word_token(char **str, struct token_list *tl, char *ptr)
                 && ((*i && (*str)[*i - 1] != '\\') || !*i))
         {
             type = handle_quoted_word(*str + *i, &word, i);
+            if (i[1] || i[2])
+                continue;
             break;
         }
         word[*i] = (*str)[*i];

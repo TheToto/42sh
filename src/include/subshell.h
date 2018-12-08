@@ -12,3 +12,4 @@
 * @return malloced string
 */
 char *fd_to_string(int fd);
+char *redirect_subshell(char *input);
