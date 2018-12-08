@@ -39,6 +39,7 @@ static int less(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
+    close(save);
     return res;
 }
 
@@ -57,6 +58,7 @@ static int great(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
+    close(save);
     return res;
 }
 
@@ -74,6 +76,7 @@ static int dgreat(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
+    close(save);
     return res;
 }
 
@@ -97,6 +100,8 @@ static int greatand(struct ast_node_redirect *n, struct variables *var)
         res = exec_node(n->node, var);
         dup2(save1, 1);
         dup2(save2, 2);
+        close(save1);
+        close(save2);
     }
     else
     {
@@ -120,6 +125,7 @@ static int lessgreat(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
+    close(save);
     return res;
 }
 
@@ -138,6 +144,7 @@ static int dless(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, 0);
+    close(save);
     return res;
 }
 
@@ -156,6 +163,7 @@ static int dlessdash(struct ast_node_redirect *n, struct variables *var)
     close(n->fd);
     int res = exec_node(n->node, var);
     dup2(save, 0);
+    close(save);
     return res;
 }
 
