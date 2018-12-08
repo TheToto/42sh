@@ -76,6 +76,7 @@ char *quote_ps2(void)
     if (!tmp)
         err(1, "Failled to realloc quote ps2");
     shell.buf = tmp;
+    strcat(shell.buf, "\n");
     strcat(shell.buf, buf);
     free(buf);
     return shell.buf + size_buf;
