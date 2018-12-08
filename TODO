@@ -39,6 +39,7 @@
 * [x] Main rule
 * [x] Make check
 * [x] Make clean
+* [x] Make doc
 
 # Options
 * [x] 0.3 options
@@ -61,6 +62,7 @@
 * [x] Handle positionnal parameters
 * [ ] Handle double output redirection
 * [ ] Replace hardcoded file desciptors (in/err/out)
+* [ ] Subshells
 
 # Interactive mode
 * [x] Interactive mode
@@ -68,6 +70,25 @@
 * [x] Ressource file reader
 * [x] Catch Ctrl-C
 * [~] Catch Ctrl-D (Done for PS1, not PS2)
+
+# Advanced Prompt
+* [ ] \a
+* [ ] \d
+* [ ] \D
+* [ ] \e
+* [x] \h
+* [x] \H
+* [ ] \n
+* [ ] \r
+* [ ] \s
+* [x] \u
+* [x] \w
+* [x] \W
+* [ ] \$
+* [ ] \nnn
+* [ ] \\
+* [ ] \[
+* [ ] \]
 
 # Built in
 * [x] management of builtins
@@ -87,5 +108,46 @@
 * [x] Assign to builtins management
 * [ ] Assign all var env to lib at starting
 
+# Variables
+* [~] $@
+* [x] $?
+* [x] $$
+* [x] $1 ... $n
+* [x] $#
+* [x] $RANDOM
+* [x] $UID
+* [x] $OLDPWD
+* [x] $SHELLOPTS
+* [x] $IFS
+
+# Quotes
+* [x] Escape charater (\)
+* [x] Single quotes (')
+* [x] Double quotes (")
+
+# Path Expansion
+* [x] *
+* [x] ?
+* [x] [] / "-" | "!"
+* [ ] Globbing character classes ([:alnum:] ...)
+* [ ] dotglob
+* [ ] extglob
+* [ ] nocaseglob
+* [ ] nullglob
+
+# Job Control
+* [ ] jobs (with option -l)
+* [ ] fg [n]
+* [ ] bg [n]
+* [ ] wait [n]
+* [ ] $!
+
 # RETURN VALUE
 * [~] Fix wrong return value
+
+# SANITY
+* [x] No memory leak
+* [ ] No opened file descriptors at exit
+* [x] No zombies
+* [ ] Perfect coding style
+* [x] Updated Doxygen
