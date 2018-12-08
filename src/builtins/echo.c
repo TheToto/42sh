@@ -49,15 +49,6 @@ static int not_opt(char *str)
             && (str[1] == 'n' || str[1] == 'e' || str[1] == 'E'));
 }
 
-
-static void handle_b(size_t *new)
-{
-    if (*new > 0)
-    {
-        *new -= 1;
-    }
-}
-
 static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
 {
     *old += 1;
@@ -67,7 +58,7 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
         to_print[*new] = 7;
         break;
     case 'b':
-        handle_b(new);
+        to_print[*new] = 8;
         break;
     case 'e':
         to_print[*new] = 27;
