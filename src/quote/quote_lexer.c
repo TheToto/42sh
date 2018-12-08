@@ -140,6 +140,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
     }
     else
     {
+        *is_sub = 1;
         int is_quoted = 0;
         for (int i = 0; **str && (**str != first
                     || (is_quoted && *(*str) != '\'')); i++)

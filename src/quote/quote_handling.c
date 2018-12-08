@@ -104,7 +104,7 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
         }
         else if (tl->tok == QUOTED)
             handle_single_quote_in_dquote(res, tl, q);
-        else if (tl->tok < DQUOTED)
+        else if (tl->tok <= DQUOTED || tl->tok == BACK_QUOTED)
         {
             int is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
             char *tmp = NULL;
@@ -144,7 +144,7 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
 {
     int is_subsh = 0;
     char *tmp = "";
-    if (tl->tok == DOLLAR)
+    if (tl->tok == DOLLAR || tl->tok == BACK_QUOTED)
     {
         is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
         if (!tl->is_sub)
@@ -161,9 +161,9 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
         remove_quoting_inside_dquoting(&tl->str, q);
         tmp = tl->str;
     }
-    if (tmp && !handle_realloc(res, tmp, len, tl->tok != DOLLAR))
+    if (tmp && !handle_realloc(res, tmp, len, tl->tok == DQUOTED))
         return 0;
-    if (tmp && tl->tok == DOLLAR)
+    if (tmp && (tl->tok == DOLLAR || tl->tok == BACK_QUOTED))
     {
         split_space_and_push(q, res, len, tmp);
         if (!**res && !tl->next->next)
@@ -212,7 +212,7 @@ void remove_quoting(char *str, struct queue *q)
             strcat(res, tl->str);
         else if (tl->tok >= QUOTED)
             path_exp_handling_all(&res, tl->str, &len);
-        else if (tl->tok <= DQUOTED
+        else if (tl->tok <= BACK_QUOTED
                 && !handle_global_dollar_and_dquote(&res, &len, tl, q))
         {
             destroy_lexer_quote(l);
