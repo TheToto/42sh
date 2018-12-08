@@ -108,7 +108,8 @@ int echo(char **str)
             in_opt = !not_opt(str[i]);
         if (!in_opt)
         {
-            char *to_print = calloc(strlen(str[i]) * 2, sizeof(char));
+            int len = !strlen(str[i]) ? 1 : strlen(str[i]) * 2;
+            char *to_print = calloc(len, sizeof(char));
             size_t old = 0;
             size_t new = 0;
             for (; str[i][old]; old++, new++)
