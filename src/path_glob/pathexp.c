@@ -52,6 +52,8 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     {
         if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {
+            if (myfile->d_name[0] == '.')
+                continue;
             char *new_path = strdup(path);
             char *new_patern = calloc(PATH_MAX, sizeof(char));
             char *new_cur_path = calloc(PATH_MAX, sizeof(char));
