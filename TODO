@@ -18,7 +18,7 @@
 * [x] Test until
 
 # CODING STYLE
-* [ ] Indent DOXYGEN with 0 space
+* [x] Indent DOXYGEN with 0 space
 * [ ] Send tickets to ACU for broken moulinette
 
 # DOC
@@ -26,7 +26,7 @@
 * [x] Write manual
 
 # Option parser
-* [~] SHOPT
+* [x] SHOPT
 * [x] Others
 
 # AST
@@ -70,11 +70,11 @@
 * [~] Catch Ctrl-D (Done for PS1, not PS2)
 
 # Built in
-* [~] management of builtins
-* [~] exit (need to fix exit with no arg)
+* [x] management of builtins
+* [x] exit
 * [x] cd
-* [~] shopt (output handled)
-* [~] export
+* [x] shopt
+* [x] export
 * [x] alias/unalias
 * [x] echo
 * [x] continue/break
