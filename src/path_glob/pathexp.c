@@ -18,6 +18,7 @@
 
 #include "queue.h"
 #include "shell.h"
+#include "shopt.h"
 #include "env.h"
 
 static char *get_next_path(char *path, char *dir)
@@ -52,7 +53,7 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     {
         if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
         {
-            if (myfile->d_name[0] == '.')
+            if (myfile->d_name[0] == '.' && shell.shopt_states[DOTGLOB] == 0)
                 continue;
             char *new_path = strdup(path);
             char *new_patern = calloc(PATH_MAX, sizeof(char));
@@ -69,7 +70,7 @@ static void explore_dir(char *cur_path, char *path, char *patern,
                     && strcmp(myfile->d_name, "..")
                     && (wantfile || myfile->d_type & DT_DIR))
             {
-                if (myfile->d_name[0] != '.')
+                if (myfile->d_name[0] != '.' || shell.shopt_states[DOTGLOB])
                 {
                     if (wantfile == 0)
                         strcat(new_cur_path, "/");
