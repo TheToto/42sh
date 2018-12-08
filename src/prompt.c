@@ -15,6 +15,7 @@
 #include <err.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "execution.h"
 #include "lexer.h"
@@ -64,16 +65,24 @@ static void catch_ctrlc(int signo)
     if (signo == SIGINT)
     {
         add_var(shell.var, "?", "130", 0);
+        int save = dup(STDOUT_FILENO);
+        dup2(STDERR_FILENO, STDOUT_FILENO);
         puts("");
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
+        dup2(save, STDOUT_FILENO);
+        close(save);
     }
 }
 
 struct token_list *show_ps2(void)
 {
-    char *buf = readline(get_var(shell.var, "PS2"));
+    int save = dup(STDOUT_FILENO);
+    dup2(STDERR_FILENO, STDOUT_FILENO);
+    char *buf = readline(advanced_prompt("PS2"));
+    dup2(save, STDOUT_FILENO);
+    close(save);
     lexer_destroy(shell.lexer);
     struct lexer *l = lexer(buf);
     free(buf);
@@ -82,7 +91,11 @@ struct token_list *show_ps2(void)
 
 char *quote_ps2(void)
 {
+    int save = dup(STDOUT_FILENO);
+    dup2(STDERR_FILENO, STDOUT_FILENO);
     char *buf = readline(advanced_prompt("PS2"));
+    dup2(save, STDOUT_FILENO);
+    close(save);
     size_t size_buf = strlen(shell.buf);
     char *tmp = calloc(size_buf + strlen(buf) + 2, sizeof(char));
     strcat(tmp, shell.buf);
@@ -112,7 +125,11 @@ int show_prompt(int norc, int is_print)
 
     while (1)
     {
+        int save = dup(STDOUT_FILENO);
+        dup2(STDERR_FILENO, STDOUT_FILENO);
         char *buf = readline(advanced_prompt("PS1"));
+        dup2(save, STDOUT_FILENO);
+        close(save);
         if (!buf)
             exec_exit(NULL);
         if (*buf)
