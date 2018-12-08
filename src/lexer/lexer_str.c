@@ -51,12 +51,14 @@ static int get_next_quoted(char **str)
             i++;
             while ((*str)[i] != '\'')
             {
-                if (!(*str)[i])
+                if (!(*str)[i] && shell.type == S_PROMPT)
                 {
                     *str = quote_ps2();
                     j += i;
                     i = 0;
                 }
+                else if (!(*str)[i])
+                    break;
                 else
                     i++;
             }
@@ -67,12 +69,14 @@ static int get_next_quoted(char **str)
             while ((*str)[i] != '\"' || is_quoted)
             {
                 is_quoted = (*str)[i] == '\\' && !is_quoted;
-                if (!(*str)[i])
+                if (!(*str)[i] && shell.type == S_PROMPT)
                 {
                     *str = quote_ps2();
                     j += i;
                     i = 0;
                 }
+                else if (!(*str)[i])
+                    break;
                 else
                     i++;
             }
@@ -80,15 +84,17 @@ static int get_next_quoted(char **str)
         else if ((*str)[i] == '`' && !is_quoted)
         {
             i++;
-            while ((*str)[i] && ((*str)[i] != '`' || is_quoted))
+            while ((*str)[i] != '`' || is_quoted)
             {
                 is_quoted = (*str)[i] == '\\' && !is_quoted;
-                if (!(*str)[i])
+                if (!(*str)[i] && shell.type == S_PROMPT)
                 {
                     *str = quote_ps2();
                     j += i;
                     i = 0;
                 }
+                else if (!(*str)[i])
+                    break;
                 else
                     i++;
             }
