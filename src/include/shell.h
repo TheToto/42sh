@@ -14,6 +14,8 @@
 
 #pragma once
 
+void my_abort(void);
+
 ///Shell type enum
 enum shell_type
 {

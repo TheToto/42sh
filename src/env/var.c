@@ -285,7 +285,7 @@ char *get_sub_and_maths(char *name)
         return get_maths(name);
     else if (*name && !fnmatch("(*)", name, FNM_EXTMATCH))
     {
-        return NULL;
+        return redirect_subshell(name);
     }
     return NULL;
 }
