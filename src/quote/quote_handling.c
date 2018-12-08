@@ -106,7 +106,8 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
             handle_single_quote_in_dquote(res, tl, q);
         else if (tl->tok <= DQUOTED || tl->tok == BACK_QUOTED)
         {
-            int is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
+            int is_subsh = tl->is_sub
+                && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
             char *tmp = NULL;
             if (!tl->is_sub)
             {
@@ -119,10 +120,14 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
             if (tmp)
             {
                 if (!handle_realloc(&res, tmp, &len, 2))
+                {
+                    if (is_subsh)
+                        free(tmp);
                     return;
+                }
                 else
                 {
-                for (int i = 0; tmp[i]; i++)
+                    for (int i = 0; tmp[i]; i++)
                     {
                         strcat(res, "\\");
                         strncat(res, tmp + i, 1);
@@ -168,6 +173,8 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
         split_space_and_push(q, res, len, tmp);
         if (!**res && !tl->next->next)
         {
+            if (is_subsh)
+                free(tmp);
             free(*res);
             return 0;
         }
