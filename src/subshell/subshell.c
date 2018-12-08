@@ -40,10 +40,10 @@ static void lauch_subshell(char *input)
             destroy_var(shell.var);
         if (shell.lexer)
             lexer_destroy(shell.lexer);
-        if (shell.buf)
+        if (shell.buf && shell.type != S_OPTION)
             free(shell.buf);
         shell.buf = input;
-        shell.type = S_OPTION;
+        shell.type = S_FILE;
         struct variables *lib = init_var();
         int res = exec_main(input, 0, lib);
         destroy_var(lib);
