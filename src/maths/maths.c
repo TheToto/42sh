@@ -60,6 +60,7 @@ static long long int priority(long long int op)
     case '|':
     case '|' * 2:
     case '^':
+    case '%':
         return 1;
     case '+':
     case '-':
@@ -152,6 +153,8 @@ static long long int compute_op(long long int a, long long int b,
         return b || a;
     case '^':
         return b ^ a;
+    case '%':
+        return b % a;
     default:
         break;
     }
@@ -168,6 +171,10 @@ static long long int apply_modif(char modif, long long int val)
     if (modif == '-')
         return -val;
     if (modif == '+')
+        return val;
+    if (modif == ' ')
+        return val;
+    if (modif == '\n')
         return val;
     warnx("libmath : Unknow modifier %c", modif);
     return INT_MIN;
@@ -200,6 +207,7 @@ static long long int get_number(char *str, size_t *i)
     size_t j = *i;
     while (*i < strlen(str) && !is_digit(str[*i]) && !is_var(str[*i]))
         (*i)++;
+    size_t k = *i;
     if (is_var(str[*i]))
     {
         val = get_thevar(str, i);
@@ -213,13 +221,12 @@ static long long int get_number(char *str, size_t *i)
         }
         (*i)--;
     }
-    while (j < strlen(str) && !is_digit(str[j]) && !is_var(str[j]))
+    while (j < k)
     {
-        val = apply_modif(str[j], val);
+        val = apply_modif(str[k - 1], val);
         if (val == INT_MIN)
             return val;
-        j++;
-        for (; j < strlen(str) && (str[j] == ' ' || str[j] == '\n'); j++);
+        k--;
     }
     return val;
 }
