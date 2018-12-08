@@ -73,20 +73,20 @@
 
 # Advanced Prompt
 * [ ] \a
-* [ ] \d
-* [ ] \D
-* [ ] \e
+* [x] \d
+* [x] \D
+* [x] \e
 * [x] \h
 * [x] \H
-* [ ] \n
-* [ ] \r
+* [x] \n
+* [x] \r
 * [ ] \s
 * [x] \u
 * [x] \w
 * [x] \W
 * [ ] \$
 * [ ] \nnn
-* [ ] \\
+* [x] \\
 * [ ] \[
 * [ ] \]
 
@@ -106,7 +106,7 @@
 * [x] Code basic files
 * [x] Handle transmission of exported var
 * [x] Assign to builtins management
-* [ ] Assign all var env to lib at starting
+* [x] Assign all var env to lib at starting
 
 # Variables
 * [~] $@
