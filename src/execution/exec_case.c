@@ -27,11 +27,15 @@ int exec_case(struct ast_node_case *node, struct variables *var)
     char *str = concat_quote(node->value);
     for (size_t i = 0; i < node->size; i++)
     {
-        if (!fnmatch(node->cases[i], str, 0))
+        char *pat = concat_case(node->cases[i]);
+        printf(":%s:%s:\n", pat, str);
+        if (!fnmatch(pat, str, FNM_PATHNAME))
         {
             free(str);
+            free(pat);
             return exec_node(node->nodes[i], var);
         }
+        free(pat);
     }
     free(str);
     return 0;

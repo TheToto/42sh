@@ -138,3 +138,21 @@ char *concat_quote(char *value)
     free(dump);
     return res;
 }
+
+char *concat_case(char *value)
+{
+    struct queue *q = init_queue();
+    remove_quoting(value, q);
+    char *res = calloc(get_total_len(q) + 1, sizeof(char));
+    char **dump = dump_queue(q);
+    for (size_t i = 0; dump[i]; i++)
+    {
+        strcat(res, dump[i]);
+        if (dump[i + 1])
+            strcat(res, " ");
+    }
+    for (size_t i = 0; dump[i]; i++)
+        free(dump[i]);
+    free(dump);
+    return res;
+}

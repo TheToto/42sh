@@ -23,3 +23,4 @@ void sort_queue_alias(struct queue *q);
 void fusion_queue(struct queue *dest, struct queue *src);
 void debug_queue(struct queue *q);
 char *concat_quote(char *value);
+char *concat_case(char *value);
