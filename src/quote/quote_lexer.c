@@ -2,7 +2,7 @@
 * \file quote_lexer.c
 * Handle quotes in the lexer
 * \author Arthur Busuttil
-* \version 0.8
+* \version 0.9
 * \date 06-12-2018
 **/
 #include <stdlib.h>

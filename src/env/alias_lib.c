@@ -2,7 +2,7 @@
 * @author louis.holleville
 * @file alias_lib.c
 * @date 03-12-2018
-* @version 0.8
+* @version 0.9
 * Management of the aliases library
 */
 

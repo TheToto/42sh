@@ -1,7 +1,7 @@
 /**
 * \file ast_node_while.c
 * \author louis.holleville
-* \version 0.8
+* \version 0.9
 * \date 14-11-2018
 * \brief Management of whiles
 */
@@ -12,7 +12,6 @@
 #include "print.h"
 #include "ast_destroy.h"
 
-//CODING STYLE DE MERDE
 static struct ast_node_while *create_ast_node_while_int(struct ast_node *cond,
         struct ast_node *exec)
 {

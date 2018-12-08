@@ -2,7 +2,7 @@
 * \file pathexp.c
 * Handle the path expansion
 * \author thomas.lupin
-* \version 0.8
+* \version 0.9
 * \date 06-12-2018
 **/
 #define _GNU_SOURCE

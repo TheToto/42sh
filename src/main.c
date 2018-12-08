@@ -1,7 +1,7 @@
 /**
 *\file main.c
 *\author thomas.lupin
-*\version 0.8
+*\version 0.9
 *\date 22-11-2018
 *\brief Main function
 */

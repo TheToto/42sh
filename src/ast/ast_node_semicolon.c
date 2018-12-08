@@ -1,7 +1,7 @@
 /**
 * \file ast_node_semicolon.c
 * \author louis.holleville
-* \version 0.8
+* \version 0.9
 * \date 14-11-2018
 * \brief Management of semicolons (;)
 */

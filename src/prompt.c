@@ -1,7 +1,7 @@
 /**
 *\file prompt.c
 *\author thomas.lupin sabrina.meng
-*\version 0.8
+*\version 0.9
 *\date 22-11-2018
 *\brief Function to use the prompt
 */

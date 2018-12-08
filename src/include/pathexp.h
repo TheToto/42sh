@@ -2,7 +2,7 @@
 * \file pathexp.h
 * Handle the path expansion
 * \author thomas.lupin
-* \version 0.8
+* \version 0.9
 * \date 06-12-2018
 **/
 #pragma once

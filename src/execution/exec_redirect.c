@@ -1,7 +1,7 @@
 /**
 * @file exec_redirect.c
 * @author louis.holleville
-* @version 0.8
+* @version 0.9
 * @date 20-11-2018
 * @brief execution of the redirections
 */

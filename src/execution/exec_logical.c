@@ -1,7 +1,7 @@
 /**
 * @file exec_logical.c
 * @author thomas.lupin
-* @version 0.8
+* @version 0.9
 * @date 25-11-2018
 * execution of logical and + logical or
 */
