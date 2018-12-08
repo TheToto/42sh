@@ -28,7 +28,6 @@ int exec_case(struct ast_node_case *node, struct variables *var)
     for (size_t i = 0; i < node->size; i++)
     {
         char *pat = concat_case(node->cases[i]);
-        printf(":%s:%s:\n", pat, str);
         if (!fnmatch(pat, str, FNM_PATHNAME))
         {
             free(str);
