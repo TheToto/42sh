@@ -5,7 +5,7 @@ function test_arg()
 
 a="hello-lovely-world"
 b="hello lovely world"
-test_arg $a
+test_arg "hello-lovely-world"
 IFS='-'
-test_arg $a
-test_arg $b
+test_arg "hello-lovely-world"
+test_arg "hello lovely world"
