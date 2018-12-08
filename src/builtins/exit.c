@@ -20,7 +20,9 @@
 int exec_exit(char **str)
 {
     int val = 0;
-    if (!str[1])
+    if (!str)
+        puts("");
+    if (!str || !str[1])
         val = atoi(get_var(shell.var, "?"));
     else
     {

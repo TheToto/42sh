@@ -14,6 +14,7 @@
 #include <readline/history.h>
 #include <err.h>
 #include <sys/stat.h>
+#include <signal.h>
 
 #include "execution.h"
 #include "lexer.h"
@@ -58,6 +59,18 @@ static void launchrc(int is_print, struct variables *var)
     free(filerc);
 }
 
+static void catch_ctrlc(int signo)
+{
+    if (signo == SIGINT)
+    {
+        add_var(shell.var, "?", "130", 0);
+        puts("");
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+    }
+}
+
 struct token_list *show_ps2(void)
 {
     char *buf = readline(get_var(shell.var, "PS2"));
@@ -75,7 +88,7 @@ char *quote_ps2(void)
     strcat(tmp, shell.buf);
     free(shell.buf);
     if (!tmp)
-        err(1, "Failled to realloc quote ps2");
+        err(1, "Failed to realloc quote ps2");
     shell.buf = tmp;
     strcat(shell.buf, "\n");
     strcat(shell.buf, buf);
@@ -90,11 +103,18 @@ int show_prompt(int norc, int is_print)
     if (!norc)
         launchrc(is_print, shell.var);
     atexit(write_hist);
+
+    struct sigaction sa;
+    sa.sa_handler = catch_ctrlc;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+
     while (1)
     {
         char *buf = readline(advanced_prompt("PS1"));
         if (!buf)
-            exec_exit(&buf);
+            exec_exit(NULL);
         if (*buf)
             add_history(buf);
         shell.buf = buf;
