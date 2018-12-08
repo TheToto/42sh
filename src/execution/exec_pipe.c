@@ -35,8 +35,13 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
     else if (pid == 0)
     {
         close(fildes[1]);
+        close(STDIN_FILENO);
         dup2(fildes[0], STDIN_FILENO);
         res = exec_node(n->rs, var);
+        close(fildes[0]);
+        close(0);
+        close(1);
+        close(2);
         exit(res);
     }
     else
@@ -49,9 +54,13 @@ int exec_pipe(struct ast_node_pipe *n, struct variables *var)
         else if (pid2 == 0)
         {
             close(fildes[0]);
+            close(STDOUT_FILENO);
             dup2(fildes[1], STDOUT_FILENO);
             res = exec_node(n->ls, var);
             close(fildes[1]);
+            close(0);
+            close(1);
+            close(2);
             exit(res);
         }
 
