@@ -283,11 +283,8 @@ char *get_sub_and_maths(char *name)
 {
     if (*name && !fnmatch("(*(*))", name, FNM_EXTMATCH))
         return get_maths(name);
-    else if (*name && !fnmatch("(*)", name, FNM_EXTMATCH))
-    {
+    else
         return redirect_subshell(name);
-    }
-    return NULL;
 }
 
 char *get_var(struct variables *var, char *name)
