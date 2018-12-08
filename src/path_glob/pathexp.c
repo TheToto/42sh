@@ -38,6 +38,9 @@ static char *get_next_path(char *path, char *dir)
 static void explore_dir(char *cur_path, char *path, char *patern,
         struct queue *q)
 {
+    int flag = FNM_PATHNAME;
+    if (shell.shopt_states[EXTGLOB])
+        flag = FNM_PATHNAME | FNM_EXTMATCH;
     DIR *mydir;
     if (strlen(cur_path))
         mydir = opendir(cur_path);
@@ -51,7 +54,7 @@ static void explore_dir(char *cur_path, char *path, char *patern,
     struct dirent *myfile;
     while ((myfile = readdir(mydir)) != NULL)
     {
-        if (!fnmatch(patern, myfile->d_name, FNM_PATHNAME))
+        if (!fnmatch(patern, myfile->d_name, flag))
         {
             if (myfile->d_name[0] == '.' && shell.shopt_states[DOTGLOB] == 0)
                 continue;
