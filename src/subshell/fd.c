@@ -46,7 +46,7 @@ char *fd_to_string(int fd)
         if (size == capacity)
             res = my_recalloc(res, &capacity, &size);
     }
-    res[size - 1] = '\0';
+    res[size] = '\0';
     close(fd);
     return res;
 }
