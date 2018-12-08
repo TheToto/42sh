@@ -1,3 +1,3 @@
 cd .././../././..
 cd -
-/bin/pwd
+echo $PWD

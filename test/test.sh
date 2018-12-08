@@ -16,7 +16,7 @@ if test "$1" = "check"; then
     cd ..
 fi
 
-list_of_category="ast_tests lexer_tests parser_tests option_tests builtin_tests quote_tests arithmetic_tests advanced_expansions_tests"
+list_of_category="ast_tests lexer_tests parser_tests option_tests builtin_tests quote_tests arithmetic_tests advanced_expansions_tests complex_scripts_tests"
 timeout="10000d"
 sanity=0
 
@@ -31,7 +31,7 @@ while test $# -gt 0; do
             fi
             while test $# -gt 0 -a "$1" != ";"; do
                 case $1 in
-                    ast | lexer | parser | option | builtin | quote | arithmetic | advanced_expansions);;
+                    ast | lexer | parser | option | builtin | quote | arithmetic | advanced_expansions | complex_scripts);;
                     * )
                         printf $RED"\nERROR: invalid category: $1\n\n"$RESET
                         exit 1;;
@@ -44,7 +44,7 @@ while test $# -gt 0; do
                 exit 1;
             fi;;
         -l | --list)
-            printf $ANNONCE"\n  list of categories:\n\t  - advanced expansions\n\t  - arithmetic\n\t  - ast\n\t  - builtin\n\t  - lexer\n\t  - option\n\t  - parser\n\t  - quote\n\n"$DEFAULT;
+            printf $ANNONCE"\n  list of categories:\n\t  - advanced expansions\n\t  - arithmetic\n\t  - ast\n\t  - builtin\n\t  - complex scripts\n\t - lexer\n\t  - option\n\t  - parser\n\t  - quote\n\n"$DEFAULT;
             exit 0;;
         -t | --timeout)
             shift
