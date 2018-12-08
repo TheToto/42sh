@@ -17,6 +17,7 @@
 
 #include "builtins.h"
 #include "shell.h"
+#include "env.h"
 
 static int get_opt(char *opt)
 {
@@ -44,6 +45,42 @@ static int print_hist(int offset, char *next)
     return 0;
 }
 
+static int set_histfile(void)
+{
+    if (get_var(shell.var, "HISTFILE"))
+        return 0;
+    char *home = get_var(shell.var, "HOME");
+    char *file = ".sh_history";
+    size_t len = strlen(home) + strlen(file);
+    char *path = calloc(len + 1, sizeof(char));
+    if (!path)
+    {
+        warnx("Calloc failed");
+        return 1;
+    }
+    strcat(path, home);
+    if (path[strlen(home) - 1] != '/')
+        strcat(path, "/");
+    strcat(path, file);
+    add_var(shell.var, "HISTFILE", path, 0);
+    free(path);
+    return 0;
+}
+
+static int history_r(char *file)
+{
+    int err = 0;
+    if (!file)
+    {
+        if (set_histfile())
+            return 1;
+        err = read_history(get_var(shell.var, "HISTFILE"));
+    }
+    else
+        err = read_history(file);
+    return err;
+}
+
 int exec_history(char **str)
 {
     if (shell.type != S_PROMPT)
@@ -52,7 +89,7 @@ int exec_history(char **str)
     if (opt == -1)
     {
         warnx("history: %s: invalid option\
-                \nusage: history [-c] [n] or history -r filename", str[1]);
+        \nusage: history [-c] [n] or history -r filename", str[1]);
         return 2;
     }
     if (!opt)
@@ -73,8 +110,7 @@ int exec_history(char **str)
     }
     else if (opt == 2)
     {
-        int err = read_history(str[2]);
-        if (err)
+        if (history_r(str[2]))
             return 1;
     }
     if (shell.type != S_PROMPT)
