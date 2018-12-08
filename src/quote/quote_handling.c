@@ -106,7 +106,6 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
             handle_single_quote_in_dquote(res, tl, q);
         else if (tl->tok < DQUOTED)
         {
-            int is_subsh = tl->is_sub && fnmatch("(*)", tl->str, FNM_EXTMATCH);
             char *tmp = NULL;
             if (!tl->is_sub)
             {
@@ -120,11 +119,6 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
             {
                 if (!handle_realloc(&res, tmp, &len, 2))
                     return;
-                if (is_subsh)
-                {
-                    size_t len_tmp = strlen(tmp);
-                    split_space_and_push(q, str_org, &len_tmp, tmp);
-                }
                 else
                 {
                 for (int i = 0; tmp[i]; i++)
