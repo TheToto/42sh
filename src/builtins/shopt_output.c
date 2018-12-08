@@ -35,13 +35,13 @@ static void reset_shopt(enum shopt shopt)
     {
     case ASTPRINT:
     case DOTGLOB:
-    case EXP_ALIAS:
     case EXTGLOB:
     case NOCASEGLOB:
     case NULLGLOB:
     case XPGECHO:
         shell.shopt_states[shopt] = 0;
         break;
+    case EXP_ALIAS:
     case SRCPATH:
         shell.shopt_states[shopt] = 1;
         break;
