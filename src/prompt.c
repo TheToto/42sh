@@ -71,8 +71,9 @@ char *quote_ps2(void)
 {
     char *buf = readline(advanced_prompt("PS2"));
     size_t size_buf = strlen(shell.buf);
-    char *tmp = realloc(shell.buf,
-            (size_buf + strlen(buf) + 2) * sizeof(char));
+    char *tmp = calloc(size_buf + strlen(buf) + 2, sizeof(char));
+    strcat(tmp, shell.buf);
+    free(shell.buf);
     if (!tmp)
         err(1, "Failled to realloc quote ps2");
     shell.buf = tmp;
@@ -98,8 +99,8 @@ int show_prompt(int norc, int is_print)
             add_history(buf);
         shell.buf = buf;
         exec_main(buf, is_print, shell.var);
+        free(shell.buf);
         shell.buf = NULL;
-        free(buf);
     }
     free(histpath);
     return 0;
