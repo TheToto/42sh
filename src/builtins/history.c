@@ -52,7 +52,7 @@ static int set_histfile(void)
     char *home = get_var(shell.var, "HOME");
     char *file = ".sh_history";
     size_t len = strlen(home) + strlen(file);
-    char *path = calloc(len + 1, sizeof(char));
+    char *path = calloc(len + 2, sizeof(char));
     if (!path)
     {
         warnx("Calloc failed");
