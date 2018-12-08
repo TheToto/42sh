@@ -47,7 +47,7 @@ static int print_hist(int offset, char *next)
 
 static int set_histfile(void)
 {
-    if (get_var(shell.var, "HISTFILE"))
+    if (get_var(shell.var, "HISTFILE") || shell.type != S_PROMPT)
         return 0;
     char *home = get_var(shell.var, "HOME");
     char *file = ".sh_history";
