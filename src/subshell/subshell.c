@@ -27,6 +27,7 @@
 
 static void lauch_subshell(char *input)
 {
+    char *back_pid = strdup(get_var(shell.var, "$"));
     int pid = fork();
     if (pid < 0)
     {
@@ -45,10 +46,13 @@ static void lauch_subshell(char *input)
         shell.buf = input;
         shell.type = S_FILE;
         struct variables *lib = init_var();
+        add_var(lib, "$", back_pid, 0);
+        free(back_pid);
         int res = exec_main(input, 0, lib);
         destroy_var(lib);
         exit(res);
     }
+    free(back_pid);
     int status = 0;
     while (waitpid(pid, &status, 0) != pid)
         continue;
