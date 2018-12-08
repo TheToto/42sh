@@ -64,8 +64,6 @@ static void lauch_subshell(char *input)
 
 char *redirect_subshell(char *input)
 {
-    *input = 0;//avoiding warning TO BE REMOVE
-    *output = 0;//avoiding warning TO BE REMOVE
     int fd = open("/tmp", O_TMPFILE | O_RDWR);
     int save = dup(STDOUT_FILENO);
     dup2(fd, STDOUT_FILENO);
