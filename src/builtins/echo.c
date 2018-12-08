@@ -2,7 +2,7 @@
 * \file echo.c
 * Execute the echo builtin
 * \author sabrina.meng louis.holleville
-* \version 0.8
+* \version 0.9
 * \date 02-12-2018
 **/
 
@@ -91,6 +91,8 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
         to_print[*new] = '\\';
         break;
     default:
+        *new += 1;
+        to_print[*new - 1] = str[*old - 1];
         to_print[*new] = str[*old];
         break;
     }
@@ -115,7 +117,7 @@ int echo(char **str)
             in_opt = !not_opt(str[i]);
         if (!in_opt)
         {
-            char *to_print = calloc(strlen(str[i]) + 2, sizeof(char));
+            char *to_print = calloc(strlen(str[i]) * 2, sizeof(char));
             size_t old = 0;
             size_t new = 0;
             for (; str[i][old]; old++, new++)
