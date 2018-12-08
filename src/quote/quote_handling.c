@@ -106,6 +106,7 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
             handle_single_quote_in_dquote(res, tl, q);
         else if (tl->tok < DQUOTED)
         {
+            int is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
             char *tmp = NULL;
             if (!tl->is_sub)
             {
@@ -127,6 +128,8 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
                         strncat(res, tmp + i, 1);
                     }
                 }
+                if (is_subsh)
+                    free(tmp);
             }
         }
         tl = tl->next;
@@ -139,9 +142,11 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
 static int handle_global_dollar_and_dquote(char **res, size_t *len,
         struct token_list_quote *tl, struct queue *q)
 {
+    int is_subsh = 0;
     char *tmp = "";
     if (tl->tok == DOLLAR)
     {
+        is_subsh = tl->is_sub && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
         if (!tl->is_sub)
         {
             tmp = get_var(shell.var, tl->str);
@@ -166,6 +171,8 @@ static int handle_global_dollar_and_dquote(char **res, size_t *len,
             free(*res);
             return 0;
         }
+        if (is_subsh)
+            free(tmp);
     }
     return 1;
 }
