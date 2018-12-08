@@ -427,7 +427,7 @@ char **replace_var_for(struct ast_node_for *n_for)
     n_for->values = check_at(n_for->values);
     struct queue *qot = init_queue();
     size_t j = 0;
-    for (size_t i = 0; i < n_for->size; i++, j++)
+    for (size_t i = 0; n_for->values[i]; i++, j++)
     {
         remove_quoting(n_for->values[i], qot);
     }

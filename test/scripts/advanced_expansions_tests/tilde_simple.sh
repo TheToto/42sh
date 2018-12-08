@@ -1,6 +1,4 @@
 cd ~
-echo $PATH
+echo $PWD
 cd ./~/.
-echo $PATH
-cd -
-echo $PATH
+echo $PWD
