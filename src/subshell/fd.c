@@ -14,6 +14,7 @@
 #include <err.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 static char *my_recalloc(char *p, size_t *capacity, size_t *size)
 {
@@ -46,6 +47,8 @@ char *fd_to_string(int fd)
         if (size == capacity)
             res = my_recalloc(res, &capacity, &size);
     }
+    if (strlen(res) > 1)
+        res[size - 1] = '\0';
     res[size] = '\0';
     close(fd);
     return res;
