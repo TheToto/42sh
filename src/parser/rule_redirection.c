@@ -206,7 +206,7 @@ struct ast_node *rule_redirection(struct token_list **tok,
         return NULL;
     }
     NEXT_TOK(tok);
-    if (TOK_TYPE(tok) != WORD)
+    if (TOK_TYPE(tok) != WORD && TOK_TYPE(tok) != WORD_EXT)
     {
         destroy_ast(child);
         warnx("Need a destination in redirection");
