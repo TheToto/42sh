@@ -116,7 +116,7 @@ static char *expand_tilde(char *path, char *cur_path, char *save)
             path += 2;
         }
     }
-    if (*path == '/')
+    while (*path == '/')
     {
         strcat(cur_path, "/");
         path++;
