@@ -62,7 +62,7 @@ struct ast_node *create_ast_node_case(char *value)
 
 void add_case_value(struct ast_node *node, char *value, struct ast_node *exec)
 {
-    if (!node || !value || !exec)
+    if (!node || !value)
     {
         warnx("cannot do add_value_case: exec or node or value is null");
         return;
