@@ -3,7 +3,7 @@
 *\author thomas.lupin
 *\version 0.9
 *\date 22-11-2018
-*Header of shell global var
+*\brief Header of shell global var
 */
 
 /**

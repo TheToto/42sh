@@ -3,7 +3,7 @@
 * @author louis.holleville
 * @date 07-12-2018
 * @version 0.9
-* Management of fd in subshells
+* \brief Management of fd in subshells
 */
 
 #define _DEFAULT_SOURCE

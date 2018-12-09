@@ -1,6 +1,6 @@
 /**
 * \file options.c
-* Parse the options with the format [GNU long option] [option] script-file
+* \brief Parse the options with the format [GNU long option] [option] script-file
 * \authors sabrina.meng thomas.lupin
 * \version 0.9
 * \date 27-11-2018

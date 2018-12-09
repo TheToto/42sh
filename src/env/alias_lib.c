@@ -3,7 +3,7 @@
 * @file alias_lib.c
 * @date 03-12-2018
 * @version 0.9
-* Management of the aliases library
+* @brief Management of the aliases library
 */
 
 #define _DEFAULT_SOURCE

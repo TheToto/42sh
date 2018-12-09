@@ -3,7 +3,7 @@
 * @author thomas.lupin louis.holleville sabrina.meng
 * @version 0.9
 * @date 25-11-2018
-* execution of scmd
+* @brief execution of scmd
 */
 
 #define _GNU_SOURCE

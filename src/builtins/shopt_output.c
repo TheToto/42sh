@@ -1,6 +1,6 @@
 /**
 * \file shopt_output.c
-* Handle the output of the [-+]O option and the shopt builtin
+* \brief Handle the output of the [-+]O option and the shopt builtin
 * \authors sabrina.meng
 * \version 0.9
 * \date 28-11-2018

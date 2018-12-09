@@ -1,6 +1,6 @@
 /**
 * \file quote_lexer.h
-* Handle quotes in the lexer
+* \brief Handle quotes in the lexer
 * \author Arthur Busuttil
 * \version 0.9
 * \date 06-12-2018

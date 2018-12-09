@@ -3,7 +3,7 @@
 *\author thomas.lupin
 *\version 0.9
 *\date 22-11-2018
-*Input rule function
+*\brief Input rule function
 */
 #include <err.h>
 #include <stdio.h>

@@ -3,7 +3,7 @@
 *\author thomas.lupin
 *\version 0.9
 *\date 22-11-2018
-*Redirection rule function
+*\brief Redirection rule function
 */
 #define _GNU_SOURCE
 #include <err.h>

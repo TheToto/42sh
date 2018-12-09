@@ -3,7 +3,7 @@
 * @author louis.holleville
 * @date 03-12-2018
 * @version 0.9
-* Execution of the builtin unalias
+* @brief Execution of the builtin unalias
 */
 
 #include <err.h>

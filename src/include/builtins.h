@@ -1,6 +1,6 @@
 /**
 * \file builtins.h
-* Execute the builtins
+* \brief Execute the builtins
 * \authors sabrina.meng louis.holleville
 * \version 0.9
 * \date 30-11-2018

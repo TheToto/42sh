@@ -1,6 +1,6 @@
 /**
 * \file cd.c
-* Execute the cd builtin
+* \brief Execute the cd builtin
 * \author sabrina.meng
 * \version 0.9
 * \date 30-11-2018

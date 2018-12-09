@@ -1,6 +1,6 @@
 /**
 * \file stack.c
-* Stack functions
+* \brief Stack functions
 * \author thomas.lupin
 * \version 0.9
 * \date 06-12-2018

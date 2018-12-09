@@ -1,6 +1,6 @@
 /**
 * \file pathexp.c
-* Handle the path expansion
+* \brief Handle the path expansion
 * \author thomas.lupin
 * \version 0.9
 * \date 06-12-2018

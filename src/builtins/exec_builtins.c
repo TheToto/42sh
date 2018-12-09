@@ -1,6 +1,6 @@
 /**
 * \file exec_builtins.c
-* Execute the builtins
+* \brief Execute the builtins
 * \authors sabrina.meng
 * \version 0.9
 * \date 29-11-2018

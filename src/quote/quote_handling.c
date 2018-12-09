@@ -1,6 +1,6 @@
 /**
 * \file quote_handling.c
-* Handle quotes
+* \brief Handle quotes
 * \author Arthur Busuttil
 * \version 0.9
 * \date 06-12-2018

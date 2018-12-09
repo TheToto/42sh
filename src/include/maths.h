@@ -1,6 +1,6 @@
 /**
 * \file maths.h
-* Handle arithmetics
+* \brief Handle arithmetics
 * \author thomas.lupin
 * \version 0.9
 * \date 06-12-2018

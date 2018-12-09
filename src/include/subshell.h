@@ -3,7 +3,7 @@
 * @author louis.holleville thomas.lupin
 * @date 07-12-2018
 * @version 0.9
-* Header for subshell management
+* @brief Header for subshell management
 */
 
 /**

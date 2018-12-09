@@ -3,7 +3,7 @@
 * @author thomas.lupin louis.holleville
 * @date 07-12-2018
 * @version 0.9
-* Management of subshells
+* \brief Management of subshells
 */
 
 #define _DEFAULT_SOURCE

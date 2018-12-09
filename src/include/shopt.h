@@ -1,6 +1,6 @@
 /**
 * \file shopt.h
-* Handle the shopt variables
+* \brief Handle the shopt variables
 * \authors sabrina.meng
 * \version 0.9
 * \date 28-11-2018

@@ -3,7 +3,7 @@
 *\author thomas.lupin
 *\version 0.9
 *\date 22-11-2018
-*Pipeline rule function
+*\brief Pipeline rule function
 */
 #include <err.h>
 #include <stdio.h>

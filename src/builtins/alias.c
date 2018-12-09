@@ -3,7 +3,7 @@
 * @author louis.holleville
 * @date 03-12-2018
 * @version 0.9
-* Execution of the alias and unalias builtin
+* @brief Execution of the alias and unalias builtin
 */
 
 #define _DEFAULT_SOURCE

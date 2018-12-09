@@ -1,6 +1,6 @@
 /**
 * \file echo.c
-* Execute the echo builtin
+* \brief Execute the echo builtin
 * \author sabrina.meng louis.holleville
 * \version 0.9
 * \date 02-12-2018

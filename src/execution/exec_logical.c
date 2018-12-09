@@ -3,7 +3,7 @@
 * @author thomas.lupin
 * @version 0.9
 * @date 25-11-2018
-* execution of logical and + logical or
+* @brief execution of logical and + logical or
 */
 
 #include <sys/types.h>

@@ -4,7 +4,7 @@
 * \version 0.9
 * \date 22-11-2018
 *
-* Header of all parsing functions
+* \brief Header of all parsing functions
 */
 
 #pragma once

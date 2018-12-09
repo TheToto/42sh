@@ -1,6 +1,6 @@
 /**
 * \file exit.c
-* Execute the exit builtin
+* \brief Execute the exit builtin
 * \authors sabrina.meng
 * \version 0.9
 * \date 30-11-2018

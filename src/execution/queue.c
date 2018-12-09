@@ -1,6 +1,6 @@
 /**
 * \file queue.c
-* Queue functions
+* \brief Queue functions
 * \author thomas.lupin
 * \version 0.9
 * \date 02-12-2018

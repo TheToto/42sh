@@ -3,7 +3,7 @@
 * @author louis.holleville
 * @version 0.9
 * @date 25-11-2018
-* execution of functions declaration
+* @brief execution of functions declaration
 */
 
 #include "ast.h"
