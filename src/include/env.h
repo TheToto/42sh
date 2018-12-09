@@ -120,7 +120,7 @@ char *get_var(struct variables *var, char *name);
 void assign_prefix(struct variables *var, char *prefix);
 
 /**
-* @fn replace_var
+* @fn replace_var_scmd
 * @param scmd new variable
 * Replace element by its new variable if a declaration was made
 */
@@ -136,13 +136,18 @@ char **replace_var_scmd(struct ast_node_scmd *scmd);
 int add_func(struct variables *var, char *name, void *value, enum f_type type);
 
 /**
-* Look for the variable with name \a name in the array of functions
+* look for the variable with name \a name in the array of functions
 * @param var library to look in
 * @param name variable researched
-* @return NULL if not found, its value otherwise
+* @return null if not found, its value otherwise
 */
 void *get_func(struct variables *var, char *name);
 
+/**
+* @fn set_up_var
+* @param args List of arguments
+* Set up reserved vars like $n $@, ...
+*/
 void set_up_var(char *args[]);
 
 /**
@@ -192,4 +197,10 @@ void replace_aliases(struct ast_node_scmd *node);
 * @return return the string corretly expanded
 */
 char *advanced_prompt(char *psn);
+
+/**
+* @fn replace_var_for
+* @param n_for new variable
+* Replace element by its new variable if a declaration was made
+*/
 char **replace_var_for(struct ast_node_for *n_for);

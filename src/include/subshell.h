@@ -12,4 +12,10 @@
 * @return malloced string
 */
 char *fd_to_string(int fd);
+
+/**
+* Execute a subshell and return the result
+* @param input The string to execute
+* @return The result of subshell
+*/
 char *redirect_subshell(char *input);

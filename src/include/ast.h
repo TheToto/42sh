@@ -316,4 +316,11 @@ struct ast_node *create_ast_node_pipe(struct ast_node *ls,
 */
 struct ast_node *create_ast_node_semicolon(struct ast_node *left_child,
         struct ast_node *right_child);
+
+/**
+* Add the \a word string to the heredoc array in node
+* @param node pre-created ast_node(redirection) being target of adding
+* @param word string to add. Must not be empty.
+* @return void, changement being done internally
+*/
 void add_elt_heredoc(struct ast_node *node, char *word);

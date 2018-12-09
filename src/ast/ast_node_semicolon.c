@@ -5,6 +5,7 @@
 * \date 14-11-2018
 * \brief Management of semicolons (;)
 */
+
 #include <stdlib.h>
 #include "parser.h"
 #include "ast.h"

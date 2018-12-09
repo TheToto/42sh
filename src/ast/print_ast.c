@@ -6,7 +6,6 @@
 * \brief General management of ast-print
 */
 
-
 #include <err.h>
 #include "ast.h"
 #include "print.h"
