@@ -40,7 +40,9 @@ static void explore_dir(char *cur_path, char *path, char *patern,
 {
     int flag = FNM_PATHNAME;
     if (shell.shopt_states[EXTGLOB])
-        flag = FNM_PATHNAME | FNM_EXTMATCH;
+        flag |= FNM_EXTMATCH;
+    if (shell.shopt_states[NOCASEGLOB])
+        flag |= FNM_CASEFOLD;
     DIR *mydir;
     if (strlen(cur_path))
         mydir = opendir(cur_path);
