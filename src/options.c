@@ -123,10 +123,10 @@ static void check_opt(char *argv[])
             if (opt == NONE)
             {
                 errx(2, "%s: invalid option\
-                \nUsage: ./42sh [GNU long option] [option] [file]\
-                \nGNU long options:\n    --norc\n    --ast-print\
-                \n    --version\nShell options:\
-                \n    -c <command> or [-+]O shopt_option", argv[i]);
+                    \nUsage: ./42sh [GNU long option] [option] [file]\
+                    \nGNU long options:\n    --norc\n    --ast-print\
+                    \n    --version\nShell options:\
+                    \n    -c <command> or [-+]O shopt_option", argv[i]);
             }
         }
     }
@@ -154,8 +154,8 @@ void options(char *argv[])
             norc = 1;
         else if (opt == VERSION)
         {
-                printf("Version 1.0\n");
-                exit(0);
+            printf("Version 1.0\n");
+            exit(0);
         }
     }
     launch_sh(argv, i, ast, norc);

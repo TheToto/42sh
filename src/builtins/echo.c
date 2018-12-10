@@ -26,17 +26,17 @@ static char get_flags(char **str)
             {
                 switch (str[i][j])
                 {
-                    case 'n':
-                        n = 1;
-                        break;
-                    case 'e':
-                        e = 2;
-                        break;
-                    case 'E':
-                        E = 4;
-                        break;
-                    default:
-                        return n + e + E;
+                case 'n':
+                    n = 1;
+                    break;
+                case 'e':
+                    e = 2;
+                    break;
+                case 'E':
+                    E = 4;
+                    break;
+                default:
+                    return n + e + E;
                 }
             }
             else
