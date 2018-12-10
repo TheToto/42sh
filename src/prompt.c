@@ -27,6 +27,16 @@
 #include "builtins.h"
 #include "shopt.h"
 
+static char *redirect_readline(char *var)
+{
+    int save = dup(STDOUT_FILENO);
+    dup2(STDERR_FILENO, STDOUT_FILENO);
+    char *buf = readline(advanced_prompt(var));
+    dup2(save, STDOUT_FILENO);
+    close(save);
+    return buf;
+}
+
 static char *init_path(char *file)
 {
     size_t len = strlen(getenv("HOME")) + strlen(file) + 1;
@@ -78,11 +88,7 @@ static void catch_ctrlc(int signo)
 
 struct token_list *show_ps2(void)
 {
-    int save = dup(STDOUT_FILENO);
-    dup2(STDERR_FILENO, STDOUT_FILENO);
-    char *buf = readline(advanced_prompt("PS2"));
-    dup2(save, STDOUT_FILENO);
-    close(save);
+    char *buf = redirect_readline("PS2");
     lexer_destroy(shell.lexer);
     struct lexer *l = lexer(buf);
     free(buf);
@@ -127,11 +133,7 @@ int show_prompt(int norc, int is_print)
 
     while (1)
     {
-        int save = dup(STDOUT_FILENO);
-        dup2(STDERR_FILENO, STDOUT_FILENO);
-        char *buf = readline(advanced_prompt("PS1"));
-        dup2(save, STDOUT_FILENO);
-        close(save);
+        char *buf = redirect_readline("PS1");
         if (!buf)
             exec_exit(NULL);
         if (*buf)
