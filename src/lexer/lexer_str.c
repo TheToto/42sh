@@ -31,6 +31,64 @@ static void get_next_subshell(char *str, int *cur)
     *cur = (str[i] == ')') ? i : i - 1;
 }
 
+static void go_to_next_sub_string_single(char **str, int *i, int *j)
+{
+    (*i)++;
+    while ((*str)[*i] != '\'')
+    {
+        if (!(*str)[*i] && shell.type == S_PROMPT)
+        {
+            *str = quote_ps2();
+            *j += *i;
+            *i = 0;
+        }
+        else if (!(*str)[*i])
+            break;
+        else
+            (*i)++;
+    }
+}
+
+static void go_to_next_sub_string_double(char **str, int *i, int *j,
+        int *is_quoted)
+{
+    (*i)++;
+    while ((*str)[*i] != '\"' || *is_quoted)
+    {
+        *is_quoted = (*str)[*i] == '\\' && !*is_quoted;
+        if (!(*str)[*i] && shell.type == S_PROMPT)
+        {
+            *str = quote_ps2();
+            *j += *i;
+            *i = -1;
+        }
+        else if (!(*str)[*i])
+            break;
+        else
+            (*i)++;
+    }
+}
+
+static void go_to_next_sub_string_back(char **str, int *i, int *j,
+        int *is_quoted)
+{
+    (*i)++;
+    while ((*str)[*i] != '`' || *is_quoted)
+    {
+        *is_quoted = (*str)[*i] == '\\' && !*is_quoted;
+        if (!(*str)[*i] && shell.type == S_PROMPT)
+        {
+            *str = quote_ps2();
+            *j += *i;
+            *i = 0;
+        }
+        else if (!(*str)[*i])
+            break;
+        else
+            (*i)++;
+    }
+}
+
 static int get_next_quoted(char **str)
 {
     int is_quoted = 0;
@@ -47,58 +105,11 @@ static int get_next_quoted(char **str)
         if ((*str)[i] == '$' && (*str)[i + 1] == '(' && !is_quoted)
             get_next_subshell(*str, &i);
         else if ((*str)[i] == '\'' && !is_quoted)
-        {
-            i++;
-            while ((*str)[i] != '\'')
-            {
-                if (!(*str)[i] && shell.type == S_PROMPT)
-                {
-                    *str = quote_ps2();
-                    j += i;
-                    i = 0;
-                }
-                else if (!(*str)[i])
-                    break;
-                else
-                    i++;
-            }
-        }
+            go_to_next_sub_string_single(str, &i, &j);
         else if ((*str)[i] == '\"' && !is_quoted)
-        {
-            i++;
-            while ((*str)[i] != '\"' || is_quoted)
-            {
-                is_quoted = (*str)[i] == '\\' && !is_quoted;
-                if (!(*str)[i] && shell.type == S_PROMPT)
-                {
-                    *str = quote_ps2();
-                    j += i;
-                    i = 0;
-                }
-                else if (!(*str)[i])
-                    break;
-                else
-                    i++;
-            }
-        }
+            go_to_next_sub_string_double(str, &i, &j, &is_quoted);
         else if ((*str)[i] == '`' && !is_quoted)
-        {
-            i++;
-            while ((*str)[i] != '`' || is_quoted)
-            {
-                is_quoted = (*str)[i] == '\\' && !is_quoted;
-                if (!(*str)[i] && shell.type == S_PROMPT)
-                {
-                    *str = quote_ps2();
-                    j += i;
-                    i = 0;
-                }
-                else if (!(*str)[i])
-                    break;
-                else
-                    i++;
-            }
-        }
+            go_to_next_sub_string_back(str, &i, &j, &is_quoted);
         if (!(*str)[i])
             break;
     }
