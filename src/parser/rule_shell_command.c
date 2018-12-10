@@ -12,6 +12,30 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
+
+static struct ast_node *rule_shell_command_bis(struct token_list **tok)
+{
+    if (TOK_TYPE(tok) == PARENTHESIS_ON)
+    {
+        NEXT_TOK(tok);
+        ask_ps2(tok);
+        struct ast_node *res = rule_compound_list(tok, PARENTHESIS_OFF);
+        if (!res)
+            return NULL;
+        if (TOK_TYPE(tok) != PARENTHESIS_OFF)
+        {
+            warnx("Need an ')' after this compound list");
+            destroy_ast(res);
+            return NULL;
+        }
+        NEXT_TOK(tok);
+        return res;
+    }
+    warnx("Can't find this shell command");
+    return NULL;
+
+}
+
 struct ast_node *rule_shell_command(struct token_list **tok)
 {
     if (TOK_TYPE(tok) == IF)
@@ -40,22 +64,5 @@ struct ast_node *rule_shell_command(struct token_list **tok)
         NEXT_TOK(tok);
         return res;
     }
-    if (TOK_TYPE(tok) == PARENTHESIS_ON)
-    {
-        NEXT_TOK(tok);
-        ask_ps2(tok);
-        struct ast_node *res = rule_compound_list(tok, PARENTHESIS_OFF);
-        if (!res)
-            return NULL;
-        if (TOK_TYPE(tok) != PARENTHESIS_OFF)
-        {
-            warnx("Need an ')' after this compound list");
-            destroy_ast(res);
-            return NULL;
-        }
-        NEXT_TOK(tok);
-        return res;
-    }
-    warnx("Can't find this shell command");
-    return NULL;
+    return rule_shell_command_bis(tok);
 }
