@@ -101,6 +101,7 @@ static void convert_dec(char *str, char *to_print, size_t *old, size_t *new)
         *new += 1;
         to_print[*new - 1] = str[*old - 1];
         to_print[*new] = str[*old];
+        free(res);
         return;
     }
     int c = strtol(n, NULL, base);
