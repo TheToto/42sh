@@ -22,7 +22,7 @@ static char get_flags(char **str)
     {
         for (size_t j = 1; str[i][j]; j++)
         {
-            if (str[i][1] && !str[i][2])
+            if (str[i][1])
             {
                 switch (str[i][j])
                 {
