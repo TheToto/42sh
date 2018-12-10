@@ -2,7 +2,7 @@
 * \file echo.c
 * \brief Execute the echo builtin
 * \author sabrina.meng louis.holleville
-* \version 0.9
+* \version 1.0
 * \date 02-12-2018
 **/
 
@@ -78,8 +78,9 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
     case 'v':
         to_print[*new] = 11;
         break;
-    case '\\':
-        to_print[*new] = '\\';
+    case '0':
+    case 'x':
+        //convert_dec(str, to_print, old, new);
         break;
     default:
         *new += 1;
@@ -116,9 +117,9 @@ int echo(char **str)
             {
                 if (((flags & 2) == 2) && str[i][old] == '\\')
                 {
-                    if (str[i][old + 1] && str[i][old] == 'c')
+                    if (str[i][old + 1] && str[i][old + 1] == 'c')
                     {
-                        flags += (flags & 1) == 0 ? 1: 0;
+                        flags += (flags & 1) == 0 ? 1 : 0;
                         break;
                     }
                     handle_escape(str[i], to_print, &old, &new);
