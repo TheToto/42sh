@@ -20,33 +20,42 @@ static char get_flags(char **str)
     char E = 0;
     for (size_t i = 1; str[i] && str[i][0] == '-'; i++)
     {
-        if (str[i][1] && !str[i][2])
+        for (size_t j = 1; str[i][j]; j++)
         {
-            switch (str[i][1])
+            if (str[i][1] && !str[i][2])
             {
-            case 'n':
-                n = 1;
-                break;
-            case 'e':
-                e = 2;
-                break;
-            case 'E':
-                E = 4;
-                break;
-            default:
-                return n + e + E;
+                switch (str[i][j])
+                {
+                    case 'n':
+                        n = 1;
+                        break;
+                    case 'e':
+                        e = 2;
+                        break;
+                    case 'E':
+                        E = 4;
+                        break;
+                    default:
+                        return n + e + E;
+                }
             }
+            else
+                return n + e + E;
         }
-        else
-            return n + e + E;
     }
     return n + e + E;
 }
 
 static int not_opt(char *str)
 {
-    return !(str[0] == '-' && str[1] && !str[2]
-            && (str[1] == 'n' || str[1] == 'e' || str[1] == 'E'));
+    if (str[0] != '-')
+        return 1;
+    for (size_t i = 1; str[i]; i++)
+    {
+        if (str[i] != 'n' && str[i] != 'e' && str[i] != 'E')
+            return 1;
+    }
+    return 0;
 }
 
 static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
