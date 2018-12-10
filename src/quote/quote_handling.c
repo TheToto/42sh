@@ -81,6 +81,41 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
     }
 }
 
+static void handle_inf_to_dquote_in_dquote(char **res, size_t *len,
+    struct token_list_quote *tl)
+{
+    int is_subsh = tl->is_sub
+        && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
+    char *tmp = NULL;
+    if (!tl->is_sub)
+    {
+        tmp = get_var(shell.var, tl->str);
+        if (!*tl->str)
+            tmp = "$";
+    }
+    else
+        tmp = get_sub_and_maths(tl->str);
+    if (tmp)
+    {
+        if (!handle_realloc(res, tmp, len, 2))
+        {
+            if (is_subsh)
+                free(tmp);
+            return;
+        }
+        else
+        {
+            for (int i = 0; tmp[i]; i++)
+            {
+                strcat(*res, "\\");
+                strncat(*res, tmp + i, 1);
+            }
+        }
+        if (is_subsh)
+            free(tmp);
+    }
+}
+
 static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
 {
     char *str = *str_org;
@@ -105,38 +140,7 @@ static void remove_quoting_inside_dquoting(char **str_org, struct queue *q)
         else if (tl->tok == QUOTED)
             handle_single_quote_in_dquote(res, tl, q);
         else if (tl->tok <= DQUOTED || tl->tok == BACK_QUOTED)
-        {
-            int is_subsh = tl->is_sub
-                && fnmatch("(*(*))", tl->str, FNM_EXTMATCH);
-            char *tmp = NULL;
-            if (!tl->is_sub)
-            {
-                tmp = get_var(shell.var, tl->str);
-                if (!*tl->str)
-                    tmp = "$";
-            }
-            else
-                tmp = get_sub_and_maths(tl->str);
-            if (tmp)
-            {
-                if (!handle_realloc(&res, tmp, &len, 2))
-                {
-                    if (is_subsh)
-                        free(tmp);
-                    return;
-                }
-                else
-                {
-                    for (int i = 0; tmp[i]; i++)
-                    {
-                        strcat(res, "\\");
-                        strncat(res, tmp + i, 1);
-                    }
-                }
-                if (is_subsh)
-                    free(tmp);
-            }
-        }
+            handle_inf_to_dquote_in_dquote(&res, &len, tl);
         tl = tl->next;
     }
     destroy_lexer_quote(l);
