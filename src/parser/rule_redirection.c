@@ -199,7 +199,6 @@ static int check_tok(enum redirect_type r_type, struct token_list **tok,
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
-    int fd = -1;
     int io = -1;
     if (TOK_TYPE(tok) == IO_NUMBER)
     {
@@ -222,7 +221,7 @@ struct ast_node *rule_redirection(struct token_list **tok,
         return NULL;
     char *dest = TOK_STR(tok);
     NEXT_TOK(tok);
-    struct ast_node *redir = create_ast_node_redirect(fd, r_type, io,
+    struct ast_node *redir = create_ast_node_redirect(r_type, io,
             dest, child);
     if (r_type == R_DLESS || r_type == R_DLESSDASH)
     {

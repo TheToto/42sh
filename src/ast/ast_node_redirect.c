@@ -15,8 +15,8 @@
 #include "print.h"
 #include "ast_destroy.h"
 
-static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
-        enum redirect_type type, int io_number, char *word,
+static struct ast_node_redirect *create_ast_node_redirect_intern(char *word,
+        enum redirect_type type, int io_number,
         struct ast_node *node)
 {
     struct ast_node_redirect *new = malloc(sizeof(struct ast_node_redirect));
@@ -25,7 +25,7 @@ static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
     char **words = calloc(8, sizeof(char*));
     if (!words)
         err(1, "cannot calloc in create_ast_node_redirect_intern (words)");
-    new->fd = fd;
+    new->fd = -1;
     new->io_number = io_number;
     new->word = strdup(word);
     new->words = words;
@@ -36,14 +36,14 @@ static struct ast_node_redirect *create_ast_node_redirect_intern(int fd,
     return new;
 }
 
-struct ast_node *create_ast_node_redirect(int fd, enum redirect_type type,
+struct ast_node *create_ast_node_redirect(enum redirect_type type,
         int io_number, char *word, struct ast_node *node)
 {
     struct ast_node *new = malloc(sizeof(struct ast_node));
     if (!new)
         return NULL;
-    struct ast_node_redirect *under_node = create_ast_node_redirect_intern(fd,
-            type, io_number, word, node);
+    struct ast_node_redirect *under_node = create_ast_node_redirect_intern(word,
+            type, io_number, node);
     if (!under_node)
     {
         free(new);

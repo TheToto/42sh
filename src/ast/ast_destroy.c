@@ -10,6 +10,36 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
+static void destroy_ast_bis(struct ast_node *root)
+{
+    switch (root->type)
+    {
+    case N_FCTDEC:
+        destroy_ast_node_fctdec(root->son);
+        break;
+    case N_LOGICAL_AND:
+        destroy_ast_node_land(root->son);
+        break;
+    case N_LOGICAL_OR:
+        destroy_ast_node_lor(root->son);
+        break;
+    case N_AMPERSAND:
+        destroy_ast_node_ampersand(root->son);
+        break;
+    case N_SEMICOLON:
+        destroy_ast_node_semicolon(root->son);
+        break;
+    case N_NOT:
+        destroy_ast_node_not(root->son);
+        break;
+    case N_PIPE:
+        destroy_ast_node_pipe(root->son);
+        break;
+    default:
+        break;
+    }
+}
+
 void destroy_ast(struct ast_node *root)
 {
     if (!root)
@@ -34,29 +64,8 @@ void destroy_ast(struct ast_node *root)
     case N_SCMD:
         destroy_ast_node_scmd(root->son);
         break;
-    case N_FCTDEC:
-        destroy_ast_node_fctdec(root->son);
-        break;
-    case N_LOGICAL_AND:
-        destroy_ast_node_land(root->son);
-        break;
-    case N_LOGICAL_OR:
-        destroy_ast_node_lor(root->son);
-        break;
-    case N_AMPERSAND:
-        destroy_ast_node_ampersand(root->son);
-        break;
-    case N_SEMICOLON:
-        destroy_ast_node_semicolon(root->son);
-        break;
-    case N_NOT:
-        destroy_ast_node_not(root->son);
-        break;
-    case N_PIPE:
-        destroy_ast_node_pipe(root->son);
-        break;
     default:
-        break;
+        destroy_ast_bis(root);
     }
     free(root);
 }

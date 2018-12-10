@@ -204,8 +204,8 @@ struct ast_node *create_ast_node_lor(struct ast_node *left_child,
 * @param word      Name of the File Descriptor where stream is redirected
 * @return newly created ast_node and its type
 */
-struct ast_node *create_ast_node_redirect(int fd,
-        enum redirect_type type, int io_number, char *word,
+struct ast_node *create_ast_node_redirect(enum redirect_type type,
+        int io_number, char *word,
         struct ast_node *node);
 
 /**
