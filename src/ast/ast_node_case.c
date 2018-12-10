@@ -119,17 +119,35 @@ void destroy_ast_node_case(struct ast_node_case *node)
     free(node);
 }
 
+static char *put_back(char *str)
+{
+    char *res = calloc(strlen(str) + 100, sizeof(char));
+    size_t j = 0;
+    for (size_t i = 0; str[i]; i++, j++)
+    {
+        if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
+        {
+            res[j++] = '\\';
+        }
+        res[j] = str[i];
+    }
+    return res;
+}
+
 void print_ast_case(struct ast_node_case *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"CASE %s:\"]\n", *num, node->value);
+    char *mal = put_back(node->value);
+    fprintf(fd, "%lu [label= \"CASE %s:\"]\n", *num, mal);
+    free(mal);
 
     size_t save = *num;
 
     for (size_t i = 0; i < node->size; i++)
     {
         *num += 1;
-        fprintf(fd, "%lu->%lu[label= \"%s\"];\n", save, *num,
-                node->cases[i]);
+        char *mal = put_back(node->cases[i]);
+        fprintf(fd, "%lu->%lu[label= \"%s\"];\n", save, *num, mal);
+        free(mal);
         print_ast_node(node->nodes[i], num, fd);
     }
 }

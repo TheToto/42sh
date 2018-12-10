@@ -92,17 +92,36 @@ void destroy_ast_node_redirect(struct ast_node_redirect *node)
     free(node);
 }
 
+static char *put_back(char *str)
+{
+    char *res = calloc(strlen(str) + 100, sizeof(char));
+    size_t j = 0;
+    for (size_t i = 0; str[i]; i++, j++)
+    {
+        if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
+        {
+            res[j++] = '\\';
+        }
+        res[j] = str[i];
+    }
+    return res;
+}
+
 void print_ast_redirect(struct ast_node_redirect *node, size_t *num, FILE *fd)
 {
+    char *mal = put_back(node->word);
     fprintf(fd, "%lu [label= \"REDIR: %d (%d) %s\"];\n", *num, node->io_number,
-            node->type, node->word);
+            node->type, mal);
+    free(mal);
     size_t save = *num;
     *num += 1;
 
     for (size_t i = 0; i < node->size; i++)
     {
+        mal = put_back(node->words[i]);
         fprintf(fd, "%lu->%lu;\n%lu [label = \"%s\"];\n", save, *num, *num,
-                node->words[i]);
+                mal);
+        free(mal);
         *num += 1;
     }
     fprintf(fd, "%lu->%lu;\n", save, *num);

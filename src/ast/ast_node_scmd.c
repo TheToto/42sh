@@ -139,14 +139,37 @@ void destroy_ast_node_scmd(struct ast_node_scmd *node)
     free(node);
 }
 
+static char *put_back(char *str)
+{
+    char *res = calloc(strlen(str) + 100, sizeof(char));
+    size_t j = 0;
+    for (size_t i = 0; str[i]; i++, j++)
+    {
+        if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
+        {
+            res[j++] = '\\';
+        }
+        res[j] = str[i];
+    }
+    return res;
+}
+
 void print_ast_scmd(struct ast_node_scmd *node, size_t *num, FILE *fd)
 {
     fprintf(fd, "%lu [label= \"", *num);
     for (size_t i = 0; i < node->pre_size; i++)
-        fprintf(fd, "%s ", node->prefix[i]);
+    {
+        char *mal = put_back(node->prefix[i]);
+        fprintf(fd, "%s ", mal);
+        free(mal);
+    }
 
     for (size_t i = 0; node->elements[i]; i++)
-        fprintf(fd, "%s ", node->elements[i]);
+    {
+        char *mal = put_back(node->elements[i]);
+        fprintf(fd, "%s ", mal);
+        free(mal);
+    }
 
     fprintf(fd, "\"];\n");
 }

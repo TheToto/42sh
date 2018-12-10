@@ -94,13 +94,37 @@ void destroy_ast_node_for(struct ast_node_for *node)
     free(node);
 }
 
+static char *put_back(char *str)
+{
+    char *res = calloc(strlen(str) + 100, sizeof(char));
+    size_t j = 0;
+    for (size_t i = 0; str[i]; i++, j++)
+    {
+        if (str[i] == '"' && (i == 0 || str[i - 1] != '\\'))
+        {
+            res[j++] = '\\';
+        }
+        res[j] = str[i];
+    }
+    return res;
+}
+
+
 void print_ast_for(struct ast_node_for *node, size_t *num, FILE *fd)
 {
-    fprintf(fd, "%lu [label= \"FOR %s IN ", *num, node->value);
+    char *mal = put_back(node->value);
+    fprintf(fd, "%lu [label= \"FOR %s IN ", *num, mal);
+    free(mal);
     size_t save = *num;
     for (size_t i = 0; i < node->size - 1; i++)
-        fprintf(fd, "%s, ", node->values[i]);
-    fprintf(fd, "%s", node->values[node->size - 1]);
+    {
+        mal = put_back(node->values[i]);
+        fprintf(fd, "%s, ", mal);
+        free(mal);
+    }
+    mal = put_back(node->values[node->size - 1]);
+    fprintf(fd, "%s", mal);
+    free(mal);
     fprintf(fd, "\"];\n");
 
     *num += 1;
