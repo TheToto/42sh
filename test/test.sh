@@ -65,12 +65,13 @@ while test $# -gt 0; do
 done
 
 is_in () {
+    ret=1
     for item in $2; do
         if [ $1 = $item ]; then
-            return 0
+            ret=0
         fi
     done
-    return 1
+    return $ret
 }
 
 pretty_printf_dash () {
