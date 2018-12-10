@@ -204,3 +204,14 @@ char *advanced_prompt(char *psn);
 * Replace element by its new variable if a declaration was made
 */
 char **replace_var_for(struct ast_node_for *n_for);
+
+/**
+* Set up all the reserved variables in var
+*/
+void set_up_reserved(void);
+
+/**
+* Import all exported variables in env into library var
+* @param var the library to import exported var in.
+*/
+void import_exported(struct variables *var);
