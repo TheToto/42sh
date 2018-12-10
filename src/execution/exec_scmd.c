@@ -58,6 +58,17 @@ static void add_params(char **expanded, struct variables *var)
     free(star);
 }
 
+static void free_update(char *sharp, char *star, char *arob,
+        struct variables *var)
+{
+    add_var(var, "#", sharp, 0);
+    add_var(var, "*", star, 0);
+    add_var(var, "@", arob, 0);
+    free(sharp);
+    free(star);
+    free(arob);
+}
+
 static int exec_func(char **expanded, struct variables *var, void *func)
 {
     int status = 0;
@@ -93,12 +104,7 @@ static int exec_func(char **expanded, struct variables *var, void *func)
             add_var(var, itoa(i, buf_nb), "", 0);
     }
     free(backup);
-    add_var(var, "#", sharp, 0);
-    add_var(var, "*", star, 0);
-    add_var(var, "@", arob, 0);
-    free(sharp);
-    free(star);
-    free(arob);
+    free_update(sharp, star, arob, var);
     return status;
 }
 

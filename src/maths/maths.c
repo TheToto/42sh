@@ -120,6 +120,30 @@ static long long int int_pow(long long int num, long long int exp)
     return res;
 }
 
+static long long int compute_op_bis(long long int a, long long int b,
+                                long long int op)
+{
+    switch (op)
+    {
+    case '&':
+        return b & a;
+    case '&' * 2:
+        return b && a;
+    case '|':
+        return b | a;
+    case '|' * 2:
+        return b || a;
+    case '^':
+        return b ^ a;
+    case '%':
+        return b % a;
+    default:
+        break;
+    }
+    warnx("libmath : Malformed input, unexpected %lld", op);
+    return INT_MIN;
+}
+
 static long long int compute_op(long long int a, long long int b,
                                 long long int op)
 {
@@ -143,23 +167,9 @@ static long long int compute_op(long long int a, long long int b,
                 return 0;
         }
         return b / a;
-    case '&':
-        return b & a;
-    case '&' * 2:
-        return b && a;
-    case '|':
-        return b | a;
-    case '|' * 2:
-        return b || a;
-    case '^':
-        return b ^ a;
-    case '%':
-        return b % a;
     default:
-        break;
+        return compute_op_bis(a, b, op);
     }
-    warnx("libmath : Malformed input, unexpected %lld", op);
-    return INT_MIN;
 }
 
 static long long int apply_modif(char modif, long long int val)
@@ -270,6 +280,17 @@ static long long int math_error(char *str, long long int want_num,
     return INT_MIN;
 }
 
+static void handle_priority(struct stack *sign, char *str, size_t *i,
+        struct stack *values)
+{
+    while (!is_empty_stack(sign) && priority(peak_stack(sign))
+            >= priority(get_operator(str, i, 0)))
+    {
+        compute_next(values, sign);
+    }
+    push_stack(sign, get_operator(str, i, 1));
+}
+
 long long int evaluate_maths(char *str)
 {
     struct stack *values = init_stack();
@@ -294,12 +315,7 @@ long long int evaluate_maths(char *str)
         }
         else if (priority(get_operator(str, &i, 0)) != 0 && !want_num)
         {
-            while (!is_empty_stack(sign) && priority(peak_stack(sign))
-                    >= priority(get_operator(str, &i, 0)))
-            {
-                compute_next(values, sign);
-            }
-            push_stack(sign, get_operator(str, &i, 1));
+            handle_priority(sign, str, &i, values);
             want_num = 1;
         }
         else
