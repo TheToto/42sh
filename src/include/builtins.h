@@ -25,7 +25,8 @@ enum builtin
     CONTINUE,
     BREAK,
     SOURCE,
-    HISTORY
+    HISTORY,
+    READ
 };
 
 /**
@@ -116,3 +117,10 @@ int exec_alias(char **str);
 * @return exit status of the builtin
 */
 int exec_unalias(char **str);
+
+/*
+* Execute the read builtin
+* @param str the string to be parsed
+* @return exit status of the builtin
+*/
+int exec_read(char **str);
