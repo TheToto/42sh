@@ -68,6 +68,8 @@
     - src/env/advanced_prompt.c;
     - src/env/alias_lib.c;
     - src/env/functions.c
+    - src/env/replacement.c;
+    - src/env/setup.c;
     - src/env/var.c;
     - src/execution/exec_case.c
     - src/execution/exec_fctdec.c
@@ -82,6 +84,7 @@
     - src/lexer/lexer_str.c;
     - src/lexer/lexer_word.c;
     - src/maths/maths.c
+    - src/maths/operator.c
     - src/maths/stack.c
     - src/options.c;
     - src/parser/misc.c
