@@ -16,6 +16,25 @@
 #include "shopt.h"
 #include "shell.h"
 
+static enum builtin get_builtin_bis(char *str)
+{
+    if (!strcmp(str, "echo"))
+        return ECHO;
+    if (!strcmp(str, "continue"))
+        return CONTINUE;
+    if (!strcmp(str, "break"))
+        return BREAK;
+    if (!strcmp(str, "source") || !strcmp(str, "."))
+        return SOURCE;
+    if (!strcmp(str, "history"))
+        return HISTORY;
+    if (!strcmp(str, "read"))
+        return READ;
+    if (!strcmp(str, "return"))
+        return RETURN_B;
+    return ANY;
+}
+
 static enum builtin get_builtin(char *str)
 {
     if (!str)
@@ -32,21 +51,7 @@ static enum builtin get_builtin(char *str)
         return ALIAS;
     if (!strcmp(str, "unalias"))
         return UNALIAS;
-    if (!strcmp(str, "echo"))
-        return ECHO;
-    if (!strcmp(str, "continue"))
-        return CONTINUE;
-    if (!strcmp(str, "break"))
-        return BREAK;
-    if (!strcmp(str, "source") || !strcmp(str, "."))
-        return SOURCE;
-    if (!strcmp(str, "history"))
-        return HISTORY;
-    if (!strcmp(str, "read"))
-        return READ;
-    if (!strcmp(str, "return"))
-        return RETURN_B;
-    return ANY;
+    return get_builtin_bis(str);
 }
 
 size_t get_args(char **str)
@@ -69,25 +74,11 @@ int is_zero(char *s)
     return 1;
 }
 
-int exec_builtin(char **str)
+static int exec_builtin_bis(char **str, enum builtin builtin)
 {
-    char *cmd = *str;
-    enum builtin builtin = get_builtin(cmd);
     int res = -1;
     switch (builtin)
     {
-    case EXIT:
-        return exec_exit(str);
-    case CD:
-        return changedir(str);
-    case SHOPT:
-        return shopt_exec(str);
-    case EXPORT:
-        return exec_export(str);
-    case ALIAS:
-        return exec_alias(str);
-    case UNALIAS:
-        return exec_unalias(str);
     case ECHO:
         return echo(str);
     case CONTINUE:
@@ -102,9 +93,31 @@ int exec_builtin(char **str)
         return exec_read(str);
     case RETURN_B:
         return exec_return(str);
-
     default:
         break;
     }
     return res;
+}
+
+int exec_builtin(char **str)
+{
+    char *cmd = *str;
+    enum builtin builtin = get_builtin(cmd);
+    switch (builtin)
+    {
+    case EXIT:
+        return exec_exit(str);
+    case CD:
+        return changedir(str);
+    case SHOPT:
+        return shopt_exec(str);
+    case EXPORT:
+        return exec_export(str);
+    case ALIAS:
+        return exec_alias(str);
+    case UNALIAS:
+        return exec_unalias(str);
+    default:
+        return exec_builtin_bis(str, builtin);
+    }
 }

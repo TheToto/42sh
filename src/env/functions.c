@@ -25,6 +25,14 @@ static void expand_f_lib(struct variables *var)
     var->f_capacity *= 2;
 }
 
+static void set_cur_func(struct func *cur, void *value, enum f_type type)
+{
+    if (cur->type == DECLARED)
+        destroy_ast(cur->value);
+    cur->value = value;
+    cur->type = type;
+}
+
 int add_func(struct variables *var, char *name, void *value, enum f_type type)
 {
     if (!var || !name || !value)
@@ -47,10 +55,7 @@ int add_func(struct variables *var, char *name, void *value, enum f_type type)
 
     if (found)
     {
-        if (cur->type == DECLARED)
-            destroy_ast(cur->value);
-        cur->value = value;
-        cur->type = type;
+        set_cur_func(cur, value, type);
         return 0;
     }
     if (pos == var->f_capacity)

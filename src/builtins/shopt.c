@@ -96,6 +96,31 @@ static int print_on_off(int state, int print)
     return 0;
 }
 
+static void add_shellopts(char *str, enum shopt i)
+{
+    if (shell.shopt_states[i])
+    {
+        if (str[0])
+            strcat(str, ":");
+        if (i == ASTPRINT)
+            strcat(str, "ast_print");
+        else if (i == DOTGLOB)
+            strcat(str, "dotglob");
+        else if (i == EXP_ALIAS)
+            strcat(str, "expand_aliases");
+        else if (i == EXTGLOB)
+            strcat(str, "extglob");
+        else if (i == NOCASEGLOB)
+            strcat(str, "nocaseglob");
+        else if (i == NULLGLOB)
+            strcat(str, "nullglob");
+        else if (i == SRCPATH)
+            strcat(str, "sourcepath");
+        else if (i == XPGECHO)
+            strcat(str, "xpg_echo");
+    }
+}
+
 void update_shellopts(void)
 {
     char *str = calloc(4096, sizeof(char));
@@ -104,29 +129,7 @@ void update_shellopts(void)
     else
     {
         for (size_t i = 0; i < NB_SHOPT; i++)
-        {
-            if (shell.shopt_states[i])
-            {
-                if (str[0])
-                    strcat(str, ":");
-                if (i == ASTPRINT)
-                    strcat(str, "ast_print");
-                else if (i == DOTGLOB)
-                    strcat(str, "dotglob");
-                else if (i == EXP_ALIAS)
-                    strcat(str, "expand_aliases");
-                else if (i == EXTGLOB)
-                    strcat(str, "extglob");
-                else if (i == NOCASEGLOB)
-                    strcat(str, "nocaseglob");
-                else if (i == NULLGLOB)
-                    strcat(str, "nullglob");
-                else if (i == SRCPATH)
-                    strcat(str, "sourcepath");
-                else if (i == XPGECHO)
-                    strcat(str, "xpg_echo");
-            }
-        }
+            add_shellopts(str, i);
     }
     add_var(shell.var, "SHELLOPTS", str, 0);
     free(str);
@@ -229,5 +232,6 @@ int shopt_exec(char **str)
         else
             res = change_shopt(str[i], res, opt);
     }
+    update_shellopts();
     return res;
 }

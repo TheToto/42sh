@@ -237,6 +237,34 @@ static char *customize_str2(char *new, char *old, size_t **arr)
     return new;
 }
 
+static void customize_str_bis(char *new, char *old, size_t i,
+        size_t *arr[])
+{
+    switch (old[i])
+    {
+    case 'D':
+        new = get_D_time(old, new, arr);
+        break;
+    case 'W':
+        new = get_W(new, arr);
+        break;
+    case 'w':
+        new = get_w(new, arr);
+        break;
+    case 'u':
+        new = get_u(new, arr);
+        break;
+    case 'H':
+        new = get_H(new, arr);
+        break;
+    case 'h':
+        new = get_h(new, arr);
+        break;
+    default:
+        new = customize_str2(new, old, arr);
+    }
+}
+
 static char *customize_str(char *new, char *old, size_t size, size_t capacity)
 {
     for (size_t i = 0; old[i] && new; i++)
@@ -259,26 +287,8 @@ static char *customize_str(char *new, char *old, size_t size, size_t capacity)
             case 'd':
                 new = get_d_time(new, &size, &capacity, "%a %b %d");
                 break;
-            case 'D':
-                new = get_D_time(old, new, arr);
-                break;
-            case 'W':
-                new = get_W(new, arr);
-                break;
-            case 'w':
-                new = get_w(new, arr);
-                break;
-            case 'u':
-                new = get_u(new, arr);
-                break;
-            case 'H':
-                new = get_H(new, arr);
-                break;
-            case 'h':
-                new = get_h(new, arr);
-                break;
             default:
-                new = customize_str2(new, old, arr);
+                customize_str_bis(new, old, i, arr);
             }
         }
         else

@@ -15,6 +15,29 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
+static int error_check(struct token_list **tok, char *name_func)
+{
+    if (TOK_TYPE(tok) == PARENTHESIS_ON)
+    {
+        NEXT_TOK(tok);
+    }
+    else
+    {
+        warnx("Need a '(' at function declaration");
+        free(name_func);
+        return 0;
+    }
+    if (TOK_TYPE(tok) == PARENTHESIS_OFF)
+        NEXT_TOK(tok);
+    else
+    {
+        warnx("Need a ')' at function declaration");
+        free(name_func);
+        return 0;
+    }
+    return 1;
+}
+
 struct ast_node *rule_funcdec(struct token_list **tok)
 {
     char *name_func;
@@ -28,27 +51,11 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     else
     {
         warnx("This function has no name");
-        return NULL;
+        return 0;
     }
     NEXT_TOK(tok);
-    if (TOK_TYPE(tok) == PARENTHESIS_ON)
-    {
-        NEXT_TOK(tok);
-    }
-    else
-    {
-        warnx("Need a '(' at function declaration");
-        free(name_func);
+    if (!error_check(tok, name_func))
         return NULL;
-    }
-    if (TOK_TYPE(tok) == PARENTHESIS_OFF)
-        NEXT_TOK(tok);
-    else
-    {
-        warnx("Need a ')' at function declaration");
-        free(name_func);
-        return NULL;
-    }
     remove_new_line(tok);
     ask_ps2(tok);
     struct ast_node *body = rule_shell_command(tok);
