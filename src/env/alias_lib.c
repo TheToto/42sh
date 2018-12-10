@@ -156,6 +156,8 @@ void replace_aliases(struct ast_node_scmd *node)
     if (!expand)
         return;
     struct lexer *save_l = shell.lexer;
+    char *save_buf = shell.buf;
+    shell.buf = expand;
     struct lexer *l = lexer(expand);
     struct token_list *save = l->token_list;
     struct token_list **tok = &save;
@@ -182,5 +184,6 @@ void replace_aliases(struct ast_node_scmd *node)
     free(tab);
     lexer_destroy(l);
     shell.lexer = save_l;
+    shell.buf = save_buf;
     node->elements = dump_queue(q);
 }
