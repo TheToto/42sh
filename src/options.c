@@ -123,7 +123,7 @@ static void check_opt(char *argv[])
             if (opt == NONE)
             {
                 errx(2, "%s: invalid option\
-                    \nUsage: ./42sh [GNU long option] [option] [file]\
+                    \nUsage: 42sh [GNU long option] [option] [file]\
                     \nGNU long options:\n    --norc\n    --ast-print\
                     \n    --version\nShell options:\
                     \n    -c <command> or [-+]O shopt_option", argv[i]);

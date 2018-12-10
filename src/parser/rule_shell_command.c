@@ -12,7 +12,6 @@
 #include "ast.h"
 #include "ast_destroy.h"
 
-
 static struct ast_node *rule_shell_command_bis(struct token_list **tok)
 {
     if (TOK_TYPE(tok) == PARENTHESIS_ON)
@@ -33,7 +32,6 @@ static struct ast_node *rule_shell_command_bis(struct token_list **tok)
     }
     warnx("Can't find this shell command");
     return NULL;
-
 }
 
 struct ast_node *rule_shell_command(struct token_list **tok)

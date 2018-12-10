@@ -43,12 +43,18 @@ static char name_ok(char *str)
     for (; str[len] && str[len] != '='; len++)
     {
         if (str[len] <= '9' && str[len] >= '0')
+        {
             digits++;
+        }
         else if ((str[len] >= 'A' && str[len] <= 'Z') || (str[len] >= 'a'
             && str[len] <= 'z') || str[len] == '_')
+        {
             continue;
+        }
         else
+        {
             return 0;
+        }
     }
     if (digits == len)
         return 0;
