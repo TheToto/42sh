@@ -89,7 +89,7 @@ int exec_history(char **str)
     if (opt == -1)
     {
         warnx("history: %s: invalid option\
-        \nusage: history [-c] [n] or history -r filename", str[1]);
+            \nusage: history [-c] [n] or history -r filename", str[1]);
         return 2;
     }
     if (!opt)

@@ -117,7 +117,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
     size_t len = strlen(*str);
     char *word = calloc(1, len + 1);
     *str += (**str && (**str == '\\' || **str == '$'
-                || **str == '\"' || **str == '\'' || **str == '`'));
+    || **str == '\"' || **str == '\'' || **str == '`'));
     if (!**str)
     {
         *tok = get_tok_quote(first);

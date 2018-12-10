@@ -45,8 +45,8 @@ static char name_ok(char *str)
         if (str[len] <= '9' && str[len] >= '0')
             digits++;
         else if ((str[len] >= 'A' && str[len] <= 'Z') || (str[len] >= 'a'
-                    && str[len] <= 'z') || str[len] == '_')
-                continue;
+            && str[len] <= 'z') || str[len] == '_')
+            continue;
         else
             return 0;
     }
@@ -107,8 +107,8 @@ static int handle_p(char flags)
     {
         if (!var->lib[i]->exported)
             continue;
-        size_t len = strlen(var->lib[i]->name) +
-            strlen(var->lib[i]->value) + 20;
+        size_t len = strlen(var->lib[i]->name)
+            + strlen(var->lib[i]->value) + 20;
         char *tmp = calloc(len, sizeof(char));
         if (var->lib[i]->exported == 1)
             sprintf(tmp, "export %s=\"%s\"\n", var->lib[i]->name,
