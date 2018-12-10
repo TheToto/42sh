@@ -202,7 +202,7 @@ while read line; do
               printf "$FAILED_U";;
     IGNORED*) IGNORED_U="      "$DEFAULT"$line"$DEFAULT"\n"
               printf "$IGNORED_U";;
-    *       )
+    *       ) ;;
     esac
 done < tmp
 rm tmp tmp_err
