@@ -93,7 +93,9 @@ char *quote_ps2(void)
 {
     int save = dup(STDOUT_FILENO);
     dup2(STDERR_FILENO, STDOUT_FILENO);
-    char *buf = readline(advanced_prompt("PS2"));
+    char *buf = NULL;
+    while (!buf)
+        buf = readline(advanced_prompt("PS2"));
     dup2(save, STDOUT_FILENO);
     close(save);
     size_t size_buf = strlen(shell.buf);
