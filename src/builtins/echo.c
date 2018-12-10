@@ -175,7 +175,7 @@ int echo(char **str)
             char *to_print = calloc(len, sizeof(char));
             size_t old = 0;
             size_t new = 0;
-            for (; str[i][old]; old++, new++)
+            for (; str[i] && str[i][old]; old++, new++)
             {
                 if (((flags & 2) == 2) && str[i][old] == '\\')
                 {
@@ -188,6 +188,8 @@ int echo(char **str)
                 }
                 else
                     to_print[new] = str[i][old];
+                if (!str[i][old])
+                    break;
             }
             my_printf(to_print, str, i);
         }
