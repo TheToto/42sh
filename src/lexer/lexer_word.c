@@ -18,7 +18,9 @@ void set_tl(struct token_list *tl, char *str,
     tl->str_origin = origin;
     tl->str = str;
     if (tok == NAME)
+    {
         tok = WORD;
+    }
     tl->type = tok;
     tl->next = NULL;
 }
@@ -43,9 +45,7 @@ static int is_up_to_change(enum token_type *tpl, enum token_type type_tmp,
     enum token_type type_next = tpl[1];
     escaped = word[*i] == '\\' && !escaped;
     if (escaped)
-    {
         return 0;
-    }
     if (!i[1] && !i[2] && type_tmp != NOT)
     {
         if (type != type_next)

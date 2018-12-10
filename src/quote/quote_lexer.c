@@ -83,7 +83,9 @@ static int get_dollar(char **str_org, int *is_quoted, int *is_sub,
         *is_complete = str[i] != '0';
     }
     else
+    {
         not_bracket(str, &i);
+    }
     return i;
 }
 
@@ -140,7 +142,9 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
         return word;
     }
     if (first == '\\')
+    {
         update_word(str, word, 0);
+    }
     else if (first == '$')
     {
         int is_quoted = 0;
@@ -168,7 +172,9 @@ struct lexer_quote *lexer_quote(char *str)
 {
     struct lexer_quote *l = init_lexer();
     if (!l)
+    {
         err(1, "Failed to malloc lexer_quote");
+    }
     struct token_list_quote *tl = l->tl;
     while (*str)
     {

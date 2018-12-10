@@ -61,7 +61,7 @@ static int not_opt(char *str)
 static int not_hexa(char c)
 {
     return !(c >= '0' && c <= '9') && !(c >= 'a' && c <= 'f')
-        && !(c >= 'A' && c <= 'F');
+    && !(c >= 'A' && c <= 'F');
 }
 
 static void convert_dec(char *str, char *to_print, size_t *old, size_t *new)
@@ -111,26 +111,11 @@ static void convert_dec(char *str, char *to_print, size_t *old, size_t *new)
     free(res);
 }
 
-static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
+static void handle_escape_bis(char *str, char *to_print, size_t *old,
+        size_t *new)
 {
-    *old += 1;
     switch (str[*old])
     {
-    case 'a':
-        to_print[*new] = 7;
-        break;
-    case 'b':
-        to_print[*new] = 8;
-        break;
-    case 'e':
-        to_print[*new] = 27;
-        break;
-    case 'f':
-        to_print[*new] = 12;
-        break;
-    case 'n':
-        to_print[*new] = '\n';
-        break;
     case 'r':
         to_print[*new] = 13;
         break;
@@ -152,6 +137,32 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
     }
 }
 
+static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
+{
+    *old += 1;
+    switch (str[*old])
+    {
+    case 'a':
+        to_print[*new] = 7;
+        break;
+    case 'b':
+        to_print[*new] = 8;
+        break;
+    case 'e':
+        to_print[*new] = 27;
+        break;
+    case 'f':
+        to_print[*new] = 12;
+        break;
+    case 'n':
+        to_print[*new] = '\n';
+        break;
+    default:
+        handle_escape_bis(str, to_print, old, new);
+        break;
+    }
+}
+
 static void my_printf(char *to_print, char **str, size_t i)
 {
     printf("%s", to_print);
@@ -167,8 +178,7 @@ int echo(char **str)
     int in_opt = 1;
     for (size_t i = 1; str[i]; i++)
     {
-        if (in_opt)
-            in_opt = !not_opt(str[i]);
+        in_opt = in_opt ? !not_opt(str[i]) : 0;
         if (!in_opt)
         {
             int len = !strlen(str[i]) ? 1 : strlen(str[i]) * 2;

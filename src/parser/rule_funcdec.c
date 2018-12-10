@@ -55,7 +55,9 @@ struct ast_node *rule_funcdec(struct token_list **tok)
     }
     NEXT_TOK(tok);
     if (!error_check(tok, name_func))
+    {
         return NULL;
+    }
     remove_new_line(tok);
     ask_ps2(tok);
     struct ast_node *body = rule_shell_command(tok);
