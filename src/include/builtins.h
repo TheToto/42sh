@@ -26,7 +26,8 @@ enum builtin
     BREAK,
     SOURCE,
     HISTORY,
-    READ
+    READ,
+    RETURN_B,
 };
 
 /**

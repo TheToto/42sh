@@ -148,7 +148,7 @@ struct queue *expand_path(char *path)
     struct queue *q = init_queue();
     char *cur_path = calloc(PATH_MAX, sizeof(char));
     char *dir = calloc(PATH_MAX, sizeof(char));
-    char *save = calloc(PATH_MAX, sizeof(char));
+    char *save = calloc(PATH_MAX * 20, sizeof(char));
 
     path = expand_tilde(path, cur_path, save);
     if (path)

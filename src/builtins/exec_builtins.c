@@ -44,6 +44,8 @@ static enum builtin get_builtin(char *str)
         return HISTORY;
     if (!strcmp(str, "read"))
         return READ;
+    if (!strcmp(str, "return"))
+        return RETURN_B;
     return ANY;
 }
 
@@ -98,6 +100,9 @@ int exec_builtin(char **str)
         return exec_history(str);
     case READ:
         return exec_read(str);
+    case RETURN_B:
+        return exec_return(str);
+
     default:
         break;
     }

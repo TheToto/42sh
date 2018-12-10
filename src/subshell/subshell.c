@@ -37,19 +37,13 @@ static void lauch_subshell(char *input)
     {
         if (shell.ast)
             destroy_ast(shell.ast);
-        if (shell.var)
-            destroy_var(shell.var);
         if (shell.lexer)
             lexer_destroy(shell.lexer);
         if (shell.buf && shell.type != S_OPTION)
             free(shell.buf);
         shell.buf = input;
         shell.type = S_FILE;
-        struct variables *lib = init_var();
-        add_var(lib, "$", back_pid, 0);
-        free(back_pid);
-        int res = exec_main(input, 0, lib);
-        destroy_var(lib);
+        int res = exec_main(input, 0, shell.var);
         exit(res);
     }
     free(back_pid);

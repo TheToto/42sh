@@ -67,7 +67,7 @@ static void split_space_and_push(struct queue *q, char **res, size_t *len,
         {
             push_queue(q, *res);
             free(*res);
-            *res = calloc(*len + 1, 1);
+            *res = calloc(*len * 2 + 1, 1);
         }
         while (*tmp && (*tmp == ' ' || *tmp == '\t' || *tmp == '\n'))
             tmp++;

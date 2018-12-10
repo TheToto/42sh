@@ -17,22 +17,8 @@
 
 int exec_return(char **str)
 {
-    int val = 0;
-    if (!str || !str[1])
-        val = atoi(get_var(shell.var, "?"));
-    else
-    {
-        val = atoi(str[1]) % 255;
-        if (!val && !is_zero(str[1]))
-        {
-            warnx("return: %s: numeric argument required", str[1]);
-            val = 2;
-        }
-        else if (str[2])
-        {
-            warnx("return : too many arguments");
-            return 1;
-        }
-    }
-    add_var(shell.var, "?", val, 0);
+    if (!str[1])
+        return 1;
+    add_var(shell.var, "?", str[1], 0);
+    return atoi(str[1]);
 }
