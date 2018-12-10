@@ -22,13 +22,15 @@
 #include "execution.h"
 #include "ast.h"
 #include "shell.h"
+#include "queue.h"
 
 struct shell shell;
 
 static int less(struct ast_node_redirect *n, struct variables *var)
 {
-    char *exp = concat_case(n->word);
+    char *exp = concat_quote(n->word);
     n->fd = open(exp, O_RDONLY);
+    free(exp);
     if (n->fd == -1)
     {
         warn("cannot redirect with %s", n->word);
@@ -40,15 +42,15 @@ static int less(struct ast_node_redirect *n, struct variables *var)
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
     close(save);
-    free(exp);
     return res;
 }
 
 
 static int great(struct ast_node_redirect *n, struct variables *var)
 {
-    char *exp = concat_case(n->word);
-    n->fd = open(exp, O_WRONLY | O_CREAT, 00644);
+    char *expand = concat_quote(n->word);
+    n->fd = open(expand, O_WRONLY | O_CREAT, 00644);
+    free(expand);
     if (n->fd == -1)
     {
         warn("cannot redirect with %s", n->word);
@@ -60,14 +62,14 @@ static int great(struct ast_node_redirect *n, struct variables *var)
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
     close(save);
-    free(exp);
     return res;
 }
 
 static int dgreat(struct ast_node_redirect *n, struct variables *var)
 {
-    char *exp = concat_case(n->word);
+    char *exp = concat_quote(n->word);
     n->fd = open(exp, O_WRONLY | O_CREAT | O_APPEND, 00644);
+    free(exp);
     if (n->fd == -1)
     {
         warn("cannot redirect with %s", n->word);
@@ -79,17 +81,17 @@ static int dgreat(struct ast_node_redirect *n, struct variables *var)
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
     close(save);
-    free(exp);
     return res;
 }
 
 static int greatand(struct ast_node_redirect *n, struct variables *var)
 {
-    char *exp = concat_case(n->word);
     int res = 0;
     if (n->io_number == 1)
     {
+        char *exp = concat_quote(n->word);
         n->fd = open(exp, O_WRONLY | O_CREAT, 00644);
+        free(exp);
         if (n->fd == -1)
         {
             warn("cannot redirect with %s", n->word);
@@ -111,14 +113,14 @@ static int greatand(struct ast_node_redirect *n, struct variables *var)
         warnx("ambiguous redirection");
         return 1;
     }
-    free(exp);
     return res;
 }
 
 static int lessgreat(struct ast_node_redirect *n, struct variables *var)
 {
-    char *exp = concat_case(n->word);
+    char *exp = concat_quote(n->word);
     n->fd = open(exp, O_RDWR | O_CREAT, 00644);
+    free(exp);
     if (n->fd == -1)
     {
         warn("cannot redirect with %s", n->word);
@@ -130,7 +132,6 @@ static int lessgreat(struct ast_node_redirect *n, struct variables *var)
     int res = exec_node(n->node, var);
     dup2(save, n->io_number);
     close(save);
-    free(exp);
     return res;
 }
 
