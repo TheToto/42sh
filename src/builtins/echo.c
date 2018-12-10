@@ -58,6 +58,58 @@ static int not_opt(char *str)
     return 0;
 }
 
+static int not_hexa(char c)
+{
+    return !(c >= '0' && c <= '9') && !(c >= 'a' && c <= 'f')
+        && !(c >= 'A' && c <= 'F');
+}
+
+static void convert_dec(char *str, char *to_print, size_t *old, size_t *new)
+{
+    char n[3] =
+    {
+        0
+    };
+    size_t base = str[*old] == '0' ? 8 : 16;
+    char *res = calloc(3, sizeof(char));
+    if (!res)
+    {
+        warnx("Calloc failed in convert_dec");
+        return;
+    }
+    if (str[*old] == '0')
+    {
+        for (size_t i = 1; i <= 3; i++)
+        {
+            if (!(str[*old + i] >= '0' && str[*old + i] <= '7'))
+                break;
+            n[i - 1] = str[*old + i];
+        }
+
+    }
+    else if (str[*old] == 'x')
+    {
+        for (size_t i = 1; i <= 2; i++)
+        {
+            if (not_hexa(str[*old + i]))
+                break;
+            n[i - 1] = str[*old + i];
+        }
+    }
+    if (!n[0])
+    {
+        *new += 1;
+        to_print[*new - 1] = str[*old - 1];
+        to_print[*new] = str[*old];
+        return;
+    }
+    int c = strtol(n, NULL, base);
+    sprintf(res, "%c", c);
+    to_print[*new] = res[0];
+    *old += strlen(n);
+    free(res);
+}
+
 static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
 {
     *old += 1;
@@ -89,7 +141,7 @@ static void handle_escape(char *str, char *to_print, size_t *old, size_t *new)
         break;
     case '0':
     case 'x':
-        //convert_dec(str, to_print, old, new);
+        convert_dec(str, to_print, old, new);
         break;
     default:
         *new += 1;
