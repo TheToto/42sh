@@ -1,7 +1,7 @@
 /**
 * @file ast_destroy.h
 * @author louis.holleville
-* @version 0.9
+* @version 1.0
 * @date 14-11-2018
 * @brief Header of AST destroy functions
 */

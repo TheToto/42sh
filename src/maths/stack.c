@@ -2,7 +2,7 @@
 * \file stack.c
 * \brief Stack functions
 * \author thomas.lupin
-* \version 0.9
+* \version 1.0
 * \date 06-12-2018
 **/
 #include <stdlib.h>

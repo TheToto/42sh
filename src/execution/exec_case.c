@@ -1,7 +1,7 @@
 /**
 *\file exec_case.c
 *\author thomas.lupin
-*\version 0.9
+*\version 1.0
 *\date 23-11-2018
 *\brief Execution of the case node
 */

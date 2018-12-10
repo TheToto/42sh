@@ -1,7 +1,7 @@
 /**
 *   @file export.c
 *   @author louis.holleville
-*   @version 0.9
+*   @version 1.0
 *   @date 02/12/2018
 *   @brief Execution of the export builtin
 */

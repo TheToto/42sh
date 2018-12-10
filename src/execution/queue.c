@@ -2,7 +2,7 @@
 * \file queue.c
 * \brief Queue functions
 * \author thomas.lupin
-* \version 0.9
+* \version 1.0
 * \date 02-12-2018
 **/
 #define _GNU_SOURCE

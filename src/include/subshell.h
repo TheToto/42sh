@@ -2,7 +2,7 @@
 * @file subshell.h
 * @author louis.holleville thomas.lupin
 * @date 07-12-2018
-* @version 0.9
+* @version 1.0
 * @brief Header for subshell management
 */
 

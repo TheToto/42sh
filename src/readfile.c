@@ -1,7 +1,7 @@
 /**
 * \file readfile.c
 * \author thomas.lupin
-* \version 0.9
+* \version 1.0
 * \date 15-11-2018
 * \brief Read a file
 */

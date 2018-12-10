@@ -2,7 +2,7 @@
 * \file shopt.h
 * \brief Handle the shopt variables
 * \authors sabrina.meng
-* \version 0.9
+* \version 1.0
 * \date 28-11-2018
 */
 #pragma once

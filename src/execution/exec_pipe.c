@@ -1,7 +1,7 @@
 /**
 * @file exec_redirect.c
 * @author louis.holleville
-* @version 0.9
+* @version 1.0
 * @date 22-11-2018
 * @brief execution of the pipe
 */

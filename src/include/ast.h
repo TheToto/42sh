@@ -1,7 +1,7 @@
 /**
 * \file ast.h
 * \author louis.holleville thomas.lupin
-* \version 0.9
+* \version 1.0
 * \date 14-11-2018
 * \brief Header of AST nodes
 */

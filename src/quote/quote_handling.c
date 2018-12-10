@@ -2,7 +2,7 @@
 * \file quote_handling.c
 * \brief Handle quotes
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 * \date 06-12-2018
 **/
 #include <stdlib.h>

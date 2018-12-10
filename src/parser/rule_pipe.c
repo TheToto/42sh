@@ -1,7 +1,7 @@
 /**
 *\file rule_pipe.c
 *\author thomas.lupin
-*\version 0.9
+*\version 1.0
 *\date 22-11-2018
 *\brief Pipe rule function
 */

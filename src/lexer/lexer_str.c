@@ -3,7 +3,7 @@
 * \brief Contain all function to get next string until a
 * space or tab in a string.
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 */
 #include <stdlib.h>
 #include <string.h>

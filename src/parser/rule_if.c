@@ -1,7 +1,7 @@
 /**
 *\file rule_if.c
 *\author thomas.lupin
-*\version 0.9
+*\version 1.0
 *\date 22-11-2018
 *\brief If rule function
 */

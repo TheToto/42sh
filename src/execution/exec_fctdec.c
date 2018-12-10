@@ -1,7 +1,7 @@
 /**
 * @file exec_fctdec.c
 * @author louis.holleville
-* @version 0.9
+* @version 1.0
 * @date 25-11-2018
 * @brief execution of functions declaration
 */

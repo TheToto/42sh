@@ -2,7 +2,7 @@
 * \file lexer_word.c
 * \brief Contain all function to get the next token word in a string
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 */
 #include <stdlib.h>
 #include <string.h>

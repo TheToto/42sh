@@ -2,7 +2,7 @@
 * \file options.c
 * \brief Parse the options with the format [GNU long option] [option] script-file
 * \authors sabrina.meng thomas.lupin
-* \version 0.9
+* \version 1.0
 * \date 27-11-2018
 */
 
@@ -154,7 +154,7 @@ void options(char *argv[])
             norc = 1;
         else if (opt == VERSION)
         {
-                printf("Version 0.9\n");
+                printf("Version 1.0\n");
                 exit(0);
         }
     }

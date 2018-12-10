@@ -4,7 +4,7 @@
 * a pointer to a lexer structure
 * according to a given string.
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 */
 
 #pragma once

@@ -1,7 +1,7 @@
 /**
 * @file exec_scmd.c
 * @author thomas.lupin louis.holleville sabrina.meng
-* @version 0.9
+* @version 1.0
 * @date 25-11-2018
 * @brief execution of scmd
 */

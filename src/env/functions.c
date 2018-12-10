@@ -2,7 +2,7 @@
 * @file functions.c
 * @author louis.holleville
 * @date 25-11-2018
-* @version 0.9
+* @version 1.0
 * @brief Management of functions declaration and builtins
 */
 

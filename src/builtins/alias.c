@@ -2,7 +2,7 @@
 * @file alias.c
 * @author louis.holleville
 * @date 03-12-2018
-* @version 0.9
+* @version 1.0
 * @brief Execution of the alias and unalias builtin
 */
 

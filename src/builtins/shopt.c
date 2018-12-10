@@ -2,7 +2,7 @@
 * \file shopt.c
 * \brief Execute the shopt builtin
 * \authors sabrina.meng
-* \version 0.9
+* \version 1.0
 * \date 05-12-2018
 **/
 

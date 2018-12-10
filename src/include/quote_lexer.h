@@ -2,7 +2,7 @@
 * \file quote_lexer.h
 * \brief Handle quotes in the lexer
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 * \date 06-12-2018
 **/
 #pragma once

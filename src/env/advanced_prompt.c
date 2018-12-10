@@ -2,7 +2,7 @@
 * @file advanced_prompt.c
 * @author louis.holleville
 * @date 05-12-2018
-* @version 0.9
+* @version 1.0
 * @brief Replacement of PS1 & PS2 by their real value
 */
 

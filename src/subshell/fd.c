@@ -2,7 +2,7 @@
 * @file fd.c
 * @author louis.holleville
 * @date 07-12-2018
-* @version 0.9
+* @version 1.0
 * \brief Management of fd in subshells
 */
 

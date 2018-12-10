@@ -1,7 +1,7 @@
 /**
 * \file var.c
 * \author louis.holleville
-* \version 0.9
+* \version 1.0
 * \date 16-11-2018
 * \brief Management of shell variables
 */

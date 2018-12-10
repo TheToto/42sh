@@ -2,7 +2,7 @@
 * \file exit.c
 * \brief Execute the exit builtin
 * \authors sabrina.meng
-* \version 0.9
+* \version 1.0
 * \date 30-11-2018
 **/
 

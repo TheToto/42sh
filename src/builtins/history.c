@@ -2,7 +2,7 @@
 * \file history.c
 * \brief Execute history builtin
 * \authors sabrina.meng
-* \version 0.9
+* \version 1.0
 * \date 05-12-2018
 **/
 #define _GNU_SOURCE

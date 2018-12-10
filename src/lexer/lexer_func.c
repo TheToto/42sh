@@ -2,7 +2,7 @@
 * \file lexer_func.c
 * \brief Contain all function needed to get the token of a given string.
 * \author Arthur Busuttil
-* \version 0.9
+* \version 1.0
 */
 #include <string.h>
 #include <fnmatch.h>

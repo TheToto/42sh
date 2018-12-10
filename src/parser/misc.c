@@ -1,7 +1,7 @@
 /**
 *\file misc.c
 *\author thomas.lupin
-*\version 0.9
+*\version 1.0
 *\date 28-11-2018
 *\brief Some misc functions
 */
