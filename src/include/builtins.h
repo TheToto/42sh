@@ -59,6 +59,13 @@ int exec_builtin(char **str);
 int exec_exit(char **str);
 
 /**
+* Execute the return builtin
+* \param char **str  The string to be parsed
+* \return set $? to the value given.
+**/
+int exec_return(char **str);
+
+/**
 * Execute the cd builtin
 * \param char **str  The string to be parsed
 * \return Return 1 in case of error, else 0
