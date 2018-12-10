@@ -42,8 +42,22 @@ void destroy_lexer_quote(struct lexer_quote *l)
     free(l);
 }
 
-static int get_dollar(char **str_org, int *is_quoted, int *is_sub
-    , int *is_complete)
+static void not_bracket(char *str, int *i)
+{
+    *i -= 1;
+    char *word = calloc(strlen(str) + 1, 1);
+    *word = *str;
+    while (str[*i]
+            && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
+    {
+        *i += 1;
+        word[*i] = str[*i];
+    }
+    free(word);
+}
+
+static int get_dollar(char **str_org, int *is_quoted, int *is_sub,
+        int *is_complete)
 {
     *is_complete = 1;
     char *str = *str_org;
@@ -69,18 +83,7 @@ static int get_dollar(char **str_org, int *is_quoted, int *is_sub
         *is_complete = str[i] != '0';
     }
     else
-    {
-        i--;
-        char *word = calloc(strlen(str) + 1, 1);
-        *word = *str;
-        while (str[i]
-                && !fnmatch("[_a-zA-Z]*([_0-9a-zA-Z])", word, FNM_EXTMATCH))
-        {
-            i++;
-            word[i] = str[i];
-        }
-        free (word);
-    }
+        not_bracket(str, &i);
     return i;
 }
 
@@ -108,6 +111,19 @@ static void update_word(char **str, char *word, int index)
 {
     word[index] = **str;
     (*str)++;
+}
+
+static void no_special_char(char **str, int *is_sub, char *word, char first)
+{
+    *is_sub = 1;
+    int is_quoted = 0;
+    for (int i = 0; **str && (**str != first
+                || (is_quoted && *(*str) != '\'')); i++)
+    {
+        is_quoted = !is_quoted && *(*str) == '\\';
+        update_word(str, word, i);
+    }
+
 }
 
 static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
@@ -140,14 +156,7 @@ static char *get_next_word(char **str, enum token_quote *tok, int *is_sub,
     }
     else
     {
-        *is_sub = 1;
-        int is_quoted = 0;
-        for (int i = 0; **str && (**str != first
-                    || (is_quoted && *(*str) != '\'')); i++)
-        {
-            is_quoted = !is_quoted && *(*str) == '\\';
-            update_word(str, word, i);
-        }
+        no_special_char(str, is_sub, word, first);
         *is_complete = **str != 0;
         (*str) += **str != 0;
     }

@@ -148,6 +148,28 @@ char *get_alias(struct aliases *alias, char *name)
     return NULL;
 }
 
+static struct queue *set_queue(struct ast_node_scmd *node, char **tab,
+        size_t i)
+{
+    struct queue *q = init_queue();
+    for (size_t j = 0; j < i; j++)
+        push_queue(q, tab[j]);
+    for (size_t k = 1; node->elements[k]; k++)
+    {
+        push_queue(q, node->elements[k]);
+        free(node->elements[k]);
+    }
+    return q;
+}
+
+static void free_all(struct ast_node_scmd *node, char **tab, struct lexer *l)
+{
+    free(node->elements[0]);
+    free(node->elements);
+    free(tab);
+    lexer_destroy(l);
+}
+
 void replace_aliases(struct ast_node_scmd *node)
 {
     if (!node->elements[0])
@@ -170,19 +192,9 @@ void replace_aliases(struct ast_node_scmd *node)
         tab[i] = TOK_STR(tok);
         NEXT_TOK(tok);
     }
-    struct queue *q = init_queue();
-    for (size_t j = 0; j < i; j++)
-        push_queue(q, tab[j]);
-    for (size_t k = 1; node->elements[k]; k++)
-    {
-        push_queue(q, node->elements[k]);
-        free(node->elements[k]);
-    }
+    struct queue *q = set_queue(node, tab, i);
     node->elt_size += i - 1;
-    free(node->elements[0]);
-    free(node->elements);
-    free(tab);
-    lexer_destroy(l);
+    free_all(node, tab, l);
     shell.lexer = save_l;
     shell.buf = save_buf;
     node->elements = dump_queue(q);

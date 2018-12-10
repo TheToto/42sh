@@ -177,6 +177,25 @@ static int rule_heredoc(struct token_list **tok, struct ast_node *redir,
     return 1;
 }
 
+static int check_tok(enum redirect_type r_type, struct token_list **tok,
+        struct ast_node *child)
+{
+    if (r_type == R_NONE)
+    {
+        destroy_ast(child);
+        warnx("%s is not a correct redirector", TOK_STR(tok));
+        return 0;
+    }
+    NEXT_TOK(tok);
+    if (TOK_TYPE(tok) != WORD && TOK_TYPE(tok) != WORD_EXT)
+    {
+        destroy_ast(child);
+        warnx("Need a destination in redirection");
+        return 0;
+    }
+    return 1;
+}
+
 struct ast_node *rule_redirection(struct token_list **tok,
         struct ast_node *child)
 {
@@ -199,19 +218,8 @@ struct ast_node *rule_redirection(struct token_list **tok,
         io = set_default_io(tok);
     }
     enum redirect_type r_type = translate_redirect(TOK_TYPE(tok));
-    if (r_type == R_NONE)
-    {
-        destroy_ast(child);
-        warnx("%s is not a correct redirector", TOK_STR(tok));
+    if (!check_tok(r_type, tok, child))
         return NULL;
-    }
-    NEXT_TOK(tok);
-    if (TOK_TYPE(tok) != WORD && TOK_TYPE(tok) != WORD_EXT)
-    {
-        destroy_ast(child);
-        warnx("Need a destination in redirection");
-        return NULL;
-    }
     char *dest = TOK_STR(tok);
     NEXT_TOK(tok);
     struct ast_node *redir = create_ast_node_redirect(fd, r_type, io,
