@@ -4,7 +4,7 @@
 The purpose of this project is to program a shell that have the same
 behavior as the bash --posix.
 
-HOW TO COMPILE
+### HOW TO COMPILE
 ```
     > mkdir build
     > cd build
@@ -12,7 +12,7 @@ HOW TO COMPILE
     > make
     > ./42sh [options] [file]
 ```
-OPTIONS
+### OPTIONS
 ```
     -c <command>
         Execute the command given.
@@ -30,7 +30,7 @@ OPTIONS
         This option prints the current 42sh version on the standard output
         and exits.
 ```
-BUILTINS
+### BUILTINS
 ```
     exit [n]
         Cause the shell to exit with a status of n.  If  n  is  omitted,  the
@@ -186,22 +186,21 @@ BUILTINS
           -r     Read the contents of the history file and append them  to  the
                  current history list.
 ```
-COMMANDS
+### COMMANDS
     To have an overview about the possibilities of 42sh, please, refer to the
     manual. The manual can be read by typing from the root directory
     of the projet:
-    ```
         man -l doc/42sh.1
-    ```
 
-TEST SUITE
+### TEST SUITE
     We used ceedling for the test suite.
     Outside the 42sh/ git directory, launch the following commands:
-    ```
+    
+```
         > ceedling new 42sh/
         > cd 42sh/
         > ./test/test.sh
-    ```
+```
 
     A 'make check' command can be written when the current working directory
     is the 'build' directory. 'make check' run the test-suite without options.
