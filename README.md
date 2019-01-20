@@ -29,7 +29,7 @@ OPTIONS
     --version
         This option prints the current 42sh version on the standard output
         and exits.
-
+```
 BUILTINS
 ```
     exit [n]
