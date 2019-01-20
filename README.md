@@ -1,17 +1,19 @@
-# Project 42sh by louis.holleville, thomas.lupin, arthur.busuttil, sabrina.meng
-## Version 1.0
+## Project 42sh by louis.holleville, thomas.lupin, arthur.busuttil, sabrina.meng
+# Version 1.0
 
 The purpose of this project is to program a shell that have the same
 behavior as the bash --posix.
 
 HOW TO COMPILE
+```
     > mkdir build
     > cd build
     > cmake ..
     > make
     > ./42sh [options] [file]
-
+```
 OPTIONS
+```
     -c <command>
         Execute the command given.
 
@@ -29,6 +31,7 @@ OPTIONS
         and exits.
 
 BUILTINS
+```
     exit [n]
         Cause the shell to exit with a status of n.  If  n  is  omitted,  the
         exit  status is that of the last command executed.  A trap on EXIT is
@@ -182,26 +185,30 @@ BUILTINS
           -c     Clear the history list by deleting all the entries.
           -r     Read the contents of the history file and append them  to  the
                  current history list.
-
+```
 COMMANDS
     To have an overview about the possibilities of 42sh, please, refer to the
     manual. The manual can be read by typing from the root directory
     of the projet:
+    ```
         man -l doc/42sh.1
+    ```
 
 TEST SUITE
     We used ceedling for the test suite.
     Outside the 42sh/ git directory, launch the following commands:
+    ```
         > ceedling new 42sh/
         > cd 42sh/
         > ./test/test.sh
+    ```
 
     A 'make check' command can be written when the current working directory
     is the 'build' directory. 'make check' run the test-suite without options.
 
     test.sh:
         Options:
-
+```
             -l | --list
                 Print all possible category
 
@@ -213,7 +220,7 @@ TEST SUITE
 
             -t | --timeout <time>
                 Run tests with a timeout on global tests
-
+```
         Description:
             test.sh run two types of tests:
                 - unitary tests
